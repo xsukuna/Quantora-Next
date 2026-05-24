@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+:root {
+  --background: #050505;
+  --foreground: #ffffff;
+  
+  --primary: #0A0F1E;
+  --accent: #0062FF;
+  --accent-glow: rgba(0, 98, 255, 0.4);
+  --cyan: #00F0FF;
+  --text-muted: #A0AEC0;
+  --glass: rgba(15, 20, 35, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Custom Premium Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 10px;
+}
+
+/* Scrollbar thin utility class */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(0, 240, 255, 0.3);
+}
+
+/* Isometric 3D Cube Rotation keyframes */
+@keyframes rotateCube {
+  0% { transform: rotateX(-20deg) rotateY(0deg); }
+  100% { transform: rotateX(-20deg) rotateY(360deg); }
+}
+
+/* Node pulse animations */
+.node-pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { r: 6; opacity: 1; }
+  50% { r: 12; opacity: 0.4; }
+  100% { r: 6; opacity: 1; }
+}
+
+/* Flow line animation */
+.line-flow {
+  stroke-dasharray: 8;
+  animation: flow 20s linear infinite;
+}
+
+@keyframes flow {
+  from { stroke-dashoffset: 200; }
+  to { stroke-dashoffset: 0; }
+}

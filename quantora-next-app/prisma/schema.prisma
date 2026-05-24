@@ -1,0 +1,116 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id               String          @id @default(cuid())
+  clerkId          String?         @unique
+  username         String          @unique
+  name             String
+  email            String          @unique
+  role             String          @default("CONTRIBUTOR") // "ADMIN" | "CONTRIBUTOR" | "GUEST"
+  reputation       Int             @default(10)
+  badge            String          @default("Fellow Contributor")
+  avatarUrl        String?
+  createdAt        DateTime        @default(now())
+  
+  // Relations
+  papers           Paper[]         @relation("AuthorRelation")
+  comments         Comment[]
+  insights         Insight[]
+  joinedChallenges RndChallenge[]  @relation("ChallengeParticipation")
+  upvotedInsights  Insight[]       @relation("InsightUpvotes")
+}
+
+model Paper {
+  id             String          @id @default(cuid())
+  title          String
+  abstract       String
+  category       String
+  authorId       String
+  author         User            @relation("AuthorRelation", fields: [authorId], references: [id], onDelete: Cascade)
+  institution    String
+  country        String
+  tags           String          // Stored as comma-separated values to ensure SQLite compatibility
+  references     String?
+  fileUrl        String
+  fileName       String
+  fileSize       String
+  date           DateTime        @default(now())
+  status         String          @default("PENDING") // "APPROVED" | "PENDING" | "REJECTED"
+  citations      Int             @default(0)
+  downloads      Int             @default(0)
+  likes          Int             @default(0)
+  peerReviewed   Boolean         @default(false)
+  aiSummary      String?
+  trustLabel     String          @default("INDEPENDENT_SUBMISSION") // "VERIFIED_RESEARCH" | "COMMUNITY_REVIEWED" | ...
+  
+  // Versioning & Forking Relations
+  forkedFromId   String?
+  forkedFrom     Paper?          @relation("ForkRelation", fields: [forkedFromId], references: [id])
+  forks          Paper[]         @relation("ForkRelation")
+  versions       PaperVersion[]
+  
+  // Discussion Relations
+  comments       Comment[]
+}
+
+model PaperVersion {
+  id        String   @id @default(cuid())
+  paperId   String
+  paper     Paper    @relation(fields: [paperId], references: [id], onDelete: Cascade)
+  version   String   @default("1.0.0")
+  date      DateTime @default(now())
+  summary   String
+  author    String
+}
+
+model Comment {
+  id         String   @id @default(cuid())
+  paperId    String
+  paper      Paper    @relation(fields: [paperId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  text       String
+  timestamp  DateTime @default(now())
+  reputation Int      @default(50)
+}
+
+model RndChallenge {
+  id             String           @id @default(cuid())
+  title          String
+  sponsor        String
+  logo           String
+  description    String
+  reward         String
+  repAward       Int              @default(100)
+  category       String
+  difficulty     String           @default("Expert")
+  teamsCount     Int              @default(0)
+  solutionsCount Int              @default(0)
+  details        String
+  createdAt      DateTime         @default(now())
+  
+  // Relations
+  joinedUsers    User[]           @relation("ChallengeParticipation")
+}
+
+model Insight {
+  id             String   @id @default(cuid())
+  authorId       String
+  author         User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  content        String
+  tags           String           // Comma-separated values
+  category       String
+  timestamp      DateTime @default(now())
+  upvotesCount   Int      @default(0)
+  commentsCount  Int      @default(0)
+  
+  // Relations
+  upvotedBy      User[]   @relation("InsightUpvotes")
+}

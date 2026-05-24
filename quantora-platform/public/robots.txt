@@ -1,0 +1,10 @@
+# Quantora Analytics Platform Robots Configuration
+# https://quantora.analytics/
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /moderation/
+Disallow: /api/v1/
+
+Sitemap: https://quantora.analytics/sitemap.xml

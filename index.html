@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantora Analytics | Intelligence Beyond Markets</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <meta name="description" content="Quantora Analytics provides AI-driven financial research, institutional analytics, and next-generation market intelligence.">
+</head>
+<body>
+  <!-- Premium Preloader -->
+  <div id="preloader" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--secondary); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.8s ease-out;">
+    <div style="width: 200px; height: 2px; background: var(--glass-border); position: relative; overflow: hidden;">
+      <div id="loader-bar" style="position: absolute; top: 0; left: 0; height: 100%; width: 0; background: var(--accent); box-shadow: 0 0 15px var(--accent);"></div>
+    </div>
+    <div style="margin-top: 1.5rem; font-size: 0.6rem; letter-spacing: 0.3em; color: var(--accent); font-weight: 700; text-transform: uppercase;">Initializing Quantora Intelligence...</div>
+  </div>
+
+  <!-- Quantora Terminal Overlay -->
+  <div id="terminal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 2, 2, 0.98); z-index: 9000; display: none; padding: 2rem; overflow: hidden;">
+    <div class="container" style="height: 100%; display: flex; flex-direction: column;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--accent); padding-bottom: 1rem;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <span style="background: var(--accent); color: white; padding: 0.2rem 0.5rem; font-size: 0.7rem; font-weight: 800;">LIVE</span>
+          <h2 style="font-size: 1.2rem; letter-spacing: 0.1em;">QUANTORA TERMINAL v4.2</h2>
+        </div>
+        <button id="close-terminal" style="background: transparent; border: 1px solid var(--accent); color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; font-size: 0.7rem;">EXIT TERMINAL [ESC]</button>
+      </div>
+      <div style="flex: 1; display: grid; grid-template-columns: 1fr 3fr; gap: 2rem;">
+        <div class="glass-panel" style="border-color: var(--accent); border-style: dashed;">
+          <h4 style="color: var(--accent); margin-bottom: 1.5rem;">QUICK ACCESS</h4>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 1rem;">
+            <li style="color: var(--cyan); font-size: 0.8rem; cursor: pointer;">> EQUITY DASHBOARD</li>
+            <li style="color: var(--text-muted); font-size: 0.8rem; cursor: pointer;">> MACRO HEATMAP</li>
+            <li style="color: var(--text-muted); font-size: 0.8rem; cursor: pointer;">> POLITICAL RISK INDEX</li>
+            <li style="color: var(--text-muted); font-size: 0.8rem; cursor: pointer;">> NEURAL ALPHA FEED</li>
+            <li style="color: var(--text-muted); font-size: 0.8rem; cursor: pointer;">> GLOBAL ORDER FLOW</li>
+          </ul>
+        </div>
+        <div class="glass-panel" style="background: #000; border-color: var(--accent);">
+          <div style="font-family: 'Courier New', Courier, monospace; font-size: 0.8rem; color: #00FF00; overflow-y: auto; height: 100%;" id="terminal-log">
+            [SYSTEM]: Initializing secure handshake...<br>
+            [SYSTEM]: Connection established to NY-HUB-04<br>
+            [DATA]: Parsing alternative data streams... (842 GB/s)<br>
+            [AI]: Sentiment analysis complete (S&P 500: Neutral)<br>
+            [AI]: Detecting anomaly in Bond Yields (10Y UST)...<br>
+            <span style="color: #FF0000;">[ALERT]: Unusual volume detected in XAU/USD</span><br>
+            > <span style="border-right: 2px solid #00FF00; padding-right: 2px;">_</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cursor"></div>
+  <div class="cursor-dot"></div>
+
+  <nav>
+    <div class="container nav-content">
+      <div class="logo">
+        <div class="logo-3d-container">
+          <div class="cube-3d">
+            <div class="cube-face cube-face-front"></div>
+            <div class="cube-face cube-face-back"></div>
+            <div class="cube-face cube-face-left"></div>
+            <div class="cube-face cube-face-right"></div>
+            <div class="cube-face cube-face-top"></div>
+            <div class="cube-face cube-face-bottom"></div>
+          </div>
+        </div>
+        <span class="gradient-text" style="font-weight: 900; letter-spacing: 0.15em; margin-left: 0.5rem;">QUANTORA</span>
+      </div>
+      <div class="nav-links">
+        <a href="#home">Home</a>
+        <a href="#research">Research</a>
+        <a href="#insights">Insights</a>
+        <a href="#services">Services</a>
+        <a href="#rdlab">R&D Lab</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <button class="btn btn-primary" style="padding: 0.6rem 1.5rem;">Terminal Access</button>
+    </div>
+  </nav>
+
+  <section id="hero" style="opacity: 1; transform: none;">
+    <div class="hero-bg" style="background-image: url('hero_background_1778506865165.png');"></div>
+    <div class="hero-overlay"></div>
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="gradient-text">Intelligence<br>Beyond Markets.</h1>
+        <p>AI-driven financial research, institutional analytics, and next-generation market intelligence for the global elite.</p>
+        <div class="hero-actions">
+          <a href="#research" class="btn btn-primary">Explore Research</a>
+          <a href="#services" class="btn btn-outline">Our Framework</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <div class="ticker-item">S&P 500 <span>+1.24%</span></div>
+      <div class="ticker-item">NASDAQ 100 <span>+0.85%</span></div>
+      <div class="ticker-item">FTSE 100 <span class="down">-0.12%</span></div>
+      <div class="ticker-item">USD/EUR <span>+0.04%</span></div>
+      <div class="ticker-item">BTC/USD <span>+4.12%</span></div>
+      <div class="ticker-item">NIKKEI 225 <span>+0.56%</span></div>
+      <div class="ticker-item">GOLD <span>+0.22%</span></div>
+      <div class="ticker-item">CRUDE OIL <span class="down">-1.45%</span></div>
+      <!-- Duplicate for infinite scroll -->
+      <div class="ticker-item">S&P 500 <span>+1.24%</span></div>
+      <div class="ticker-item">NASDAQ 100 <span>+0.85%</span></div>
+      <div class="ticker-item">FTSE 100 <span class="down">-0.12%</span></div>
+      <div class="ticker-item">USD/EUR <span>+0.04%</span></div>
+    </div>
+  </div>
+
+  <section id="services">
+    <div class="container">
+      <h2 class="gradient-text">Institutional Services</h2>
+      <div class="grid">
+        <div class="glass-panel">
+          <div class="card-icon"><i data-lucide="line-chart"></i></div>
+          <h3>Equity Research</h3>
+          <p>Deep-dive fundamental analysis combined with proprietary quantitative models to identify alpha in global markets.</p>
+        </div>
+        <div class="glass-panel">
+          <div class="card-icon"><i data-lucide="shield"></i></div>
+          <h3>Political Research</h3>
+          <p>Geopolitical risk assessment and policy analysis designed for sovereign wealth funds and institutional investors.</p>
+        </div>
+        <div class="glass-panel">
+          <div class="card-icon"><i data-lucide="cpu"></i></div>
+          <h3>AI Analytics</h3>
+          <p>Harnessing neural networks to process alternative data streams and predict macroeconomic shifts with 94% accuracy.</p>
+        </div>
+        <div class="glass-panel">
+          <div class="card-icon"><i data-lucide="bar-chart-3"></i></div>
+          <h3>Strategic Consulting</h3>
+          <p>Consulting services for C-suite executives, providing data-backed roadmaps for global expansion and M&A.</p>
+        </div>
+        <div class="glass-panel">
+          <div class="card-icon"><i data-lucide="globe"></i></div>
+          <h3>Economic Forecasting</h3>
+          <p>Quantitative macroeconomic modeling to forecast interest rates, inflation, and global trade dynamics.</p>
+        </div>
+        <div class="glass-panel">
+          <div class="card-icon"><i data-lucide="activity"></i></div>
+          <h3>Risk Assessment</h3>
+          <p>Advanced stress-testing and portfolio risk analytics for multi-asset class institutional portfolios.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="insights">
+    <div class="container">
+      <h2 class="gradient-text">Market Intelligence</h2>
+      <p style="color: var(--text-muted); margin-bottom: 3rem;">AI-generated insights and real-time sector analysis.</p>
+      
+      <div class="grid" style="grid-template-columns: 2fr 1fr;">
+        <div class="glass-panel" style="min-height: 400px; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+              <h3>Global Sector Performance</h3>
+              <div style="display: flex; gap: 1rem; font-size: 0.75rem;">
+                <span style="color: var(--cyan); display: flex; align-items: center; gap: 0.3rem;"><i data-lucide="circle" style="width: 8px; fill: var(--cyan);"></i> Tech</span>
+                <span style="color: var(--accent); display: flex; align-items: center; gap: 0.3rem;"><i data-lucide="circle" style="width: 8px; fill: var(--accent);"></i> Finance</span>
+                <span style="color: var(--text-muted); display: flex; align-items: center; gap: 0.3rem;"><i data-lucide="circle" style="width: 8px; fill: var(--text-muted);"></i> Energy</span>
+              </div>
+            </div>
+            <div style="height: 250px; position: relative; display: flex; align-items: flex-end; gap: 10%; padding: 0 5%;">
+              <!-- Animated Bar Chart -->
+              <div class="chart-bar" style="height: 85%; width: 12%; background: var(--cyan); border-radius: 4px 4px 0 0; position: relative;">
+                <span style="position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%); font-size: 0.7rem;">Q1</span>
+              </div>
+              <div class="chart-bar" style="height: 65%; width: 12%; background: var(--accent); border-radius: 4px 4px 0 0; position: relative;">
+                <span style="position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%); font-size: 0.7rem;">Q2</span>
+              </div>
+              <div class="chart-bar" style="height: 95%; width: 12%; background: var(--cyan); border-radius: 4px 4px 0 0; position: relative;">
+                <span style="position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%); font-size: 0.7rem;">Q3</span>
+              </div>
+              <div class="chart-bar" style="height: 45%; width: 12%; background: var(--accent); border-radius: 4px 4px 0 0; position: relative;">
+                <span style="position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%); font-size: 0.7rem;">Q4</span>
+              </div>
+              <div class="chart-bar" style="height: 75%; width: 12%; background: var(--cyan); border-radius: 4px 4px 0 0; position: relative;">
+                <span style="position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%); font-size: 0.7rem;">YTD</span>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--glass-border); display: flex; justify-content: space-between;">
+            <span style="font-size: 0.8rem; color: var(--text-muted);">AI Forecast: <span style="color: var(--cyan);">Bullish</span></span>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Confidence Score: <span style="color: var(--text);">92.4%</span></span>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          <div class="glass-panel" style="padding: 1.5rem;">
+            <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+              <div style="color: var(--cyan);"><i data-lucide="zap"></i></div>
+              <span style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted);">REAL-TIME SIGNAL</span>
+            </div>
+            <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem;">Semiconductor Rally Sustained</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted);">Alternative data confirms supply chain easing in SE Asia hubs.</p>
+          </div>
+          <div class="glass-panel" style="padding: 1.5rem;">
+            <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+              <div style="color: #FF4D4D;"><i data-lucide="alert-triangle"></i></div>
+              <span style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted);">RISK ALERT</span>
+            </div>
+            <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem;">Liquidity Crunch in EM Bonds</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted);">Proprietary volatility index signals correction in frontier markets.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="research">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem;">
+        <div>
+          <h2 class="gradient-text">Research Hub</h2>
+          <p style="color: var(--text-muted); margin-top: 0.5rem;">Institutional-grade analysis for strategic decision making.</p>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+          <button class="btn btn-outline" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.7rem;">ALL</button>
+          <button class="btn btn-outline" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.7rem; background: var(--glass-border);">EQUITY</button>
+          <button class="btn btn-outline" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.7rem;">POLITICAL</button>
+        </div>
+      </div>
+      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem;">
+        <!-- Featured Paper: Broken Promises in the Fields -->
+        <div class="glass-panel" style="padding: 1.5rem; border-color: var(--accent); display: flex; flex-direction: column; justify-content: space-between; border-width: 2px;">
+          <div>
+            <div style="height: 140px; overflow: hidden; border-radius: 8px; margin-bottom: 1rem;">
+              <img src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&q=80&w=400" alt="Indian Agriculture Fields" style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); transition: filter 0.5s ease;" onmouseover="this.style.filter='none'" onmouseout="this.style.filter='grayscale(1)'">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span style="color: var(--accent); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em;">PUBLIC POLICY</span>
+              <span style="background: rgba(240, 112, 80, 0.1); color: #f07050; border: 1px solid rgba(240, 112, 80, 0.2); border-radius: 4px; padding: 0.1rem 0.4rem; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.05em;">FEATURED EXPOSÉ</span>
+            </div>
+            <h4 style="margin: 0.5rem 0; line-height: 1.4; font-size: 0.95rem;"><a href="report.html" target="_blank" style="color: inherit; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='inherit'">Broken Promises in the Fields:<br><span style="color: #f07050;">₹127,290 Cr and Farmers Dying</span></a></h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 1.2rem;">A 26-year forensic analysis (FY 2000–2026) of India's agricultural budgets and the structural failure of agricultural welfare.</p>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--glass-border); padding-top: 0.8rem; font-size: 0.75rem; color: var(--text-muted); margin-top: auto;">
+            <span>By <strong>Aditya Kaushik</strong></span>
+            <a href="report.html" target="_blank" style="color: var(--cyan); text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 0.2rem;">Read Report <i data-lucide="external-link" style="width: 12px; height: 12px;"></i></a>
+          </div>
+        </div>
+
+        <div class="glass-panel" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="height: 140px; overflow: hidden; border-radius: 8px; margin-bottom: 1rem;">
+              <img src="https://images.unsplash.com/photo-1611974717482-98aa0167d581?auto=format&fit=crop&q=80&w=400" alt="Report" style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(1);">
+            </div>
+            <span style="color: var(--accent); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em;">MACRO INSIGHTS</span>
+            <h4 style="margin: 0.5rem 0; line-height: 1.4; font-size: 0.95rem;">The Great Divergence: 2026 Outlook</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 1.2rem;">Analyzing the decoupling of global debt cycles and its impact on emerging markets.</p>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--glass-border); padding-top: 0.8rem; font-size: 0.75rem; color: var(--text-muted); margin-top: auto;">
+            <span>By <strong>Dr. Alistair Vance</strong></span>
+            <a href="#" style="color: var(--cyan); text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 0.2rem;">Download <i data-lucide="download" style="width: 12px; height: 12px;"></i></a>
+          </div>
+        </div>
+        <div class="glass-panel" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="height: 140px; overflow: hidden; border-radius: 8px; margin-bottom: 1rem;">
+              <img src="https://images.unsplash.com/photo-1551288049-bbbda5366391?auto=format&fit=crop&q=80&w=400" alt="Report" style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(1);">
+            </div>
+            <span style="color: var(--accent); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em;">QUANT STRATEGY</span>
+            <h4 style="margin: 0.5rem 0; line-height: 1.4; font-size: 0.95rem;">Neural Alpha in Volatile Regimes</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 1.2rem;">How machine learning models are outperforming traditional factor models in high-volatility environments.</p>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--glass-border); padding-top: 0.8rem; font-size: 0.75rem; color: var(--text-muted); margin-top: auto;">
+            <span>By <strong>Elena Rostova</strong></span>
+            <a href="#" style="color: var(--cyan); text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 0.2rem;">Download <i data-lucide="download" style="width: 12px; height: 12px;"></i></a>
+          </div>
+        </div>
+
+        <div class="glass-panel" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="height: 140px; overflow: hidden; border-radius: 8px; margin-bottom: 1rem;">
+              <img src="https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&q=80&w=400" alt="Report" style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(1);">
+            </div>
+            <span style="color: var(--accent); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em;">GEOPOLITICS</span>
+            <h4 style="margin: 0.5rem 0; line-height: 1.4; font-size: 0.95rem;">The New Energy Paradigm</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 1.2rem;">Strategic implications of decentralized power grids on sovereign currency stability.</p>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--glass-border); padding-top: 0.8rem; font-size: 0.75rem; color: var(--text-muted); margin-top: auto;">
+            <span>By <strong>Marcus Aurelius Vance</strong></span>
+            <a href="#" style="color: var(--cyan); text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 0.2rem;">Download <i data-lucide="download" style="width: 12px; height: 12px;"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="rdlab">
+    <div class="container" style="text-align: center;">
+      <h2 class="gradient-text">Quantora R&D Lab</h2>
+      <p style="color: var(--text-muted); max-width: 700px; margin: 1.5rem auto;">Where silicon meets capital. Our R&D division is engineering the next generation of financial intelligence using quantum-inspired algorithms.</p>
+      <div style="height: 300px; margin-top: 3rem; position: relative;">
+        <!-- Visual representation of neural network -->
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 600px;">
+          <svg viewBox="0 0 600 300" style="width: 100%;">
+            <defs>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+            <g filter="url(#glow)">
+              <circle cx="100" cy="150" r="10" fill="#0062FF" class="node-pulse" />
+              <circle cx="250" cy="80" r="10" fill="#0062FF" />
+              <circle cx="250" cy="220" r="10" fill="#0062FF" />
+              <circle cx="400" cy="50" r="10" fill="#0062FF" />
+              <circle cx="400" cy="150" r="10" fill="#0062FF" />
+              <circle cx="400" cy="250" r="10" fill="#0062FF" />
+              <circle cx="550" cy="150" r="10" fill="#00F0FF" class="node-pulse" style="animation-delay: 1s;" />
+              
+              <line x1="110" y1="150" x2="240" y2="80" stroke="#0062FF" stroke-width="1" opacity="0.3" class="line-flow" />
+              <line x1="110" y1="150" x2="240" y2="220" stroke="#0062FF" stroke-width="1" opacity="0.3" class="line-flow" style="animation-delay: 2s;" />
+              <line x1="260" y1="80" x2="390" y2="50" stroke="#0062FF" stroke-width="1" opacity="0.3" class="line-flow" />
+              <line x1="260" y1="80" x2="390" y2="150" stroke="#0062FF" stroke-width="1" opacity="0.3" class="line-flow" />
+              <line x1="260" y1="220" x2="390" y2="150" stroke="#0062FF" stroke-width="1" opacity="0.3" class="line-flow" />
+              <line x1="260" y1="220" x2="390" y2="250" stroke="#0062FF" stroke-width="1" opacity="0.3" class="line-flow" />
+              <line x1="410" y1="50" x2="540" y2="150" stroke="#00F0FF" stroke-width="1" opacity="0.5" class="line-flow" />
+              <line x1="410" y1="150" x2="540" y2="150" stroke="#00F0FF" stroke-width="1" opacity="0.5" class="line-flow" />
+              <line x1="410" y1="250" x2="540" y2="150" stroke="#00F0FF" stroke-width="1" opacity="0.5" class="line-flow" />
+            </g>
+          </svg>
+        </div>
+      </div>
+      <button class="btn btn-primary" style="margin-top: 2rem;">Explore Innovation</button>
+    </div>
+  </section>
+
+  <section id="locations" style="padding-bottom: 0;">
+    <div class="container">
+      <h2 class="gradient-text">Global Presence</h2>
+      <p style="color: var(--text-muted); margin-bottom: 3rem;">Strategically positioned in the world's primary financial hubs.</p>
+      <div class="glass-panel" style="padding: 0; overflow: hidden; height: 500px; position: relative;">
+        <!-- Stylized World Map SVG -->
+        <svg viewBox="0 0 1000 500" style="width: 100%; height: 100%; opacity: 0.15; filter: drop-shadow(0 0 10px var(--accent));">
+          <path d="M150,150 Q200,100 250,150 T350,150" fill="none" stroke="var(--accent)" stroke-width="0.5" />
+          <!-- Map path placeholder - representing a tech-style abstract map -->
+          <circle cx="210" cy="180" r="4" fill="var(--cyan)" class="node-pulse" /> <!-- New York -->
+          <circle cx="480" cy="140" r="4" fill="var(--cyan)" class="node-pulse" style="animation-delay: 0.5s;" /> <!-- London -->
+          <circle cx="510" cy="160" r="4" fill="var(--accent)" class="node-pulse" style="animation-delay: 1s;" /> <!-- Zurich -->
+          <circle cx="820" cy="220" r="4" fill="var(--cyan)" class="node-pulse" style="animation-delay: 1.5s;" /> <!-- Tokyo -->
+          <circle cx="780" cy="280" r="4" fill="var(--accent)" class="node-pulse" style="animation-delay: 2s;" /> <!-- Singapore -->
+        </svg>
+        <div style="position: absolute; top: 20%; left: 10%;" class="glass-panel" style="padding: 1rem;">
+          <h4 style="font-size: 0.8rem; color: var(--cyan);">NEW YORK HQ</h4>
+          <p style="font-size: 0.7rem; color: var(--text-muted);">200 Vesey St, Financial District</p>
+        </div>
+        <div style="position: absolute; bottom: 20%; right: 10%;" class="glass-panel" style="padding: 1rem;">
+          <h4 style="font-size: 0.8rem; color: var(--accent);">SINGAPORE HUB</h4>
+          <p style="font-size: 0.7rem; color: var(--text-muted);">Marina Bay Financial Centre</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="contact">
+    <div class="container footer-content">
+      <div class="footer-brand">
+        <div class="logo" style="margin-bottom: 1.5rem;">
+          <div class="logo-3d-container">
+            <div class="cube-3d">
+              <div class="cube-face cube-face-front"></div>
+              <div class="cube-face cube-face-back"></div>
+              <div class="cube-face cube-face-left"></div>
+              <div class="cube-face cube-face-right"></div>
+              <div class="cube-face cube-face-top"></div>
+              <div class="cube-face cube-face-bottom"></div>
+            </div>
+          </div>
+          <span class="gradient-text" style="font-weight: 900; letter-spacing: 0.15em; margin-left: 0.5rem;">QUANTORA</span>
+        </div>
+        <p>A global leader in financial intelligence and quantitative research. Empowering the world's most sophisticated investors.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#research">Research</a></li>
+          <li><a href="#insights">Insights</a></li>
+          <li><a href="#services">Services</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Institutional</h4>
+        <ul>
+          <li><a href="#">R&D Lab</a></li>
+          <li><a href="#">Client Portal</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Media</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Global Offices</h4>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">New York | London | Tokyo | Zurich | Singapore</p>
+        <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+          <i data-lucide="linkedin" style="width: 18px; cursor: pointer;"></i>
+          <i data-lucide="twitter" style="width: 18px; cursor: pointer;"></i>
+          <i data-lucide="mail" style="width: 18px; cursor: pointer;"></i>
+        </div>
+      </div>
+    </div>
+    <div class="container" style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--glass-border); text-align: center;">
+      <p style="font-size: 0.75rem; color: var(--text-muted); opacity: 0.5;">&copy; 2026 Quantora Analytics. All rights reserved. Professional use only.</p>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-dark: #050505;
+  --panel-bg: rgba(10, 15, 30, 0.7);
+  --accent-blue: #0062FF;
+  --accent-cyan: #00F0FF;
+  --text-primary: #FFFFFF;
+  --text-secondary: #A0AEC0;
+  --border-glass: rgba(255, 255, 255, 0.1);
+  --success: #00FF9D;
+  --error: #FF4D4D;
+}
+
+body {
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+}
+
+/* Glassmorphism Utilities */
+.glass {
+  background: var(--panel-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-glass);
+}
+
+.glass-accent {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 20px rgba(0, 98, 255, 0.2);
+}
+
+/* Terminal Animations */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
+
+/* Ticker Animation */
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-ticker {
+  animation: ticker 25s linear infinite;
+  display: flex;
+  width: fit-content;
+}
+
+/* Custom Scrollbar - Terminal Style */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+::-webkit-scrollbar {
+  width: 2px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 98, 255, 0.2);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-blue);
+}
+
+/* Chart Tooltip Hack */
+.tv-lightweight-charts-tooltip {
+  background: var(--panel-bg) !important;
+  border: 1px solid var(--border-glass) !important;
+  color: var(--text-primary) !important;
+  backdrop-filter: blur(10px);
+}
+
+/* 3D Isometric Logo Styling */
+.logo-3d-container {
+  width: 28px;
+  height: 28px;
+  perspective: 120px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.cube-3d {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(-20deg) rotateY(45deg);
+  animation: rotateCube 8s infinite linear;
+}
+
+.cube-face {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--accent-blue);
+  background: rgba(0, 98, 255, 0.1);
+  box-shadow: 0 0 10px rgba(0, 98, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cube-face-front  { transform: rotateY(0deg) translateZ(14px); }
+.cube-face-back   { transform: rotateY(180deg) translateZ(14px); }
+.cube-face-left   { transform: rotateY(-90deg) translateZ(14px); }
+.cube-face-right  { transform: rotateY(90deg) translateZ(14px); }
+.cube-face-top    { transform: rotateX(90deg) translateZ(14px); background: rgba(0, 240, 255, 0.15); border-color: var(--accent-cyan); }
+.cube-face-bottom { transform: rotateX(-90deg) translateZ(14px); }
+
+@keyframes rotateCube {
+  0% { transform: rotateX(-20deg) rotateY(0deg); }
+  100% { transform: rotateX(-20deg) rotateY(360deg); }
+}

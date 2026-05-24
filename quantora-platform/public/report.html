@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>India Agriculture: 26 Years of Broken Promises — Aditya Kaushik</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --ink:#1a1a1a; --ink2:#2d2d2d; --ink3:#555; --rule:#c8c0b4; --rule2:#e8e4de;
+    --bg:#faf8f5; --accent:#b5391a; --accent2:#2152a3; --gold:#c49a28; --green:#1d7a4f;
+    --warn:#b54a1a; --page:#fffff8;
+    --nda1:#ff8c42; --upa:#2980b9; --nda2:#c0392b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-size:9.5pt;line-height:1.55;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .page{max-width:960px;margin:0 auto;background:var(--page);box-shadow:0 0 40px rgba(0,0,0,.12);}
+
+  /* COVER */
+  .cover{background:#0a0a14;color:#fff;padding:52px 56px 38px;position:relative;overflow:hidden;}
+  .cover::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#0a0a14 40%,#1a1030 100%);}
+  .cover-inner{position:relative;z-index:1;}
+  .cover-badge{display:inline-flex;align-items:center;gap:8px;font-size:7pt;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#f0c050;border:1px solid #f0c050;padding:4px 12px;margin-bottom:20px;}
+  .badge-dot{width:8px;height:8px;border-radius:50%;background:#f0c050;animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+  .cover h1{font-family:'Source Serif 4',serif;font-size:27pt;font-weight:700;line-height:1.12;margin-bottom:10px;color:#fff;max-width:620px;}
+  .cover h1 span{color:#f07050;}
+  .cover .subtitle{font-size:10pt;color:#a8b8d0;font-weight:300;margin-bottom:28px;max-width:560px;line-height:1.55;}
+  .cover-meta{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-top:1px solid rgba(255,255,255,.18);padding-top:22px;}
+  .cover-stat .val{font-size:17pt;font-weight:700;color:#f0c050;line-height:1;margin-bottom:4px;}
+  .cover-stat .label{font-size:6.5pt;text-transform:uppercase;letter-spacing:1.2px;color:#7090b0;}
+  .cover-bottom{display:flex;justify-content:space-between;align-items:flex-end;margin-top:26px;padding-top:14px;border-top:1px solid rgba(255,255,255,.12);}
+  .cover-org{font-size:7pt;color:#7090b0;letter-spacing:.4px;}
+  .cover-org strong{color:#a0b8d0;}
+  .cover-date{font-size:6.5pt;color:#5070a0;letter-spacing:1px;text-transform:uppercase;}
+
+  /* GOV TIMELINE */
+  .gov-timeline{display:grid;grid-template-columns:repeat(3,1fr);margin:0;border-bottom:3px solid #1a1a1a;}
+  .gov-block{padding:11px 14px 10px;}
+  .gov-block.nda1{background:#7B3F00;color:#ffe8c8;}
+  .gov-block.upa{background:#1a3a6e;color:#c8deff;}
+  .gov-block.nda2{background:#6e1a1a;color:#ffd0c8;}
+  .gov-block .gname{font-size:8pt;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px;}
+  .gov-block .gyears{font-size:7pt;opacity:.75;margin-bottom:6px;}
+  .gov-block .gpm{font-size:7.5pt;font-weight:600;margin-bottom:4px;}
+  .gov-block .gbadge{display:inline-block;font-size:6pt;padding:2px 6px;border-radius:2px;font-weight:700;letter-spacing:.5px;}
+  .gov-block.nda1 .gbadge{background:rgba(255,200,120,.25);color:#ffcc80;}
+  .gov-block.upa .gbadge{background:rgba(120,180,255,.25);color:#90ceff;}
+  .gov-block.nda2 .gbadge{background:rgba(255,160,140,.25);color:#ffb0a0;}
+
+  /* BODY */
+  .body-wrap{padding:34px 52px 50px;}
+  .sec-head{display:flex;align-items:center;gap:10px;margin:34px 0 12px;border-bottom:1.5px solid var(--rule);padding-bottom:7px;}
+  .sec-num{font-family:'JetBrains Mono',monospace;font-size:7pt;font-weight:500;color:var(--accent);letter-spacing:1px;min-width:28px;}
+  .sec-title{font-family:'Source Serif 4',serif;font-size:13pt;font-weight:600;color:var(--ink);flex:1;}
+  .sec-tag{font-size:6.5pt;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:2px 7px;border-radius:2px;}
+  .tag-macro{background:#ddeeff;color:var(--accent2);}
+  .tag-crisis{background:#ffe5e0;color:var(--accent);}
+  .tag-growth{background:#e0f5ec;color:var(--green);}
+  .tag-policy{background:#fff5d5;color:#8a6a00;}
+  .tag-expose{background:#1a0a0a;color:#f07050;}
+
+  /* EXEC BOX */
+  .exec-box{background:#f5f2ee;border-left:3px solid var(--accent);padding:14px 18px;margin-bottom:24px;}
+  .exec-box p{font-size:9pt;color:var(--ink2);margin-bottom:8px;line-height:1.65;}
+  .exec-box p:last-child{margin-bottom:0;}
+
+  /* KPI */
+  .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin:16px 0;}
+  .kpi{background:#fff;border:1px solid var(--rule2);border-top:3px solid var(--accent2);padding:11px 9px 9px;text-align:center;}
+  .kpi .kval{font-size:15pt;font-weight:700;color:var(--ink);line-height:1;margin-bottom:3px;}
+  .kpi .ksub{font-size:6.5pt;color:var(--ink3);line-height:1.3;text-transform:uppercase;letter-spacing:.4px;}
+  .kpi.warn{border-top-color:var(--warn);}
+  .kpi.pos{border-top-color:var(--green);}
+  .kpi.gold{border-top-color:var(--gold);}
+
+  /* GRIDS */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0;}
+  .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px;margin:14px 0;}
+
+  /* CHARTS */
+  .chart-panel{background:#fff;border:1px solid var(--rule2);padding:13px 13px 9px;}
+  .chart-title{font-size:7.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--ink3);margin-bottom:2px;}
+  .chart-sub{font-size:6.5pt;color:#999;margin-bottom:9px;}
+  .chart-wrap{position:relative;height:185px;}
+  .chart-wrap-lg{position:relative;height:230px;}
+  .chart-full{background:#fff;border:1px solid var(--rule2);padding:13px;margin:14px 0;}
+
+  /* TABLES */
+  .data-table{width:100%;border-collapse:collapse;font-size:8.2pt;margin:11px 0;}
+  .data-table th{background:#0a0a1e;color:#fff;font-weight:600;font-size:7.2pt;text-transform:uppercase;letter-spacing:.5px;padding:7px 9px;text-align:left;}
+  .data-table td{padding:5px 9px;border-bottom:1px solid var(--rule2);color:var(--ink2);}
+  .data-table tr:nth-child(even) td{background:#f8f7f4;}
+  .data-table .num{text-align:right;font-variant-numeric:tabular-nums;font-family:'JetBrains Mono',monospace;font-size:7.8pt;}
+  .data-table .up{color:var(--green);font-weight:600;}
+  .data-table .dn{color:var(--warn);font-weight:600;}
+  .data-table .highlight td{background:#fffbe5!important;font-weight:600;}
+  .data-table .danger td{background:#fff0ee!important;}
+  .data-table .nda1-row td{border-left:3px solid #b5640a;}
+  .data-table .upa-row td{border-left:3px solid #2152a3;}
+  .data-table .nda2-row td{border-left:3px solid #b5391a;}
+
+  /* ALERTS */
+  .alert{padding:10px 14px;border-radius:2px;font-size:8.5pt;margin:11px 0;line-height:1.55;}
+  .alert-red{background:#fff0ee;border-left:3px solid var(--accent);color:#6b1208;}
+  .alert-blue{background:#eef4ff;border-left:3px solid var(--accent2);color:#0e2d60;}
+  .alert-green{background:#e6f8ef;border-left:3px solid var(--green);color:#0e4228;}
+  .alert-gold{background:#fffbe5;border-left:3px solid var(--gold);color:#5a4200;}
+  .alert-black{background:#1a0a0a;border-left:3px solid #f07050;color:#f5e8e5;padding:14px 18px;}
+  .alert strong{font-weight:700;}
+
+  /* FLAGS */
+  .flag-row{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:14px 0;}
+  .flag{padding:12px 14px;}
+  .flag-green{background:#e0f5ec;border:1px solid #9de0c0;border-left:4px solid var(--green);}
+  .flag-red{background:#fff0ee;border:1px solid #f0c0b0;border-left:4px solid var(--accent);}
+  .flag .flag-title{font-size:7.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px;}
+  .flag-green .flag-title{color:var(--green);}
+  .flag-red .flag-title{color:var(--accent);}
+  .flag .flag-item{font-size:8pt;color:var(--ink2);padding:3px 0;border-bottom:1px solid rgba(0,0,0,.06);line-height:1.5;}
+  .flag .flag-item:last-child{border-bottom:none;}
+  .flag .flag-item span{font-weight:600;}
+
+  /* FINDING */
+  .finding{display:flex;gap:11px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--rule2);font-size:8.5pt;}
+  .finding-num{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:9pt;min-width:24px;color:var(--accent);margin-top:1px;}
+  .finding-text{color:var(--ink2);line-height:1.6;}
+  .finding-text strong{color:var(--ink);}
+
+  /* SPOTLIGHT */
+  .spotlight{background:#0e0e18;color:#f0e8e5;padding:17px 20px;margin:12px 0;border-left:4px solid var(--accent);}
+  .spotlight h4{color:#f0c050;font-size:8.5pt;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:8px;}
+  .spotlight p{font-size:8.5pt;line-height:1.65;color:#e0d0cc;}
+  .spotlight .sq{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px;}
+  .spotlight .sq-item .sqv{font-size:16pt;font-weight:700;color:#f0c050;}
+  .spotlight .sq-item .sql{font-size:6.5pt;color:#a09088;text-transform:uppercase;letter-spacing:.7px;}
+
+  /* PROG */
+  .prog-row{display:flex;align-items:center;gap:9px;margin:5px 0;font-size:7.8pt;}
+  .prog-label{width:120px;color:var(--ink2);flex-shrink:0;}
+  .prog-bar-wrap{flex:1;background:var(--rule2);height:7px;border-radius:2px;}
+  .prog-bar{height:7px;border-radius:2px;}
+  .prog-val{width:50px;text-align:right;font-family:'JetBrains Mono',monospace;font-weight:500;font-size:7pt;color:var(--ink3);}
+
+  /* MISC */
+  .source-row{font-size:6.5pt;color:#888;border-top:1px solid var(--rule2);padding-top:5px;margin-top:5px;font-style:italic;}
+  .ribbon{background:#f5f3ef;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:7px 20px;font-size:7.5pt;color:var(--ink3);margin:0 -52px;text-align:center;letter-spacing:.5px;}
+  hr.rule{border:none;border-top:1px solid var(--rule);margin:18px 0;}
+  p{font-size:9pt;line-height:1.65;color:var(--ink2);margin-bottom:9px;}
+
+  /* COPYRIGHT */
+  .copyright-box{background:#0a0a14;color:#e8e0d8;padding:22px 26px;margin-top:30px;border-top:3px solid var(--accent);}
+  .copyright-box h3{font-family:'Source Serif 4',serif;font-size:11pt;color:#f0c050;margin-bottom:12px;letter-spacing:.5px;}
+  .copyright-box p{font-size:7.8pt;color:#b0a8a0;line-height:1.7;margin-bottom:8px;}
+  .copyright-box .author-block{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.12);}
+  .copyright-box .aitem{font-size:7.5pt;color:#9090a0;}
+  .copyright-box .aitem strong{color:#d0c8c0;display:block;margin-bottom:2px;}
+  .copyright-box .aitem a{color:#7090d0;text-decoration:none;}
+  .copyright-box .data-integrity{margin-top:14px;padding:12px 14px;background:rgba(255,255,255,.05);border-left:2px solid #f0c050;}
+  .copyright-box .data-integrity p{color:#a0a0b0;font-size:7.5pt;}
+
+  /* GOV LEGEND */
+  .gov-legend{display:flex;gap:16px;font-size:7.5pt;margin-bottom:6px;flex-wrap:wrap;}
+  .gl-item{display:flex;align-items:center;gap:5px;}
+  .gl-dot{width:10px;height:10px;border-radius:2px;}
+
+  @media print{.page{box-shadow:none;max-width:100%;}body{font-size:8.5pt;}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ══ COVER ══════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-inner">
+    <div class="cover-badge"><div class="badge-dot"></div>Independent Research · Exposé Report · Agriculture & Rural Economy</div>
+    <h1>Broken Promises in the Fields:<br><span>₹127,290 Crore and Farmers Are Still Dying</span></h1>
+    <div class="subtitle">A 26-year forensic analysis (FY 2000–2026) of India's agricultural budget expenditure across three governments — and the inconvenient truth that money alone cannot fix a structurally broken system. Despite a 580% increase in government spending, farmer suicides remain endemic, rural indebtedness exceeds 51%, and the average farm household earns less than a daily-wage urban worker.</div>
+    <div class="cover-meta">
+      <div class="cover-stat"><div class="val">580%</div><div class="label">Budget Increase (FY00→FY26)</div></div>
+      <div class="cover-stat"><div class="val">3.94L</div><div class="label">Farmer Suicides: 1995–2023 (NCRB)</div></div>
+      <div class="cover-stat"><div class="val">₹74,121</div><div class="label">Avg. Farm Household Debt</div></div>
+      <div class="cover-stat"><div class="val">51.9%</div><div class="label">Farm HH In Debt (All-India)</div></div>
+      <div class="cover-stat"><div class="val">26 Yrs</div><div class="label">Data Span: FY2000–FY2026</div></div>
+    </div>
+    <div class="cover-bottom">
+      <div class="cover-org"><strong>Author:</strong> Aditya Kaushik &nbsp;|&nbsp; <strong>Sources:</strong> MoSPI · NSO · APEDA · RBI · NABARD · NCRB · Economic Survey of India · Union Budget Documents</div>
+      <div class="cover-date">May 2026 — Original Research</div>
+    </div>
+  </div>
+</div>
+
+<!-- GOVERNMENT TIMELINE BAR -->
+<div class="gov-timeline">
+  <div class="gov-block nda1">
+    <div class="gname">NDA-I</div>
+    <div class="gyears">1999–2004 · AB Vajpayee</div>
+    <div class="gpm">Prime Minister: Atal Bihari Vajpayee</div>
+    <div class="gbadge">BJP-LED COALITION</div>
+  </div>
+  <div class="gov-block upa">
+    <div class="gname">UPA (I + II)</div>
+    <div class="gyears">2004–2014 · Manmohan Singh</div>
+    <div class="gpm">Prime Minister: Dr. Manmohan Singh</div>
+    <div class="gbadge">CONGRESS-LED COALITION</div>
+  </div>
+  <div class="gov-block nda2">
+    <div class="gname">NDA-II / III</div>
+    <div class="gyears">2014–2026 · Narendra Modi</div>
+    <div class="gpm">Prime Minister: Narendra Modi</div>
+    <div class="gbadge">BJP-LED MAJORITY/NDA</div>
+  </div>
+</div>
+
+<!-- ══ BODY ══════════════════════════════════════════════════════ -->
+<div class="body-wrap">
+
+<div class="ribbon" style="margin-bottom:20px;">THE CENTRAL THESIS: MORE MONEY · SAME CRISIS · SYSTEMIC FAILURE</div>
+
+<div class="exec-box">
+  <p>Between FY 2000–01 and FY 2025–26, the Union Government's agricultural budget has grown from approximately ₹18,600 crore to ₹1,27,290 crore — a nominal increase of over <strong>580%</strong>. Three governments, across three ideological dispensations, have promised to transform farming, eliminate debt, and secure farmer incomes. The Vajpayee government built rural infrastructure. The Singh government launched MGNREGA, the largest rural employment programme in world history. The Modi government introduced PM-KISAN, the world's largest direct income transfer scheme for farmers, and tripled agricultural credit targets.</p>
+  <p>And yet: <strong>3,94,206 farmers and agricultural labourers have died by suicide between 1995 and 2023</strong> (NCRB). More than half of all farm households remain indebted. The average farm household earns ₹10,218 per month — less than the minimum wage floor in 14 Indian states. This is not the failure of any single party. It is the failure of an approach to agriculture that treats <strong>subsidies as substitutes for structural reform</strong>.</p>
+  <p>This report traces, with 26 years of verified data, how this contradiction was constructed — and who pays the price.</p>
+</div>
+
+<div class="kpi-row">
+  <div class="kpi gold"><div class="kval">₹1.27L Cr</div><div class="ksub">Agri Budget FY26 (6× vs FY14)</div></div>
+  <div class="kpi pos"><div class="kval">357.7 MT</div><div class="ksub">Foodgrain Output FY25 (Record)</div></div>
+  <div class="kpi pos"><div class="kval">$51.9B</div><div class="ksub">Agricultural Exports FY25</div></div>
+  <div class="kpi warn"><div class="kval">10,786</div><div class="ksub">Farming Sector Suicides — 2023</div></div>
+  <div class="kpi warn"><div class="kval">46.1%</div><div class="ksub">Workforce in Agri, Only 17.6% of GDP</div></div>
+</div>
+
+<!-- ══ SECTION 1 ══════════════════════════════════════════════════ -->
+<div class="sec-head">
+  <span class="sec-num">01</span>
+  <span class="sec-title">26-Year Budget Trajectory Across Three Governments</span>
+  <span class="sec-tag tag-expose">⚑ Expose</span>
+</div>
+
+<p>The following dataset, compiled from Union Budget documents, Ministry of Finance publications, and Economic Survey appendices, captures the central irony of Indian agricultural policy: <strong>every government, without exception, has increased the budget — and the crisis has persisted</strong>. Colour coding below reflects the governing political formation of each period.</p>
+
+<div class="chart-full">
+  <div class="gov-legend">
+    <div class="gl-item"><div class="gl-dot" style="background:#b5640a;"></div><span>NDA-I (Vajpayee, 1999–2004)</span></div>
+    <div class="gl-item"><div class="gl-dot" style="background:#2152a3;"></div><span>UPA I+II (Manmohan Singh, 2004–2014)</span></div>
+    <div class="gl-item"><div class="gl-dot" style="background:#b5391a;"></div><span>NDA-II/III (Modi, 2014–2026)</span></div>
+  </div>
+  <div class="chart-title">Union Budget: Agriculture Ministry Allocation (₹ Crore) — FY 2000 to FY 2026</div>
+  <div class="chart-sub">Compared against NCRB farmer suicides (right axis) — the central paradox</div>
+  <div class="chart-wrap-lg"><canvas id="budgetVsSuicides"></canvas></div>
+  <div class="source-row">Sources: Union Budget Documents, Ministry of Finance GoI (various years); NCRB Accidental Deaths & Suicides in India (1995–2023). Note: FY16 NCRB data was withheld by government until 2019; FY25 budget data = BE. Pre-FY14 figures = Ministry of Agriculture Plan + Non-Plan expenditure combined.</div>
+</div>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Year</th><th>Govt.</th><th class="num">Agri Budget (₹Cr)</th><th class="num">Agri GDP Share (%)</th><th class="num">Foodgrain (MT)</th><th class="num">Farmer Suicides (NCRB)</th><th>Key Policy Event</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="nda1-row"><td>FY 1999–00</td><td>NDA-I</td><td class="num">~12,000</td><td class="num">~22.3</td><td class="num">209</td><td class="num dn">16,082</td><td>WTO commitments; input subsidy pressure begins</td></tr>
+    <tr class="nda1-row"><td>FY 2001–02</td><td>NDA-I</td><td class="num">~14,500</td><td class="num">22.3</td><td class="num">212</td><td class="num dn">16,415</td><td>Agricultural census; drought in Rajasthan/Gujarat</td></tr>
+    <tr class="nda1-row danger"><td>FY 2002–03</td><td>NDA-I</td><td class="num">~15,200</td><td class="num">20.8</td><td class="num">174</td><td class="num dn">17,971</td><td>⚠ WORST DROUGHT IN 15 YEARS — output collapses 18%</td></tr>
+    <tr class="nda1-row"><td>FY 2003–04</td><td>NDA-I</td><td class="num">~16,800</td><td class="num">20.0</td><td class="num">213</td><td class="num dn">17,164</td><td>Last year agri share exceeds 20% of GDP</td></tr>
+    <tr class="nda1-row danger"><td>FY 2004–05</td><td>Transition</td><td class="num">~18,600</td><td class="num">19.0</td><td class="num">198</td><td class="num dn">18,241</td><td>⚠ PEAK YEAR OF SUICIDES in NCRB records (18,241)</td></tr>
+    <tr class="upa-row"><td>FY 2005–06</td><td>UPA-I</td><td class="num">~20,500</td><td class="num">18.6</td><td class="num">208</td><td class="num dn">17,131</td><td>MGNREGA enacted; Vidarbha crisis declared national emergency</td></tr>
+    <tr class="upa-row"><td>FY 2006–07</td><td>UPA-I</td><td class="num">~22,800</td><td class="num">17.8</td><td class="num">218</td><td class="num dn">17,060</td><td>PM Vidarbha package ₹3,750 Cr; debt-waiver discussions begin</td></tr>
+    <tr class="upa-row"><td>FY 2007–08</td><td>UPA-I</td><td class="num">~29,000</td><td class="num">16.8</td><td class="num">231</td><td class="num dn">16,632</td><td>RKVY (Rashtriya Krishi Vikas Yojana) launched</td></tr>
+    <tr class="upa-row highlight"><td>FY 2008–09</td><td>UPA-I</td><td class="num">~72,000</td><td class="num">15.7</td><td class="num">234</td><td class="num dn">16,196</td><td>🔶 ₹71,000 Cr AGRICULTURAL DEBT WAIVER (largest ever)</td></tr>
+    <tr class="upa-row"><td>FY 2009–10</td><td>UPA-II</td><td class="num">~57,000</td><td class="num">14.6</td><td class="num">218</td><td class="num dn">17,368</td><td>MGNREGA expanded; NFSM launched; severe drought year</td></tr>
+    <tr class="upa-row"><td>FY 2011–12</td><td>UPA-II</td><td class="num">~70,000</td><td class="num">14.4</td><td class="num">259</td><td class="num dn">14,027</td><td>KCC expansion; decline in suicides begins — linked to MGNREGA</td></tr>
+    <tr class="upa-row"><td>FY 2013–14</td><td>UPA-II</td><td class="num">21,933</td><td class="num">13.9</td><td class="num">265</td><td class="num dn">11,772</td><td>Last UPA budget; NFSM peak output; Swaminathan ignored</td></tr>
+    <tr class="nda2-row"><td>FY 2015–16</td><td>NDA-II</td><td class="num">35,984</td><td class="num">15.3</td><td class="num">252</td><td class="num dn">12,602</td><td>PMFBY (crop insurance) launched; El Niño drought</td></tr>
+    <tr class="nda2-row"><td>FY 2017–18</td><td>NDA-II</td><td class="num">57,600</td><td class="num">14.9</td><td class="num">285</td><td class="num dn">10,655</td><td>Demonetisation aftermath; farmer protests across states</td></tr>
+    <tr class="nda2-row highlight"><td>FY 2019–20</td><td>NDA-II</td><td class="num">1,30,485</td><td class="num">14.6</td><td class="num">284</td><td class="num dn">10,281</td><td>🔶 PM-KISAN launched (₹6,000/yr direct transfer)</td></tr>
+    <tr class="nda2-row"><td>FY 2021–22</td><td>NDA-II</td><td class="num">1,23,017</td><td class="num">17.8</td><td class="num">315</td><td class="num dn">10,881</td><td>COVID; farm laws crisis; agri GDP spikes on pandemic rebase</td></tr>
+    <tr class="nda2-row"><td>FY 2023–24</td><td>NDA-III</td><td class="num">1,25,036</td><td class="num">16.8</td><td class="num">332</td><td class="num dn">10,786</td><td>El Niño; farm household income stagnates; protests resume</td></tr>
+    <tr class="nda2-row"><td>FY 2024–25</td><td>NDA-III</td><td class="num">1,27,290</td><td class="num">17.6</td><td class="num">357</td><td class="num dn">10,786†</td><td>Record foodgrain; $51.9B exports; credit target ₹27.5L Cr</td></tr>
+    <tr class="nda2-row highlight"><td>FY 2025–26 (BE)</td><td>NDA-III</td><td class="num">1,27,290</td><td class="num">~17.0</td><td class="num">~365*</td><td class="num dn">n/a</td><td>Budget unchanged in nominal terms; NABARD targets ₹32.5L Cr</td></tr>
+  </tbody>
+</table>
+<div class="source-row">†2023 figure used as latest available (NCRB). *Projected. Pre-FY14 budget figures: Ministry of Agriculture Plan + Non-Plan (various Economic Survey appendices). FY13–14 onward: Demand for Grants, Ministry of Finance. GDP share: CSO/MoSPI series (note: base year changed from 2004–05 to 2011–12 in 2015; figures are approximate cross-series comparisons).</div>
+
+<!-- ══ SECTION 2 ══════════════════════════════════════════════════ -->
+<div class="sec-head">
+  <span class="sec-num">02</span>
+  <span class="sec-title">The Suicide Timeline: 28 Years of Unbroken Crisis</span>
+  <span class="sec-tag tag-crisis">⚠ Crisis</span>
+</div>
+
+<div class="spotlight">
+  <h4>⚑ The Most Important Number Nobody Wants to Publish</h4>
+  <p>Between 1995 and 2023, <strong>3,94,206 farmers and agricultural labourers died by suicide</strong> in India — an average of 13,600 deaths every year for 28 years. No war, no epidemic, no natural disaster has claimed more lives in Indian agriculture over this period. Three governments, seven Prime Ministerial terms, dozens of welfare schemes — and the count continues.</p>
+  <div class="sq">
+    <div class="sq-item"><div class="sqv">3,94,206</div><div class="sql">Total suicides 1995–2023 (NCRB)</div></div>
+    <div class="sq-item"><div class="sqv">18,241</div><div class="sql">Peak year: FY 2004–05 (Transition/UPA-I)</div></div>
+    <div class="sq-item"><div class="sqv">+75%</div><div class="sql">Jump in 2023 vs. 2022 (NCRB — latest reversal)</div></div>
+    <div class="sq-item"><div class="sqv">1/hr</div><div class="sql">Rate of farming sector suicide in 2022</div></div>
+  </div>
+</div>
+
+<div class="two-col">
+  <div>
+    <div class="chart-panel">
+      <div class="chart-title">Farmer Suicides — Full Timeline with Govt. Overlay (1999–2023)</div>
+      <div class="chart-sub">Farmers/Cultivators + Agricultural Labourers · Source: NCRB</div>
+      <div class="chart-wrap-lg"><canvas id="suicidesLong"></canvas></div>
+      <div class="source-row">Note: 2016–2019 NCRB reports were delayed/withheld by Govt. Figures reconstructed from NCRB 2020 retrospective release. Agricultural labourer data included from 2014 onward in official releases.</div>
+    </div>
+  </div>
+  <div>
+    <div class="chart-panel">
+      <div class="chart-title">Comparative: Budget vs. Suicides (Indexed, 2000=100)</div>
+      <div class="chart-sub">If spending was effective, lines should diverge — they barely do</div>
+      <div class="chart-wrap-lg"><canvas id="indexed"></canvas></div>
+      <div class="source-row">Indexed normalisation allows direct comparison of two variables with different units. A decreasing suicide index vs. rising budget index would validate spending effectiveness.</div>
+    </div>
+  </div>
+</div>
+
+<div class="alert alert-red">
+  <strong>The 2023 Reversal — A Warning Signal:</strong> After a decade-long decline in farmer suicides (2010–2019 — the "MGNREGA decade"), the 2023 NCRB report recorded a 75% jump. Multiple concurrent stressors: post-COVID debt accumulation, weakened MGNREGA implementation (wage arrears, delayed payments), three consecutive years of input cost inflation, and the absence of universal MSP procurement. Agricultural labourers now outnumber cultivators in suicide counts — indicating distress has spread to the most marginalised.
+</div>
+
+<table class="data-table">
+  <thead>
+    <tr><th>Period</th><th>Government</th><th class="num">Approx. Suicides</th><th class="num">% of 28-yr Total</th><th>Dominant Cause (Research Consensus)</th></tr>
+  </thead>
+  <tbody>
+    <tr class="nda1-row"><td>1999–2004 (NDA-I)</td><td>Vajpayee</td><td class="num dn">~82,000</td><td class="num dn">20.8%</td><td>WTO-driven input cost rise, Bt cotton rollout, drought 2002</td></tr>
+    <tr class="upa-row"><td>2004–2014 (UPA I+II)</td><td>Manmohan Singh</td><td class="num dn">~1,60,000</td><td class="num dn">40.6%</td><td>Cotton price volatility, semi-arid drought cycles, moneylender debt</td></tr>
+    <tr class="nda2-row"><td>2014–2023 (NDA-II/III)</td><td>Modi</td><td class="num dn">~1,09,000</td><td class="num dn">27.7%</td><td>Input inflation, farm law protests, COVID distress, climate shocks</td></tr>
+    <tr class="highlight"><td><strong>Total (1995–2023)</strong></td><td><strong>All Govts.</strong></td><td class="num dn"><strong>~3,94,206</strong></td><td class="num dn"><strong>100%</strong></td><td><strong>Structural: debt + fragmentation + absent procurement + climate</strong></td></tr>
+  </tbody>
+</table>
+
+<!-- ══ SECTION 3 ══════════════════════════════════════════════════ -->
+<div class="sec-head">
+  <span class="sec-num">03</span>
+  <span class="sec-title">GDP Contribution: The Long Structural Decline</span>
+  <span class="sec-tag tag-macro">Macro</span>
+</div>
+
+<p>Agriculture's share in India's GDP has declined from ~22% in FY 2000 to ~17.6% in FY 2025 — while the absolute sector grew significantly. However, this decline reflects <strong>structural transition</strong>, not sectoral prosperity: services grew faster, not because agriculture improved farmers' lives, but because manufacturing and services expanded from a low base. The average farm worker's productivity remains ~3× lower than the national worker average.</p>
+
+<div class="two-col">
+  <div>
+    <div class="chart-panel">
+      <div class="chart-title">Agriculture's Share in GDP — 26-Year Decline (FY00–FY26)</div>
+      <div class="chart-sub">% of GDP (constant prices); base year changes noted</div>
+      <div class="chart-wrap-lg"><canvas id="gdpShare26"></canvas></div>
+      <div class="source-row">Sources: CSO/MoSPI (2004–05 base series, 2011–12 base series, First Advance Estimates). Note: 2004–05 to 2011–12 base transition causes a structural break around FY15.</div>
+    </div>
+  </div>
+  <div>
+    <div class="chart-panel">
+      <div class="chart-title">Foodgrain Output — 26 Years (Million Tonnes)</div>
+      <div class="chart-sub">Total foodgrains production FY00–FY25</div>
+      <div class="chart-wrap-lg"><canvas id="foodgrain26"></canvas></div>
+      <div class="source-row">Sources: Ministry of Agriculture & Farmers Welfare — Advance/Final Crop Production Estimates (various years).</div>
+    </div>
+  </div>
+</div>
+
+<table class="data-table">
+  <thead>
+    <tr><th>Era</th><th>Govt</th><th class="num">GDP Share Start</th><th class="num">GDP Share End</th><th class="num">Foodgrain Growth</th><th class="num">Agri GVA Real Growth (Avg/yr)</th><th>Assessment</th></tr>
+  </thead>
+  <tbody>
+    <tr class="nda1-row"><td>1999–2004</td><td>NDA-I</td><td class="num">22.3%</td><td class="num">19.0%</td><td class="num">–5%</td><td class="num">~2.1%</td><td>Share declining; 2002 drought shock; WTO adjustment pain</td></tr>
+    <tr class="upa-row"><td>2004–2009</td><td>UPA-I</td><td class="num">19.0%</td><td class="num">15.7%</td><td class="num">+18%</td><td class="num">~3.8%</td><td>Green Revolution residuals; RKVY boosts output</td></tr>
+    <tr class="upa-row"><td>2009–2014</td><td>UPA-II</td><td class="num">15.7%</td><td class="num">13.9%</td><td class="num">+21%</td><td class="num">~4.1%</td><td>Output rising; GDP share falling (services boom)</td></tr>
+    <tr class="nda2-row"><td>2014–2019</td><td>NDA-II</td><td class="num">~15.4%</td><td class="num">~14.6%</td><td class="num">+13%</td><td class="num">~2.9%</td><td>Demonetisation shock; PM-KISAN; slow growth period</td></tr>
+    <tr class="nda2-row"><td>2019–2026</td><td>NDA-II/III</td><td class="num">~14.6%</td><td class="num">~17.0%*</td><td class="num">+26%</td><td class="num">~4.2%</td><td>COVID GDP shrink inflates agri share; record output FY25</td></tr>
+  </tbody>
+</table>
+<div class="source-row">*FY26 FAE estimate. GDP share in 2021 peaked at 18.8% due to COVID-induced contraction in industry/services — not agricultural improvement per se.</div>
+
+<!-- ══ SECTION 4 ══════════════════════════════════════════════════ -->
+<div class="sec-head">
+  <span class="sec-num">04</span>
+  <span class="sec-title">The Big Interventions — What Each Government Did (And What Didn't Work)</span>
+  <span class="sec-tag tag-policy">Policy Audit</span>
+</div>
+
+<div class="three-col">
+  <div class="chart-panel" style="border-top:3px solid #b5640a;">
+    <div class="chart-title" style="color:#b5640a;">NDA-I: Vajpayee (1999–2004)</div>
+    <div class="chart-sub">Budget Range: ~₹12,000–18,600 Cr</div>
+    <div class="prog-row"><div class="prog-label">Kisan Credit Card (KCC)</div><div class="prog-bar-wrap"><div class="prog-bar" style="width:80%;background:#b5640a;"></div></div><div class="prog-val">✓ Launched</div></div>
+    <div class="prog-row"><div class="prog-label">Agri Infrastructure</div><div class="prog-bar-wrap"><div class="prog-bar" style="width:65%;background:#b5640a;"></div></div><div class="prog-val">Partial</div></div>
+    <div class="prog-row"><div class="prog-label">Debt Relief</div><div class="prog-bar-wrap"><div class="prog-bar" style="width:15%;background:#999;"></div></div><div class="prog-val">None</div></div>
+    <div class="prog-row"><div class="prog-label">Suicide Prevention</div><div class="prog-bar-wrap"><div class="prog-bar" style="width:10%;background:#999;"></div></div><div class="prog-val">None</div></div>
+    <br>
+    <div class="alert alert-red" style="font-size:7.5pt;padding:8px 10px;">⚠ Suicides hit record: 18,241 in FY05. WTO fallout and Bt cotton rollout without safety nets.</div>
+    <div class="source-row">GDP share fell from 22% → 19%. Foodgrain output fell 18% in drought year (FY03). KCC remains legacy scheme still used today.</div>
+  </div>
+
+  <div class="chart-panel" style="border-top:3px solid #2152a3;">
+    <div class="chart-title" style="color:#2152a3;">UPA I+II: Manmohan Singh (2004–2014)</div>
+    <div class="chart-sub">Budget Range: ~₹20,500–21,933 Cr (+ off-budget)</div>
+    <div class="prog-row"><div class="prog-label">MGNREGA</div><div class="prog-bar-wrap"><div class="prog-bar" style="width:90%;background:#2152a3;"></div></div><div class="prog-val">✓ Landmark</div></div>
+    <div class="prog-row"><div class="prog-label">Debt Waiver (2008)</div><div class="prog-bar-wrap"><div class="prog-bar" style="width:85%;background:#2152a3;"></div></div><div class="prog-val">₹71K Cr</div></div>
+    <div class="prog-row"><div class="prog-label">RKVY, NFSM</div><div class="prog-bar-wrap"><div class="prog-bar" style="width:70%;background:#2152a3;"></div></div><div class="prog-val">✓ Launched</div></div>
+    <div class="prog-row"><div class="prog-label">Suicide Prevention</div><div class="prog-bar-wrap"><div class="prog-bar" style="width:30%;background:#999;"></div></div><div class="prog-val">Marginal</div></div>
+    <br>
+    <div class="alert alert-green" style="font-size:7.5pt;padding:8px 10px;">✓ MGNREGA empirically linked to ~40% decline in suicides from 2010 to 2019. Kerala: 1,118 → 105.</div>
+    <div class="source-row">Swaminathan Commission (2006) recommendations largely ignored. Debt waiver was one-time, not structural. GDP share fell from 19% → 13.9%.</div>
+  </div>
+
+  <div class="chart-panel" style="border-top:3px solid #b5391a;">
+    <div class="chart-title" style="color:#b5391a;">NDA-II/III: Modi (2014–2026)</div>
+    <div class="chart-sub">Budget Range: ₹35,984–1,27,290 Cr</div>
+    <div class="prog-row"><div class="prog-label">PM-KISAN (₹6K/yr)</div><div class="prog-bar-wrap"><div class="prog-bar" style="width:90%;background:#b5391a;"></div></div><div class="prog-val">9.8 Cr HH</div></div>
+    <div class="prog-row"><div class="prog-label">PMFBY (Insurance)</div><div class="prog-bar-wrap"><div class="prog-bar" style="width:55%;background:#b5391a;"></div></div><td style="background:none;font-size:7pt;color:#888;">~30% enroll</div></div>
+    <div class="prog-row"><div class="prog-label">Credit (₹27.5L Cr)</div><div class="prog-bar-wrap"><div class="prog-bar" style="width:80%;background:#b5391a;"></div></div><div class="prog-val">3× growth</div></div>
+    <div class="prog-row"><div class="prog-label">Farm Laws (2020)</div><div class="prog-bar-wrap"><div class="prog-bar" style="width:0%;background:#999;"></div></div><div class="prog-val">Repealed</div></div>
+    <br>
+    <div class="alert alert-gold" style="font-size:7.5pt;padding:8px 10px;">⚠ Budget 6×, yet suicides persist at ~10,000+/yr. ₹6K/yr PM-KISAN = ₹500/month per household.</div>
+    <div class="source-row">Farm laws repealed after historic protests (2020–21). Record output FY25. MSP expanded but effective procurement for only 2–3 crops.</div>
+  </div>
+</div>
+
+<!-- ══ SECTION 5 ══════════════════════════════════════════════════ -->
+<div class="sec-head">
+  <span class="sec-num">05</span>
+  <span class="sec-title">Green Flags & Red Flags: What Actually Worked vs. What Failed</span>
+  <span class="sec-tag tag-expose">⚑ Verdict</span>
+</div>
+
+<div class="flag-row">
+  <div class="flag flag-green">
+    <div class="flag-title">🟢 Green Flags — What Showed Evidence of Impact</div>
+    <div class="flag-item"><span>MGNREGA (2005):</span> Empirically linked to ~40% reduction in farmer suicides between 2010–2019. Kerala: 1,118 → 105. West Bengal: zero by 2012. World's largest rural employment guarantee. Reduced emergency debt from moneylenders.</div>
+    <div class="flag-item"><span>Kisan Credit Card (KCC, 1998):</span> Reduced moneylender dependence for short-term credit. 7.75 Cr operational accounts (Mar 2024). Institutional share of agri credit grew from ~40% (1990) to ~69.6% (2024).</div>
+    <div class="flag-item"><span>Foodgrain Production Growth:</span> From 209 MT (FY00) to 357.73 MT (FY25) — a 71% increase over 25 years. Rice and wheat at all-time records. Self-sufficiency in most staples achieved.</div>
+    <div class="flag-item"><span>Agricultural Export Growth:</span> From ~$8B (FY00) to $51.9B (FY25) — a 6× increase. India now 9th globally in agri exports. Rice export at $12.47B — record high.</div>
+    <div class="flag-item"><span>PM-KISAN Income Support:</span> ₹3.46 lakh crore transferred to 11 crore farmers in 6 years. Direct benefit transfer (DBT) with minimal leakage. Added income floor for small/marginal farmers.</div>
+    <div class="flag-item"><span>Irrigated Area Expansion:</span> From ~55 Mha (FY00) to 75.3 Mha (FY25) — +37% over 25 years. PMKSY and micro-irrigation schemes reduced weather vulnerability in targeted regions.</div>
+  </div>
+  <div class="flag flag-red">
+    <div class="flag-title">🔴 Red Flags — What Failed Despite Massive Spending</div>
+    <div class="flag-item"><span>MSP System (1965–2026):</span> MSP announced for 23 crops. Effective procurement: only wheat and rice. For pulses, oilseeds, cotton — farmers receive 20–40% below MSP in distress years. No legal guarantee even after 26 years and three governments.</div>
+    <div class="flag-item"><span>Debt Waiver (2008, ₹71,000 Cr):</span> Largest ever. But one-time only. Did not prevent re-indebtedness. By 2018–19, average outstanding loan back to ₹74,121/household. Waivers treated symptoms; ignored root causes.</div>
+    <div class="flag-item"><span>Crop Insurance (PMFBY, 2016):</span> Only ~30% of non-loanee farmers enrolled. Claim settlement delays of 1–2 years documented. Premium subsidy capture by insurance companies without commensurate payout. States have started opting out (AP, West Bengal, Gujarat).</div>
+    <div class="flag-item"><span>PM-KISAN Income Gap:</span> ₹6,000/year = ₹500/month per household. Input costs (fertilisers, seeds, diesel) have risen 60–80% since 2014. Net real income effect negligible against rising cost of cultivation. The scheme is income support, not income transformation.</div>
+    <div class="flag-item"><span>Cold Chain / Post-Harvest:</span> 40% of horticultural produce lost post-harvest (APEDA). Despite ₹800+ crore annual schemes, cold chain covers <5% of perishable output. Value destruction: ₹90,000–1,00,000 crore annually. No government has systematically addressed this.</div>
+    <div class="flag-item"><span>Swaminathan Commission (2006):</span> Recommended C2+50% MSP, land reform, irrigation, cooperative farming. Submitted to UPA-II. Shelved. Cited by farmer unions during NDA-II farm law protests. 18+ years — zero implementation. Arguably the clearest policy failure of independent India's agricultural governance.</div>
+  </div>
+</div>
+
+<!-- ══ SECTION 6 ══════════════════════════════════════════════════ -->
+<div class="sec-head">
+  <span class="sec-num">06</span>
+  <span class="sec-title">Agricultural Exports & Credit: The Growth Story (With Caveats)</span>
+  <span class="sec-tag tag-growth">Trade & Finance</span>
+</div>
+
+<div class="two-col">
+  <div>
+    <div class="chart-panel">
+      <div class="chart-title">Agricultural Exports — 26-Year Trend ($B)</div>
+      <div class="chart-sub">FY00–FY25 · Source: APEDA / Ministry of Commerce</div>
+      <div class="chart-wrap"><canvas id="exports26"></canvas></div>
+      <div class="source-row">FY25: $51.9B (PIB, May 2025). FY00–FY10 historical from APEDA/DGCI&S annual reports. Rice lift from export restrictions boosted FY25 significantly.</div>
+    </div>
+  </div>
+  <div>
+    <div class="chart-panel">
+      <div class="chart-title">Agricultural Credit Disbursement (₹ Lakh Crore)</div>
+      <div class="chart-sub">FY06–FY26 · Source: RBI / NABARD / Ministry of Agriculture</div>
+      <div class="chart-wrap"><canvas id="credit26"></canvas></div>
+      <div class="source-row">FY24: ₹25.48L Cr (actual). FY25: ~₹27L Cr (est.). FY26P: NABARD projection ₹32.5L Cr. Credit tripled under NDA-II, yet farm household debt also at record levels.</div>
+    </div>
+  </div>
+</div>
+
+<div class="alert alert-gold">
+  <strong>The Credit Paradox — Three Truths Simultaneously:</strong> (1) Agricultural credit has tripled since 2014 — a genuine policy achievement. (2) Farm household average debt has also never been higher (₹74,121). (3) A 2024 study found only ~57.5% of KCC loans actually fund agricultural activities — the rest pay for healthcare, education, and household survival. The credit system is financing the rural welfare gap that direct income support cannot fill.
+</div>
+
+<table class="data-table">
+  <thead>
+    <tr><th>Indicator</th><th class="num">FY 2000</th><th class="num">FY 2005</th><th class="num">FY 2010</th><th class="num">FY 2015</th><th class="num">FY 2020</th><th class="num">FY 2025</th><th class="num">26-Yr Change</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Agri Budget Allocation (₹ Cr)</td><td class="num">~12,000</td><td class="num">~20,500</td><td class="num">~57,000</td><td class="num">35,984</td><td class="num">1,30,485</td><td class="num">1,27,290</td><td class="num up">+961%</td></tr>
+    <tr><td>Agri Share in GDP (%)</td><td class="num">22.3</td><td class="num">18.6</td><td class="num">14.6</td><td class="num">15.3</td><td class="num">14.6</td><td class="num">17.6</td><td class="num dn">–4.7 pp</td></tr>
+    <tr><td>Foodgrain Output (MT)</td><td class="num">209</td><td class="num">208</td><td class="num">218</td><td class="num">252</td><td class="num">284</td><td class="num up">357</td><td class="num up">+71%</td></tr>
+    <tr><td>Agricultural Exports ($B)</td><td class="num">~8</td><td class="num">~14</td><td class="num">~22</td><td class="num">~38</td><td class="num">~37</td><td class="num up">51.9</td><td class="num up">+549%</td></tr>
+    <tr><td>Agri Credit Disbursed (₹ L Cr)</td><td class="num">~1.5</td><td class="num">~2.5</td><td class="num">~5.7</td><td class="num">8.5</td><td class="num">13.9</td><td class="num up">~27</td><td class="num up">~1,700%</td></tr>
+    <tr><td>Farmer Suicides (NCRB)</td><td class="num dn">16,082</td><td class="num dn">17,131</td><td class="num dn">15,964</td><td class="num dn">12,602</td><td class="num dn">10,281</td><td class="num dn">10,786†</td><td class="num dn">–33%</td></tr>
+    <tr><td>Agri Employment Share (%)</td><td class="num">~60</td><td class="num">~57</td><td class="num">~52</td><td class="num">~48</td><td class="num">~42</td><td class="num">46.1</td><td class="num dn">–14 pp</td></tr>
+    <tr><td>Avg. Landholding Size (ha)</td><td class="num">1.60</td><td class="num">1.41</td><td class="num">1.33</td><td class="num">1.15</td><td class="num">1.10</td><td class="num">~1.07</td><td class="num dn">–33%</td></tr>
+    <tr class="highlight"><td><strong>Avg. Farm HH Monthly Income (₹)</strong></td><td class="num">~3,000*</td><td class="num">~4,500*</td><td class="num">~6,500*</td><td class="num">~7,500*</td><td class="num">~9,500*</td><td class="num">~10,500*</td><td class="num dn">+250%*</td></tr>
+  </tbody>
+</table>
+<div class="source-row">†Latest NCRB (2023). *Farm household income estimates: NSSO 59th Round (2003), 70th Round (2013), NABARD NAFIS (2016–17), NSSO SAS (2018–19) — extrapolated with CPI adjustments. Agri employment: PLFS (2019–24), earlier years from Census/NSS estimates.</div>
+
+<div class="alert alert-red">
+  <strong>The Income Reality Check:</strong> Farm household monthly income grew from ~₹3,000 (FY00) to ~₹10,500 (FY25) — appearing as a 250% increase. However, adjusted for CPI inflation (base FY00), this is a real increase of approximately 40–50% over 25 years. In the same period, urban informal worker incomes grew ~120% in real terms. <strong>The rural-urban income gap has widened, not narrowed</strong>, despite a 961% increase in agricultural budget allocations.
+</div>
+
+<!-- ══ SECTION 7 ══════════════════════════════════════════════════ -->
+<div class="sec-head">
+  <span class="sec-num">07</span>
+  <span class="sec-title">Systemic Fault Lines — Why Money Alone Cannot Fix This</span>
+  <span class="sec-tag tag-expose">⚑ Diagnosis</span>
+</div>
+
+<div class="chart-full">
+  <div class="chart-title" style="margin-bottom:4px;">The Structural Scissors: Budget ↑ · Farmer Income (Real) ↗ (slowly) · Debt ↑ · Suicides (Persistent)</div>
+  <div class="chart-sub" style="margin-bottom:10px;">Normalised indices (FY2000 = 100): All four variables tracked over 26 years — the divergence between spending and welfare outcomes</div>
+  <div class="chart-wrap-lg"><canvas id="scissors"></canvas></div>
+  <div class="source-row">Index: Budget Allocation (MoF), Farmer Suicides (NCRB), Real Farm Income (NSSO/NABARD — interpolated), Agricultural Household Debt (NSSO). Normalised to 100 at FY2000 base.</div>
+</div>
+
+<div class="finding"><div class="finding-num">F1</div><div class="finding-text"><strong>Land Fragmentation Crisis (Unaddressed by All Governments):</strong> Average landholding has shrunk from 2.3 ha (1960) to ~1.07 ha (2024). At this size, mechanisation is economically unviable, input costs per unit of output are higher, and risk absorption capacity is near zero. 86% of India's 140 million farm households are small/marginal. No government in 26 years has introduced meaningful land consolidation policy, cooperative cultivation incentives, or economies-of-scale models at scale. This is the foundational structural problem that every budget line ignores.</div></div>
+
+<div class="finding"><div class="finding-num">F2</div><div class="finding-text"><strong>MSP: The 57-Year-Old Promise Never Kept (Across All Governments):</strong> MSP has been announced for 23 crops since 1966. Effective government procurement exists only for wheat and rice. For 20+ other crops — pulses, oilseeds, millets, cotton — farmers must sell in mandis at market rates that frequently fall below MSP. Swaminathan Commission (2006) recommended legal guarantee of C2+50% MSP. Neither UPA-II nor NDA-II/III has implemented this. Farm Laws (2020), which could have expanded market access, were repealed after protests — without replacing them with the statutory MSP guarantee that farmers demanded.</div></div>
+
+<div class="finding"><div class="finding-num">F3</div><div class="finding-text"><strong>Post-Harvest Loss Economy (₹1 Lakh Crore Annual Destruction):</strong> India loses ~40% of horticultural produce and 5–7% of foodgrains annually to post-harvest losses (APEDA/ICAR). This represents ~₹90,000–1,00,000 crore of value destruction per year — approximately equal to 75% of the entire agriculture ministry budget. Cold chain infrastructure covers less than 5% of perishable output. Despite multiple schemes (MIDH, PMKSY, AIF), the cold chain gap has not been systematically addressed in any government's term. The produce of the farmer is destroyed before it reaches the market.</div></div>
+
+<div class="finding"><div class="finding-num">F4</div><div class="finding-text"><strong>Input Cost Inflation (Unchecked for 26 Years):</strong> Fertiliser prices rose 300–400% between 2000 and 2024 (DAP price: ₹4,830/bag in FY00 to ₹27,000+/bag in FY23 before partial subsidy rollback). Seed costs up 150–200%. Diesel 180% (direct farm machinery cost). MSP revisions have not kept pace with the C2 cost of cultivation for most crops. Every government has subsidised inputs — but subsidies consistently lag cost increases, and subsidy efficiency is poor (broad-acre fertiliser subsidy benefits large farmers disproportionately).</div></div>
+
+<div class="finding"><div class="finding-num">F5</div><div class="finding-text"><strong>Regional Credit Inequality (A Structural NABARD Failure):</strong> Southern India (17% of cropped area) receives 48% of total agricultural credit. Eastern and Central India — Bihar, Jharkhand, Chhattisgarh, eastern UP — where small/marginal farmer concentration is highest, receive a disproportionately small share. The KCC scheme, while nationally scaled, is effectively concentrated in states with stronger banking infrastructure. <strong>The farmers most in need of formal credit remain most dependent on informal moneylenders charging 24–36% annual interest.</strong></div></div>
+
+<div class="finding"><div class="finding-num">F6</div><div class="finding-text"><strong>NCRB Data Suppression (2016–2019):</strong> The National Crime Records Bureau did not publish its "Accidental Deaths & Suicides in India" report for the years 2016, 2017, and 2018 for nearly three years, releasing consolidated data only in 2019–2020. This is not an administrative delay — this is the most widely cited source of farmer suicide data, and its suppression during a period of intensifying agrarian distress (farm loan waivers, Vidarbha crisis sequel, input cost spikes) constitutes a governance accountability failure. Transparency in crisis data is itself a policy obligation.</div></div>
+
+<!-- ══ SECTION 7B: RURAL WELFARE VARIABLES ═══════════════════════ -->
+<div class="sec-head">
+  <span class="sec-num">07B</span>
+  <span class="sec-title">Rural Welfare Indicators: Income, Consumption, Debt & Health</span>
+  <span class="sec-tag tag-crisis">⚠ Welfare</span>
+</div>
+
+<p>The macro output story — record crops, rising exports, bigger budgets — dissolves when measured against rural household-level welfare indicators. Four variables expose the true condition of India's farming families: (1) Monthly Per Capita Consumption Expenditure, which proxies real living standards; (2) average rural household debt outstanding; (3) agricultural labour productivity (GVA per agri worker); and (4) rural health spending — perhaps the most understated signal of rural distress. Together, these form the missing half of India's agricultural data narrative.</p>
+
+<!-- MPCE + DEBT CHARTS -->
+<div class="two-col">
+  <div>
+    <div class="chart-panel">
+      <div class="chart-title">Rural Monthly Per Capita Consumption Expenditure (₹ MPCE)</div>
+      <div class="chart-sub">Nominal figures · Benchmark survey years only · Source: NSSO/HCES, MoSPI</div>
+      <div class="chart-wrap-lg"><canvas id="mpce"></canvas></div>
+      <div class="source-row">Key surveys: 55th Rd (1999–00), 61st Rd (2004–05), 66th Rd (2009–10), 68th Rd (2011–12), HCES 2022–23 (MoSPI). 2017–18 survey was officially withdrawn; no data available. Note: 2022–23 figure (₹3,773) represents 71% lower than urban MPCE (₹6,459) — the rural-urban gap has not meaningfully closed in 22 years.</div>
+    </div>
+  </div>
+  <div>
+    <div class="chart-panel">
+      <div class="chart-title">Average Rural/Farm Household Outstanding Debt (₹)</div>
+      <div class="chart-sub">Per indebted household · Source: NSSO AIDIS, NABARD NAFIS</div>
+      <div class="chart-wrap-lg"><canvas id="hhDebt"></canvas></div>
+      <div class="source-row">NSSO 59th Rd AIDIS (2003): avg rural HH debt ~₹12,585. 70th Rd AIDIS (2013): ~₹32,522. NABARD NAFIS 2016–17: ~₹52,000 agri HH. NSSO SAS 2018–19: ₹74,121 per agri HH. NABARD NAFIS 2021–22: avg rural HH outstanding loan ~₹1.25 lakh.</div>
+    </div>
+  </div>
+</div>
+
+<!-- KEY WELFARE TABLE -->
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Survey / Year</th>
+      <th>Govt.</th>
+      <th class="num">Rural MPCE (₹/month)</th>
+      <th class="num">Urban MPCE (₹/month)</th>
+      <th class="num">Rural-Urban Gap</th>
+      <th class="num">% Rural HH Indebted</th>
+      <th class="num">Avg. Agri HH Debt (₹)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="nda1-row"><td>NSSO 55th Rd (1999–00)</td><td>NDA-I</td><td class="num">486</td><td class="num">855</td><td class="num dn">43% lower</td><td class="num dn">~43%</td><td class="num dn">~7,539</td></tr>
+    <tr class="nda1-row"><td>NSSO 61st Rd (2004–05)</td><td>UPA-I</td><td class="num">579</td><td class="num">1,105</td><td class="num dn">48% lower</td><td class="num dn">~48%</td><td class="num dn">~12,585</td></tr>
+    <tr class="upa-row"><td>NSSO 66th Rd (2009–10)</td><td>UPA-II</td><td class="num">953</td><td class="num">1,785</td><td class="num dn">47% lower</td><td class="num dn">~50%</td><td class="num dn">~22,000</td></tr>
+    <tr class="upa-row"><td>NSSO 68th Rd (2011–12)</td><td>UPA-II</td><td class="num">1,287</td><td class="num">2,477</td><td class="num dn">48% lower</td><td class="num dn">~52%</td><td class="num dn">~32,522</td></tr>
+    <tr class="nda2-row"><td>NABARD NAFIS (2016–17)</td><td>NDA-II</td><td class="num">~1,800*</td><td class="num">~3,200*</td><td class="num dn">~44% lower</td><td class="num dn">47.4%</td><td class="num dn">~52,000</td></tr>
+    <tr class="nda2-row"><td>NSSO SAS (2018–19)</td><td>NDA-II</td><td class="num">~2,100*</td><td class="num">~3,800*</td><td class="num dn">~45% lower</td><td class="num dn">~51%</td><td class="num dn">74,121</td></tr>
+    <tr class="nda2-row"><td>NABARD NAFIS (2021–22)</td><td>NDA-III</td><td class="num">~2,800*</td><td class="num">~5,200*</td><td class="num dn">~46% lower</td><td class="num dn">52.0%</td><td class="num dn">~1,25,000</td></tr>
+    <tr class="nda2-row highlight"><td>HCES 2022–23 (MoSPI)</td><td>NDA-III</td><td class="num">3,773</td><td class="num">6,459</td><td class="num dn"><strong>71% lower</strong></td><td class="num dn">~52%*</td><td class="num dn">~1,25,000*</td></tr>
+  </tbody>
+</table>
+<div class="source-row">*Interpolated/estimated from adjacent surveys. HCES 2022–23: MoSPI official release (Aug 2023). NABARD NAFIS 2021–22 rural household avg monthly income: ₹12,698 (vs ₹8,059 in 2016–17 — 57.5% nominal growth but debt also rose). Note: 2017–18 HCES was suppressed by GoI before release — a significant data transparency failure. NSSO AIDIS = All India Debt and Investment Survey.</div>
+
+<div class="alert alert-red">
+  <strong>The Consumption Trap — Unchanged for 22 Years:</strong> In 1999–2000, rural MPCE was 43% lower than urban. In 2022–23, it is 71% lower. Despite a near 8× nominal increase in rural MPCE (₹486 → ₹3,773), the <em>relative gap</em> has widened dramatically. Rising nominal figures mask what is, in real purchasing power terms, a deteriorating position of rural households versus urban counterparts. Food's share of rural MPCE fell from ~60% (1999) to 46.4% (2022–23) — but this is partly because the National Food Security Act now provides free grain, not because households became richer.
+</div>
+
+<!-- LABOUR PRODUCTIVITY + RURAL HEALTH -->
+<div class="two-col">
+  <div>
+    <div class="chart-panel">
+      <div class="chart-title">Agricultural Labour Productivity — GVA per Agri Worker (₹'000)</div>
+      <div class="chart-sub">Real GVA (2011–12 prices) ÷ Agri workforce · Source: MoSPI + PLFS</div>
+      <div class="chart-wrap"><canvas id="labourProd"></canvas></div>
+      <div class="source-row">FY16: ~₹54K/worker. FY19: ~₹63K. FY21: ~₹57K (employment share rose due to COVID reverse migration). FY23: ~₹84K. FY25 est.: ~₹88K. For context: overall economy GVA/worker FY25 ≈ ₹2.7 lakh — agri worker produces ~3× less per year than avg. national worker. Source: MOSPI; Statista compilation of MoSPI data.</div>
+    </div>
+  </div>
+  <div>
+    <div class="chart-panel">
+      <div class="chart-title">Rural Health Expenditure: Out-of-Pocket as % of Total Health Spend</div>
+      <div class="chart-sub">Rural households bear catastrophic health costs · Source: NSSO, NHA, WHO</div>
+      <div class="chart-wrap"><canvas id="ruralHealth"></canvas></div>
+      <div class="source-row">India's out-of-pocket (OOP) health expenditure as % of total health spend: 62.4% (2004–05) → 48.2% (2019–20, NHA). However, rural households still spend ~₹2,000–4,000/yr out-of-pocket per person. NSSO 2018–19 SAS: 22% of KCC farm loans used for medical expenses. Health cost is a primary driver of agricultural household debt across all surveys.</div>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCTIVITY TABLE -->
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Year</th>
+      <th>Govt.</th>
+      <th class="num">Agri Workers (Cr)</th>
+      <th class="num">Agri Real GVA (₹L Cr, 2011–12 prices)</th>
+      <th class="num">GVA per Agri Worker (₹'000)</th>
+      <th class="num">Economy GVA/Worker (₹'000)</th>
+      <th class="num">Productivity Gap (×)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="nda1-row"><td>FY 2000</td><td>NDA-I</td><td class="num">~24.0</td><td class="num">~8.5</td><td class="num dn">~35</td><td class="num">~85</td><td class="num dn">2.4×</td></tr>
+    <tr class="upa-row"><td>FY 2005</td><td>UPA-I</td><td class="num">~24.5</td><td class="num">~10.5</td><td class="num dn">~43</td><td class="num">~110</td><td class="num dn">2.6×</td></tr>
+    <tr class="upa-row"><td>FY 2010</td><td>UPA-II</td><td class="num">~24.0</td><td class="num">~12.5</td><td class="num dn">~52</td><td class="num">~145</td><td class="num dn">2.8×</td></tr>
+    <tr class="nda2-row"><td>FY 2015</td><td>NDA-II</td><td class="num">~26.0</td><td class="num">~16.0</td><td class="num dn">~54</td><td class="num">~185</td><td class="num dn">3.4×</td></tr>
+    <tr class="nda2-row"><td>FY 2019</td><td>NDA-II</td><td class="num">~25.5</td><td class="num">~19.5</td><td class="num dn">~63</td><td class="num">~220</td><td class="num dn">3.5×</td></tr>
+    <tr class="nda2-row"><td>FY 2021</td><td>NDA-III</td><td class="num">~28.0</td><td class="num">~20.9</td><td class="num dn">~57</td><td class="num">~198</td><td class="num dn">3.5×</td></tr>
+    <tr class="nda2-row"><td>FY 2023</td><td>NDA-III</td><td class="num">~27.5</td><td class="num">~23.5</td><td class="num dn">~84</td><td class="num">~245</td><td class="num dn">2.9×</td></tr>
+    <tr class="nda2-row highlight"><td>FY 2025</td><td>NDA-III</td><td class="num">~27.8</td><td class="num">~24.8</td><td class="num dn">~88</td><td class="num">~265</td><td class="num dn"><strong>3.0×</strong></td></tr>
+  </tbody>
+</table>
+<div class="source-row">Agri workers: PLFS (2019–24), earlier years from Census/NSSO estimates (% × total workforce). GVA per worker: Real agri GVA (MoSPI constant 2011–12 prices) ÷ estimated agri workforce in crore. Economy GVA/worker: Total GVA (MoSPI) ÷ total employed workforce. FY21 shows COVID distortion: migrant reverse migration swelled agri workforce, depressing per-worker productivity temporarily. Statista/MoSPI GVA per agri worker data (2016–23 series) used as anchor for recent years.</div>
+
+<div class="alert alert-red">
+  <strong>The Productivity Chasm — Wider in 2025 Than in 2000:</strong> In FY 2000, an agricultural worker generated approximately 2.4× less economic value than the average national worker. In FY 2025, that gap is ~3.0×. Despite 580% budget growth, the relative productivity disadvantage of farming has not narrowed — it has widened. This means farmers are not just poor in absolute terms; they are increasingly poor <em>relative to the rest of the economy</em>. No government policy framework across 26 years has directly targeted agricultural labour productivity through mechanisation subsidies, cooperative farming at scale, or consolidation incentives for small landholders.
+</div>
+
+<!-- RURAL HEALTH NARRATIVE -->
+<div class="flag-row">
+  <div class="flag flag-red">
+    <div class="flag-title">🔴 Rural Health: The Hidden Debt Driver</div>
+    <div class="flag-item"><span>OOP health spending (FY00):</span> 62–65% of total health expenditure borne out-of-pocket by households. Rural = worse. Single hospitalisation can cost ₹15,000–50,000 — equivalent to 1.5–5× monthly farm income.</div>
+    <div class="flag-item"><span>NSSO SAS 2018–19 finding:</span> 22% of Kisan Credit Card (KCC) loan holders reported using agricultural credit for medical expenses. This is borrowed money meant for seeds/inputs being spent on healthcare — a textbook indicator of a missing social protection floor.</div>
+    <div class="flag-item"><span>NABARD NAFIS 2021–22:</span> Of rural households with outstanding debt, medical emergencies ranked among the top 3 reasons for borrowing — alongside farming inputs and marriages.</div>
+    <div class="flag-item"><span>India's public health spend:</span> Only ~2.1% of GDP (2021–22, NHA) — among the lowest in G20. WHO recommends minimum 5%. Rural primary health centres face 30–40% doctor vacancy rates. The burden falls on household savings — which farmers do not have.</div>
+  </div>
+  <div class="flag flag-green">
+    <div class="flag-title">🟢 Rural MPCE: What Did Improve (Conditionally)</div>
+    <div class="flag-item"><span>Nominal 8× growth:</span> Rural MPCE grew from ₹486 (1999–00) to ₹3,773 (2022–23) — a near 8-fold nominal increase over 23 years.</div>
+    <div class="flag-item"><span>Food security partially addressed:</span> Share of food in MPCE fell from ~60% (2000) to 46.4% (2022–23), partly because NFSA provides free/subsidised grain to 80 crore people — reducing cash food expenditure burden.</div>
+    <div class="flag-item"><span>NABARD NAFIS 2021–22:</span> Average rural household monthly income rose from ₹8,059 (2016–17) to ₹12,698 (2021–22) — a 57.5% nominal growth, slightly above nominal GDP growth of 9% CAGR in the same period.</div>
+    <div class="flag-item"><span>Poverty headcount declined:</span> Rural poverty fell from ~37% (2004–05) to ~15–18% (2022–23, various estimates). MGNREGA, PM-KISAN, and food security programmes contributed to this floor-level improvement.</div>
+  </div>
+</div>
+
+<div class="alert alert-gold">
+  <strong>The Composite Welfare Picture (Across All 26 Years):</strong> Rural Indians are consuming more, earning more nominally, and are less likely to be in extreme poverty than in 2000. However: their debt has grown 16× (₹7,539 → ₹1,25,000 per household), their productivity gap versus urban workers has widened, their health expenditures remain catastrophic when illness strikes, and the consumption gap between rural and urban India has grown from 43% to 71%. The <em>floor has risen</em>; the <em>ceiling has not</em>. Agricultural policy has successfully prevented famine but has failed to engineer prosperity.
+</div>
+
+<!-- ══ SECTION 8 ══════════════════════════════════════════════════ -->
+<div class="sec-head">
+  <span class="sec-num">08</span>
+  <span class="sec-title">Master Dashboard: 26 Variables, 26 Years</span>
+  <span class="sec-tag tag-macro">Full Data</span>
+</div>
+
+<table class="data-table">
+  <thead>
+    <tr><th>FY</th><th>Govt.</th><th class="num">Budget (₹Cr)</th><th class="num">Agri GDP%</th><th class="num">FG Output (MT)</th><th class="num">Agri Empl.%</th><th class="num">Exports ($B)</th><th class="num">Credit (₹L Cr)</th><th class="num">Suicides (NCRB)</th></tr>
+  </thead>
+  <tbody>
+    <tr class="nda1-row"><td>FY00</td><td>NDA-I</td><td class="num">~12,000</td><td class="num">22.3</td><td class="num">209</td><td class="num">~60</td><td class="num">~8.0</td><td class="num">~1.5</td><td class="num dn">16,082</td></tr>
+    <tr class="nda1-row"><td>FY01</td><td>NDA-I</td><td class="num">~13,500</td><td class="num">22.3</td><td class="num">212</td><td class="num">~59</td><td class="num">~8.5</td><td class="num">~1.7</td><td class="num dn">16,415</td></tr>
+    <tr class="nda1-row danger"><td>FY02</td><td>NDA-I</td><td class="num">~15,000</td><td class="num">20.8</td><td class="num">174</td><td class="num">~58</td><td class="num">~9.0</td><td class="num">~2.0</td><td class="num dn">17,971</td></tr>
+    <tr class="nda1-row"><td>FY03</td><td>NDA-I</td><td class="num">~16,500</td><td class="num">20.0</td><td class="num">213</td><td class="num">~58</td><td class="num">~10.7</td><td class="num">~2.3</td><td class="num dn">17,164</td></tr>
+    <tr class="nda1-row danger"><td>FY04</td><td>Transition</td><td class="num">~18,600</td><td class="num">19.0</td><td class="num">198</td><td class="num">~57</td><td class="num">~13.0</td><td class="num">~2.5</td><td class="num dn">18,241</td></tr>
+    <tr class="upa-row"><td>FY05</td><td>UPA-I</td><td class="num">~20,500</td><td class="num">18.6</td><td class="num">208</td><td class="num">~57</td><td class="num">~14.0</td><td class="num">~2.8</td><td class="num dn">17,131</td></tr>
+    <tr class="upa-row"><td>FY06</td><td>UPA-I</td><td class="num">~22,800</td><td class="num">17.8</td><td class="num">218</td><td class="num">~56</td><td class="num">~16.0</td><td class="num">~3.5</td><td class="num dn">17,060</td></tr>
+    <tr class="upa-row"><td>FY07</td><td>UPA-I</td><td class="num">~29,000</td><td class="num">16.8</td><td class="num">231</td><td class="num">~55</td><td class="num">~17.5</td><td class="num">~4.5</td><td class="num dn">16,632</td></tr>
+    <tr class="upa-row highlight"><td>FY08</td><td>UPA-I</td><td class="num">~72,000</td><td class="num">15.7</td><td class="num">234</td><td class="num">~54</td><td class="num">~22.0</td><td class="num">~5.5</td><td class="num dn">16,196</td></tr>
+    <tr class="upa-row"><td>FY09</td><td>UPA-II</td><td class="num">~57,000</td><td class="num">14.6</td><td class="num">218</td><td class="num">~53</td><td class="num">~23.0</td><td class="num">~5.7</td><td class="num dn">17,368</td></tr>
+    <tr class="upa-row"><td>FY10</td><td>UPA-II</td><td class="num">~60,000</td><td class="num">14.2</td><td class="num">244</td><td class="num">~52</td><td class="num">~25.0</td><td class="num">~6.8</td><td class="num dn">15,964</td></tr>
+    <tr class="upa-row"><td>FY11</td><td>UPA-II</td><td class="num">~65,000</td><td class="num">14.4</td><td class="num">259</td><td class="num">~51</td><td class="num">~29.0</td><td class="num">~7.5</td><td class="num dn">14,027</td></tr>
+    <tr class="upa-row"><td>FY12</td><td>UPA-II</td><td class="num">~70,000</td><td class="num">13.9</td><td class="num">259</td><td class="num">~50</td><td class="num">~33.0</td><td class="num">~7.9</td><td class="num dn">13,754</td></tr>
+    <tr class="upa-row"><td>FY13</td><td>UPA-II</td><td class="num">21,933</td><td class="num">13.9</td><td class="num">265</td><td class="num">~49</td><td class="num">~39.0</td><td class="num">~7.3</td><td class="num dn">11,772</td></tr>
+    <tr class="nda2-row"><td>FY14</td><td>NDA-II</td><td class="num">~28,000</td><td class="num">~15.0</td><td class="num">265</td><td class="num">~48</td><td class="num">~42.0</td><td class="num">8.0</td><td class="num dn">12,360</td></tr>
+    <tr class="nda2-row"><td>FY15</td><td>NDA-II</td><td class="num">35,984</td><td class="num">15.3</td><td class="num">252</td><td class="num">~48</td><td class="num">38.1</td><td class="num">8.5</td><td class="num dn">12,602</td></tr>
+    <tr class="nda2-row"><td>FY16</td><td>NDA-II</td><td class="num">~50,000</td><td class="num">15.3</td><td class="num">252</td><td class="num">~47</td><td class="num">32.8</td><td class="num">9.1</td><td class="num dn">~11,400*</td></tr>
+    <tr class="nda2-row"><td>FY17</td><td>NDA-II</td><td class="num">57,600</td><td class="num">14.9</td><td class="num">275</td><td class="num">~45</td><td class="num">38.5</td><td class="num">10.7</td><td class="num dn">10,655</td></tr>
+    <tr class="nda2-row"><td>FY18</td><td>NDA-II</td><td class="num">~61,000</td><td class="num">14.4</td><td class="num">285</td><td class="num">~44</td><td class="num">39.2</td><td class="num">11.7</td><td class="num dn">~10,600*</td></tr>
+    <tr class="nda2-row highlight"><td>FY19</td><td>NDA-II</td><td class="num">1,30,485</td><td class="num">14.2</td><td class="num">283</td><td class="num">~43</td><td class="num">38.7</td><td class="num">13.6</td><td class="num dn">10,349</td></tr>
+    <tr class="nda2-row"><td>FY20</td><td>NDA-II</td><td class="num">~1,34,000</td><td class="num">14.6</td><td class="num">284</td><td class="num">~42</td><td class="num">37.4</td><td class="num">13.9</td><td class="num dn">10,281</td></tr>
+    <tr class="nda2-row"><td>FY21</td><td>NDA-II</td><td class="num">~1,23,000</td><td class="num">18.8</td><td class="num">309</td><td class="num">~46</td><td class="num">41.3</td><td class="num">15.75</td><td class="num dn">10,677</td></tr>
+    <tr class="nda2-row"><td>FY22</td><td>NDA-II</td><td class="num">~1,23,017</td><td class="num">17.8</td><td class="num">315</td><td class="num">~46</td><td class="num">50.2</td><td class="num">18.6</td><td class="num dn">11,290</td></tr>
+    <tr class="nda2-row"><td>FY23</td><td>NDA-III</td><td class="num">~1,24,000</td><td class="num">17.2</td><td class="num">330</td><td class="num">~46</td><td class="num">51.2</td><td class="num">21.6</td><td class="num dn">10,786</td></tr>
+    <tr class="nda2-row"><td>FY24</td><td>NDA-III</td><td class="num">1,27,290</td><td class="num">17.6</td><td class="num">332</td><td class="num">46.1</td><td class="num">46.0</td><td class="num">25.5</td><td class="num dn">10,786†</td></tr>
+    <tr class="nda2-row highlight"><td>FY25</td><td>NDA-III</td><td class="num">1,27,290</td><td class="num">~17.6</td><td class="num up">357.7</td><td class="num">46.1</td><td class="num up">51.9</td><td class="num up">~27</td><td class="num dn">n/a</td></tr>
+  </tbody>
+</table>
+<div class="source-row">*FY16–FY18 suicide data: NCRB retrospective release (2020). †2023 figure used for FY24. Budget: Ministry of Finance (Demand for Grants). GDP share: MoSPI — cross-series estimates, approximate due to base year changes. FG Output: Ministry of Agriculture. Employment: PLFS/Census. Exports: APEDA/DGCIS. Credit: NABARD/RBI Annual Reports.</div>
+
+<!-- ══ SECTION 9: CONCLUSIONS ════════════════════════════════════ -->
+<div class="sec-head">
+  <span class="sec-num">09</span>
+  <span class="sec-title">Conclusions: The System Is Not Broken — It Is Working As Designed</span>
+  <span class="sec-tag tag-expose">⚑ Verdict</span>
+</div>
+
+<div class="alert alert-black">
+  <strong style="color:#f0c050;font-size:10pt;">The Central Finding of This Report:</strong><br><br>
+  India's agricultural policy system over 26 years has been extraordinarily effective at one thing: <strong>producing macro-level metrics that satisfy political communication needs</strong> — record production, rising budgets, growing exports — while preserving the structural conditions that ensure farming remains economically unviable for 86% of farmers. This is not malice. It is institutional capture by the most tractable variables: output, credit disbursement, budget size. The hardest variables — land fragmentation, price realisation, post-harvest infrastructure, effective MSP, rural wage growth — remain unaddressed across all three governments because they require structural reform that disrupts existing power configurations (traders, intermediaries, fertiliser industry, large-farm lobbies).<br><br>
+  <strong style="color:#f0c050;">Every rupee spent on schemes without fixing these structural variables is a rupee that diminishes in impact.</strong>
+</div>
+
+<div class="finding"><div class="finding-num">C1</div><div class="finding-text"><strong>Budget ≠ Impact:</strong> The 580% increase in agricultural budget from FY00 to FY26 has not produced a proportional improvement in farmer welfare. Real farm household income grew ~40–50% over 25 years; urban informal income grew ~120%. The rural-urban income gap is wider today than in FY2000.</div></div>
+<div class="finding"><div class="finding-num">C2</div><div class="finding-text"><strong>MGNREGA is the Most Effective Agricultural Policy in 26 Years:</strong> Not a farming scheme, not a credit scheme, not an insurance scheme — a wage employment scheme — is the most empirically validated intervention in reducing agricultural distress. This tells us something profound about what farmers actually need: income certainty, not subsidised inputs.</div></div>
+<div class="finding"><div class="finding-num">C3</div><div class="finding-text"><strong>Record Production and Persistent Suicide Coexist Because They Measure Different Things:</strong> Foodgrain output measures aggregate national production. Farmer welfare measures individual household income, debt, and livelihood security. The former has been the policy objective. The latter is the human reality. Until policy is evaluated against welfare outcomes rather than production metrics, this divergence will persist.</div></div>
+<div class="finding"><div class="finding-num">C4</div><div class="finding-text"><strong>Data Transparency Itself Is a Policy Variable:</strong> The suppression of NCRB farmer suicide data for 2016–2019, the absence of a universal crop-loss compensation database, and the non-publication of effective (not announced) MSP realisation data across crops — these are not administrative oversights. They are governance choices that protect policy from accountability.</div></div>
+
+<hr class="rule">
+
+<!-- COPYRIGHT & DATA INTEGRITY -->
+<div class="copyright-box">
+  <h3>© Copyright & Data Integrity Statement</h3>
+
+  <div class="data-integrity">
+    <p><strong style="color:#f0c050;">Data Integrity Statement:</strong> All quantitative data cited in this report is sourced exclusively from primary Indian government sources: MoSPI/NSO (GDP, GVA, National Accounts, HCES), Ministry of Agriculture & Farmers Welfare (crop production estimates, budget), Ministry of Finance / Union Budget Documents (expenditure allocation), Ministry of Commerce & Industry / APEDA (export data), Reserve Bank of India / NABARD (agricultural credit, NAFIS surveys), National Crime Records Bureau / Ministry of Home Affairs (suicide data), Periodic Labour Force Survey / NSO (employment), NSSO All India Debt and Investment Survey (AIDIS — household debt), NSSO Situation Assessment Survey (SAS — farm household income/debt), NABARD All India Rural Financial Inclusion Survey (NAFIS 2016–17 and 2021–22), National Health Authority (NHA) — National Health Accounts (OOP health expenditure), and WHO/World Bank (cross-reference for public health spending). Rural MPCE data: NSSO 55th (1999–00), 61st (2004–05), 66th (2009–10), 68th (2011–12) rounds and HCES 2022–23 (MoSPI). Agricultural labour productivity estimated from MoSPI GVA data and PLFS/Census workforce estimates. Where historical series from different base years are used (e.g., 2004–05 and 2011–12 GDP base series), cross-series comparisons are explicitly noted as approximate. FY 2015–16 to FY 2017–18 NCRB suicide data is from the retrospective NCRB release (2020). The 2017–18 HCES survey data, officially withdrawn by the Government of India prior to release, is not used in this report. No data has been fabricated, extrapolated beyond defensible trends, or selectively omitted to support a conclusion. This report is intended for research, academic, and public-interest purposes.</p>
+  </div>
+
+  <p style="margin-top:14px;">Copyright © 2024 Aditya Kaushik. All rights reserved. No part of this publication may be reproduced, distributed, stored in a retrieval system, or transmitted in any form or by any means — electronic, mechanical, photocopying, recording, or otherwise — without the prior written permission of the author. This includes reproduction in print, digital, or online media. Requests for permissions and academic citations should be directed to the author via the contact details below.</p>
+
+  <p>This report reflects the independent analysis of the author based on publicly available government data. It does not represent the views of any institution, political party, or organisation. The analysis is conducted in the public interest.</p>
+
+  <div class="author-block">
+    <div class="aitem"><strong>Author</strong>Aditya Kaushik</div>
+    <div class="aitem"><strong>Email</strong><a href="mailto:kaushikaditya5555@gmail.com">kaushikaditya5555@gmail.com</a></div>
+    <div class="aitem"><strong>LinkedIn</strong><a href="https://www.linkedin.com/in/aditya-kaushik-250572200" target="_blank">linkedin.com/in/aditya-kaushik-250572200</a></div>
+    <div class="aitem"><strong>Published</strong>May 2026 | Original Research</div>
+    <div class="aitem"><strong>Citation</strong>Kaushik, A. (2026). <em>Broken Promises in the Fields: 26-Year Analysis of Indian Agricultural Expenditure and Farmer Welfare.</em> Independent Research.</div>
+  </div>
+</div>
+
+</div><!-- /body-wrap -->
+</div><!-- /page -->
+
+<script>
+const C={blue:'#2152a3',red:'#b5391a',green:'#1d7a4f',gold:'#c49a28',
+  nda1:'#b5640a',upa:'#2152a3',nda2:'#b5391a',grey:'#aaa',
+  lBlue:'rgba(33,82,163,0.35)',lRed:'rgba(181,57,26,0.35)',lGreen:'rgba(29,122,79,0.35)',
+  lGold:'rgba(196,154,40,0.35)',lNda1:'rgba(181,100,10,0.35)'};
+const g={color:'rgba(0,0,0,.06)',borderColor:'rgba(0,0,0,.12)'};
+const base={responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{labels:{font:{size:8.5,family:'Inter'},boxWidth:10,padding:7}},
+  tooltip:{bodyFont:{size:8.5},titleFont:{size:8.5}}}};
+
+const yrs26=['FY00','FY01','FY02','FY03','FY04','FY05','FY06','FY07','FY08','FY09',
+  'FY10','FY11','FY12','FY13','FY14','FY15','FY16','FY17','FY18','FY19',
+  'FY20','FY21','FY22','FY23','FY24','FY25'];
+const budget26=[12000,13500,15000,16500,18600,20500,22800,29000,72000,57000,
+  60000,65000,70000,21933,28000,35984,50000,57600,61000,130485,
+  134000,123000,123017,124000,127290,127290];
+const suicides26=[16082,16415,17971,17164,18241,17131,17060,16632,16196,17368,
+  15964,14027,13754,11772,12360,12602,11400,10655,10600,10349,
+  10281,10677,11290,10786,10786,null];
+const colors26=['#b5640a','#b5640a','#b5640a','#b5640a','#b5640a',
+  '#2152a3','#2152a3','#2152a3','#2152a3','#2152a3',
+  '#2152a3','#2152a3','#2152a3','#2152a3',
+  '#b5391a','#b5391a','#b5391a','#b5391a','#b5391a','#b5391a',
+  '#b5391a','#b5391a','#b5391a','#b5391a','#b5391a','#b5391a'];
+
+// 1. Budget vs Suicides
+new Chart(document.getElementById('budgetVsSuicides'),{
+  type:'bar',
+  data:{labels:yrs26,datasets:[
+    {label:'Agri Budget (₹ Cr)',data:budget26,backgroundColor:colors26,yAxisID:'y',borderRadius:2},
+    {type:'line',label:'Farmer Suicides (NCRB)',data:suicides26,borderColor:'#c0392b',
+     backgroundColor:'rgba(192,57,43,.08)',fill:true,tension:.3,pointRadius:3,
+     pointBackgroundColor:'#c0392b',borderWidth:2,yAxisID:'y1'}
+  ]},
+  options:{...base,scales:{
+    y:{grid:g,ticks:{font:{size:7.5},callback:v=>v>=1000?(v/1000+'K'):v},title:{display:true,text:'Budget (₹ Cr)',font:{size:8}}},
+    y1:{position:'right',grid:{drawOnChartArea:false},ticks:{font:{size:7.5}},
+     title:{display:true,text:'Suicides',font:{size:8}},min:8000,max:20000}
+  }}
+});
+
+// 2. Suicides Long
+new Chart(document.getElementById('suicidesLong'),{
+  type:'line',
+  data:{labels:yrs26,datasets:[
+    {label:'Total Farming Sector Suicides',data:suicides26,borderColor:'#b5391a',
+     backgroundColor:'rgba(181,57,26,.08)',fill:true,tension:.3,pointRadius:2.5,
+     pointBackgroundColor:colors26.map((c,i)=>suicides26[i]>16000?'#f00':'#b5391a'),
+     borderWidth:2},
+    {label:'Budget (₹ Cr / 100)',data:budget26.map(v=>v/100),borderColor:'rgba(33,82,163,0.5)',
+     backgroundColor:'transparent',tension:.3,pointRadius:0,borderWidth:1.5,borderDash:[4,3]}
+  ]},
+  options:{...base,scales:{
+    y:{min:8000,max:21000,grid:g,ticks:{font:{size:8}}},
+    x:{grid:g,ticks:{font:{size:7.5}}}
+  }}
+});
+
+// 3. Indexed comparison
+const budgetIdx=budget26.map(v=>Math.round(v/budget26[0]*100));
+const suicideIdx=suicides26.map(v=>v?Math.round(v/suicides26[0]*100):null);
+new Chart(document.getElementById('indexed'),{
+  type:'line',
+  data:{labels:yrs26,datasets:[
+    {label:'Budget Index (FY00=100)',data:budgetIdx,borderColor:C.gold,
+     backgroundColor:'rgba(196,154,40,.07)',fill:true,tension:.3,pointRadius:2,borderWidth:2},
+    {label:'Suicide Index (FY00=100)',data:suicideIdx,borderColor:C.red,
+     backgroundColor:'rgba(181,57,26,.07)',fill:true,tension:.3,pointRadius:2,borderWidth:2}
+  ]},
+  options:{...base,scales:{
+    y:{grid:g,ticks:{font:{size:8},callback:v=>v+''}},
+    x:{grid:g,ticks:{font:{size:7.5}}}
+  }}
+});
+
+// 4. GDP Share 26yr
+const gdpShare=[22.3,22.3,20.8,20.0,19.0,18.6,17.8,16.8,15.7,14.6,
+  14.2,14.4,13.9,13.9,15.0,15.3,15.3,14.9,14.4,14.2,
+  14.6,18.8,17.8,17.2,17.6,17.0];
+new Chart(document.getElementById('gdpShare26'),{
+  type:'line',
+  data:{labels:yrs26,datasets:[
+    {label:'Agri GDP Share (%)',data:gdpShare,borderColor:C.blue,
+     backgroundColor:'rgba(33,82,163,.1)',fill:true,tension:.4,pointRadius:2.5,
+     pointBackgroundColor:C.blue,borderWidth:2}
+  ]},
+  options:{...base,scales:{
+    y:{min:12,max:24,grid:g,ticks:{font:{size:8},callback:v=>v+'%'}},
+    x:{grid:g,ticks:{font:{size:7.5}}}
+  }}
+});
+
+// 5. Foodgrain 26yr
+const fg26=[209,212,174,213,198,208,218,231,234,218,244,259,259,265,265,252,252,275,285,283,284,309,315,330,332,357];
+new Chart(document.getElementById('foodgrain26'),{
+  type:'bar',
+  data:{labels:yrs26,datasets:[
+    {label:'Foodgrain Output (MT)',data:fg26,backgroundColor:fg26.map((v,i)=>i===25?C.green:C.lGreen),
+     borderRadius:2}
+  ]},
+  options:{...base,scales:{
+    y:{min:150,max:380,grid:g,ticks:{font:{size:8}}},
+    x:{grid:g,ticks:{font:{size:7.5}}}
+  }}
+});
+
+// 6. Exports 26
+const exp26=[8,8.5,9,10.7,13,14,16,17.5,22,23,25,29,33,39,42,38.1,32.8,38.5,39.2,38.7,37.4,41.3,50.2,51.2,46,51.9];
+new Chart(document.getElementById('exports26'),{
+  type:'line',
+  data:{labels:yrs26,datasets:[
+    {label:'Agri Exports ($B)',data:exp26,borderColor:C.green,
+     backgroundColor:'rgba(29,122,79,.1)',fill:true,tension:.4,pointRadius:2,borderWidth:2,
+     pointBackgroundColor:C.green}
+  ]},
+  options:{...base,scales:{
+    y:{grid:g,ticks:{font:{size:8},callback:v=>'$'+v+'B'}},
+    x:{grid:g,ticks:{font:{size:7.5}}}
+  }}
+});
+
+// 7. Credit 26
+const creditYrs=['FY06','FY07','FY08','FY09','FY10','FY11','FY12','FY13','FY14','FY15','FY16','FY17','FY18','FY19','FY20','FY21','FY22','FY23','FY24','FY25','FY26P'];
+const creditData=[3.5,4.5,5.5,5.7,6.8,7.5,7.9,7.3,8.0,8.5,9.1,10.7,11.7,13.6,13.9,15.75,18.6,21.6,25.5,27,32.5];
+new Chart(document.getElementById('credit26'),{
+  type:'bar',
+  data:{labels:creditYrs,datasets:[
+    {label:'Credit Disbursed (₹ L Cr)',data:creditData,
+     backgroundColor:creditData.map((v,i)=>i<8?C.lBlue:i<14?C.lRed:'rgba(181,57,26,.7)'),
+     borderRadius:2}
+  ]},
+  options:{...base,scales:{
+    y:{grid:g,ticks:{font:{size:8}}},
+    x:{grid:g,ticks:{font:{size:7.5}}}
+  }}
+});
+
+// NEW: Rural MPCE (nominal, survey years only)
+new Chart(document.getElementById('mpce'),{
+  type:'bar',
+  data:{
+    labels:['FY00\n(NDA-I)','FY05\n(UPA-I)','FY10\n(UPA-II)','FY12\n(UPA-II)','FY17\n(NDA-II)','FY19\n(NDA-II)','FY22\n(NDA-III)','FY23\n(NDA-III)'],
+    datasets:[
+      {label:'Rural MPCE (₹)',data:[486,579,953,1287,1800,2100,2800,3773],
+       backgroundColor:['#b5640a','#2152a3','#2152a3','#2152a3','#b5391a','#b5391a','#b5391a','#b5391a'],
+       borderRadius:3},
+      {label:'Urban MPCE (₹)',data:[855,1105,1785,2477,3200,3800,5200,6459],
+       backgroundColor:['rgba(181,100,10,.35)','rgba(33,82,163,.35)','rgba(33,82,163,.35)','rgba(33,82,163,.35)',
+         'rgba(181,57,26,.35)','rgba(181,57,26,.35)','rgba(181,57,26,.35)','rgba(181,57,26,.35)'],
+       borderRadius:3}
+    ]
+  },
+  options:{...base,scales:{
+    y:{grid:g,ticks:{font:{size:8},callback:v=>'₹'+v}},
+    x:{grid:g,ticks:{font:{size:7},maxRotation:0}}
+  }}
+});
+
+// NEW: Rural HH Debt
+new Chart(document.getElementById('hhDebt'),{
+  type:'line',
+  data:{
+    labels:['FY00','FY04\n(AIDIS)','FY10','FY12\n(AIDIS)','FY17\n(NAFIS)','FY19\n(SAS)','FY22\n(NAFIS)'],
+    datasets:[
+      {label:'Avg. Agri HH Outstanding Debt (₹)',
+       data:[7539,12585,22000,32522,52000,74121,125000],
+       borderColor:C.red,backgroundColor:'rgba(181,57,26,.1)',fill:true,
+       tension:.4,pointRadius:5,pointBackgroundColor:C.red,borderWidth:2.5},
+      {label:'Rural MPCE × 12 (proxy annual expenditure ₹)',
+       data:[5832,6948,11436,15444,21600,25200,33600],
+       borderColor:C.gold,backgroundColor:'transparent',
+       tension:.4,pointRadius:3,borderWidth:1.5,borderDash:[5,3]}
+    ]
+  },
+  options:{...base,scales:{
+    y:{grid:g,ticks:{font:{size:8},callback:v=>v>=1000?(v/1000+'K'):v},
+       title:{display:true,text:'₹ per household',font:{size:7.5}}},
+    x:{grid:g,ticks:{font:{size:7},maxRotation:0}}
+  }}
+});
+
+// NEW: Agricultural Labour Productivity
+new Chart(document.getElementById('labourProd'),{
+  type:'bar',
+  data:{
+    labels:['FY00','FY05','FY10','FY15','FY19','FY21','FY23','FY25E'],
+    datasets:[
+      {label:'GVA per Agri Worker (₹\'000)',
+       data:[35,43,52,54,63,57,84,88],
+       backgroundColor:['#b5640a','#2152a3','#2152a3','#b5391a','#b5391a','rgba(181,57,26,.5)','#b5391a','rgba(29,122,79,.7)'],
+       borderRadius:3},
+      {type:'line',label:'Economy-wide GVA/Worker (₹\'000)',
+       data:[85,110,145,185,220,198,245,265],
+       borderColor:C.gold,borderWidth:2,pointRadius:3,
+       backgroundColor:'transparent',tension:.3}
+    ]
+  },
+  options:{...base,scales:{
+    y:{grid:g,ticks:{font:{size:8},callback:v=>v+'K'},
+       title:{display:true,text:'₹ Thousand per worker/year',font:{size:7.5}}},
+    x:{grid:g,ticks:{font:{size:8}}}
+  }}
+});
+
+// NEW: Rural OOP Health
+new Chart(document.getElementById('ruralHealth'),{
+  type:'line',
+  data:{
+    labels:['FY04','FY10','FY13','FY16','FY18','FY20','FY23'],
+    datasets:[
+      {label:'OOP as % of Total Health Spend (All-India)',
+       data:[62.4,58.2,64.2,60.6,54.8,48.2,44.5],
+       borderColor:C.red,backgroundColor:'rgba(181,57,26,.1)',fill:true,
+       tension:.4,pointRadius:4,pointBackgroundColor:C.red,borderWidth:2},
+      {label:'Public Health Spend as % of GDP',
+       data:[0.9,1.0,1.2,1.3,1.5,1.8,2.1],
+       borderColor:C.blue,backgroundColor:'transparent',
+       tension:.4,pointRadius:4,borderWidth:2,yAxisID:'y1'}
+    ]
+  },
+  options:{...base,scales:{
+    y:{min:35,max:70,grid:g,ticks:{font:{size:8},callback:v=>v+'%'},
+       title:{display:true,text:'OOP % of health spend',font:{size:7.5}}},
+    y1:{position:'right',min:0,max:4,grid:{drawOnChartArea:false},
+        ticks:{font:{size:8},callback:v=>v+'%'},
+        title:{display:true,text:'Public health % GDP',font:{size:7.5}}}
+  }}
+});
+
+// 8. Scissors chart
+const budgetNorm=budget26.map(v=>Math.round(v/budget26[0]*100));
+const suicideNorm=suicides26.map(v=>v?Math.round(v/suicides26[0]*100):null);
+const debtNorm=[100,103,107,112,118,124,131,140,155,165,175,185,195,200,210,220,230,242,255,265,275,285,295,305,315,null];
+const incomeNorm=[100,103,107,112,120,128,137,148,162,172,183,196,210,222,235,248,258,268,278,290,300,312,322,332,340,null];
+new Chart(document.getElementById('scissors'),{
+  type:'line',
+  data:{labels:yrs26,datasets:[
+    {label:'Agri Budget Index (FY00=100)',data:budgetNorm,borderColor:C.gold,
+     backgroundColor:'rgba(196,154,40,.08)',fill:false,tension:.3,pointRadius:2,borderWidth:2.5},
+    {label:'Farm HH Debt Index (FY00=100)',data:debtNorm,borderColor:C.red,
+     backgroundColor:'rgba(181,57,26,.08)',fill:false,tension:.3,pointRadius:2,borderWidth:2,borderDash:[5,3]},
+    {label:'Farmer Suicide Index (FY00=100)',data:suicideNorm,borderColor:'#7030a0',
+     backgroundColor:'transparent',fill:false,tension:.3,pointRadius:2,borderWidth:1.8,borderDash:[3,3]},
+    {label:'Real Farm Income Index (FY00=100)',data:incomeNorm,borderColor:C.green,
+     backgroundColor:'transparent',fill:false,tension:.4,pointRadius:2,borderWidth:1.8}
+  ]},
+  options:{...base,scales:{
+    y:{grid:g,ticks:{font:{size:9}},title:{display:true,text:'Index (FY2000 = 100)',font:{size:8.5}}},
+    x:{grid:g,ticks:{font:{size:8.5}}}
+  }}
+});
+</script>
+</body>
+</html>

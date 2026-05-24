@@ -8,6 +8,13 @@ export interface Comment {
   reputation: number;
 }
 
+export interface PaperVersion {
+  version: string;
+  date: string;
+  summary: string;
+  author: string;
+}
+
 export interface Paper {
   id: string;
   title: string;
@@ -31,6 +38,13 @@ export interface Paper {
   peerReviewed: boolean;
   aiSummary: string;
   comments: Comment[];
+  
+  // Evolved Platform Fields
+  trustLabel?: 'Verified Research' | 'Community Reviewed' | 'Independent Submission' | 'Experimental Research' | 'Open Draft';
+  forkedFrom?: string; // ID of parent paper
+  versions?: PaperVersion[];
+  ratings?: { userId: string; rating: number }[];
+  averageRating?: number;
 }
 
 export interface User {
@@ -43,6 +57,38 @@ export interface User {
   avatarUrl?: string;
   bookmarks: string[];
   uploadedPapers: string[];
+}
+
+export interface RndChallenge {
+  id: string;
+  title: string;
+  sponsor: string;
+  logo: string;
+  description: string;
+  reward: string;
+  repAward: number;
+  category: string;
+  difficulty: 'Beginner' | 'Intermediate' | 'Expert';
+  teamsCount: number;
+  solutionsCount: number;
+  joinedUsers: string[]; // List of userIds who joined the challenge
+  details: string;
+}
+
+export interface Insight {
+  id: string;
+  author: string;
+  avatarUrl?: string;
+  role: string;
+  badge: string;
+  reputation: number;
+  content: string;
+  tags: string[];
+  category: string;
+  timestamp: string;
+  upvotes: number;
+  upvotedBy: string[];
+  commentsCount: number;
 }
 
 const DEFAULT_PAPERS: Paper[] = [
@@ -71,7 +117,16 @@ const DEFAULT_PAPERS: Paper[] = [
     comments: [
       { id: 'c-5-1', author: 'Dr. Ramesh Sen (NABARD)', text: 'Groundbreaking analysis. The regional credit inequality data and KCC health spending leakage correlation is highly accurate.', timestamp: '2026-05-22', reputation: 94 },
       { id: 'c-5-2', author: 'Prof. Amartya Rao', text: 'This is the most comprehensive 26-year forensic audit of agricultural budgets I have read. Excellent work on the scissors index.', timestamp: '2026-05-22', reputation: 88 }
-    ]
+    ],
+    trustLabel: 'Verified Research',
+    versions: [
+      { version: '1.0.0', date: '2026-05-20', summary: 'Initial Research Draft', author: 'Aditya Kaushik' },
+      { version: '1.1.0', date: '2026-05-22', summary: 'Added regional credit inequality vectors', author: 'Aditya Kaushik' }
+    ],
+    ratings: [
+      { userId: 'user-2', rating: 5 }
+    ],
+    averageRating: 5.0
   },
   {
     id: 'paper-1',
@@ -98,6 +153,10 @@ const DEFAULT_PAPERS: Paper[] = [
     comments: [
       { id: 'c-1', author: 'Sarah Jenkins (WEF)', text: 'Exceptional modeling. The empirical analysis on EM clearing corridors matches our recent internal reports perfectly.', timestamp: '2026-05-13', reputation: 98 },
       { id: 'c-2', author: 'Prof. Kenji Sato', text: 'Does this hold under severe inflation shock? The simulation should consider extreme supply shocks.', timestamp: '2026-05-15', reputation: 85 }
+    ],
+    trustLabel: 'Verified Research',
+    versions: [
+      { version: '1.0.0', date: '2026-05-12', summary: 'Released sovereign debt simulation models', author: 'Dr. Alistair Vance' }
     ]
   },
   {
@@ -124,6 +183,10 @@ const DEFAULT_PAPERS: Paper[] = [
     aiSummary: '• Presents a novel reinforcement learning architecture optimized for non-stationary market states.\n• Shows a 2.45 Information Ratio in simulated out-of-sample backtests under extreme drawdowns.\n• Implements graph network abstractions to map order book liquidity and counterparty risk.',
     comments: [
       { id: 'c-3', author: 'Dr. Chen Wei (HKUST)', text: 'The out-of-sample IR of 2.45 is highly impressive. Have you made the training weights open-source?', timestamp: '2026-04-30', reputation: 92 }
+    ],
+    trustLabel: 'Verified Research',
+    versions: [
+      { version: '1.0.0', date: '2026-04-29', summary: 'Neural Alpha Core Weights Released', author: 'Elena Rostova' }
     ]
   },
   {
@@ -148,7 +211,11 @@ const DEFAULT_PAPERS: Paper[] = [
     bookmarkedBy: [],
     peerReviewed: true,
     aiSummary: '• Stress-tests rare-earth supply networks against high-risk trade containment policies.\n• Identifies three key choke-points in Southeast Asian processing hubs that represent single-points-of-failure.\n• Provides a policy blueprint for multi-national public-private stockpile partnerships.',
-    comments: []
+    comments: [],
+    trustLabel: 'Verified Research',
+    versions: [
+      { version: '1.0.0', date: '2026-05-02', summary: 'Lithium logistical pipeline stress draft', author: 'Marcus Aurelius Vance' }
+    ]
   },
   {
     id: 'paper-4',
@@ -172,7 +239,11 @@ const DEFAULT_PAPERS: Paper[] = [
     bookmarkedBy: [],
     peerReviewed: false,
     aiSummary: '• Compares central bank led ledger models with permissionless proof-of-stake networks.\n• Evaluates the transactional privacy trade-offs of digital cash versus audit compliance requirements.\n• Develops an algorithmic framework for cross-border multi-CBDC liquidity routing.',
-    comments: []
+    comments: [],
+    trustLabel: 'Community Reviewed',
+    versions: [
+      { version: '1.0.0', date: '2026-05-18', summary: 'Core CBDC protocol simulation paper', author: 'Dr. Amara Dianu' }
+    ]
   }
 ];
 
@@ -185,45 +256,125 @@ const DEFAULT_USER: User = {
   badge: 'Lead Architect',
   avatarUrl: '/aditya.png',
   bookmarks: ['paper-2'],
-  uploadedPapers: []
+  uploadedPapers: ['paper-5']
 };
 
-// Initialize localStorage DB if empty
+const DEFAULT_CHALLENGES: RndChallenge[] = [
+  {
+    id: 'ch-1',
+    title: 'Rare-Earth Mineral Logistics Models',
+    sponsor: 'World Economic Forum',
+    logo: 'WEF',
+    description: 'Establish stress-test flow graph networks modeling regional supply disruptions on lithium processing hubs in Southeast Asia.',
+    reward: '$25,000 Grant',
+    repAward: 500,
+    category: 'Geopolitics',
+    difficulty: 'Expert',
+    teamsCount: 8,
+    solutionsCount: 3,
+    joinedUsers: [],
+    details: 'This challenge aims to map out potential trade choke-points using quantitative spatial flow graphs. Winners will receive institutional publishing clearance on the WEF Global Risk Matrix and a dedicated research subsidy.'
+  },
+  {
+    id: 'ch-2',
+    title: 'Agricultural Credit Leakage Analysis',
+    sponsor: 'NABARD',
+    logo: 'NAB',
+    description: 'Design digital analytical tracking tools analyzing out-of-pocket health costs leaking from KCC agricultural lines.',
+    reward: 'Fellowship Position',
+    repAward: 400,
+    category: 'Public Policy',
+    difficulty: 'Expert',
+    teamsCount: 14,
+    solutionsCount: 5,
+    joinedUsers: ['user-1'],
+    details: 'Researchers must use microeconomic household parameters and local credit lines to evaluate regional discrepancies. NABARD will subsidize a 12-month sovereign research fellowship in New Delhi for the best proposal.'
+  },
+  {
+    id: 'ch-3',
+    title: 'High-Frequency Order Book Graph Transformers',
+    sponsor: 'Quantora Labs',
+    logo: 'QL',
+    description: 'Design deep order book transformers parsing extreme volatility spreads for market-making multi-agent architectures.',
+    reward: '$10,000 Award',
+    repAward: 300,
+    category: 'Quantitative Finance',
+    difficulty: 'Expert',
+    teamsCount: 19,
+    solutionsCount: 2,
+    joinedUsers: [],
+    details: 'This project targets spatial-temporal representation models mapping out-of-sample Order Book limits. The winning code will be licensed and deployed directly across Quantora’s clearing gateways.'
+  },
+  {
+    id: 'ch-4',
+    title: 'Carbon-Neutral Decoupled Ledger System',
+    sponsor: 'Green Climate Alliance',
+    logo: 'GCA',
+    description: 'Formulate light-weight, highly energy-efficient cross-chain synchronization scripts to minimize network overhead.',
+    reward: '$15,000 Award',
+    repAward: 350,
+    category: 'Technology Insights',
+    difficulty: 'Intermediate',
+    teamsCount: 6,
+    solutionsCount: 1,
+    joinedUsers: [],
+    details: 'Integrate carbon-aware API routers dynamically dispatching validator nodes. Proposals must detail precise computational footprints per transaction block.'
+  }
+];
+
+const DEFAULT_INSIGHTS: Insight[] = [
+  {
+    id: 'ins-1',
+    author: 'Aditya Kaushik',
+    avatarUrl: '/aditya.png',
+    role: 'Admin',
+    badge: 'Lead Architect',
+    reputation: 980,
+    content: 'Bilateral metal sanctions stress-test indicators show a structural 22% supply deficit for rare-earth and lithium processing hubs by Q4 2026. G7 countries are structurally unprepared for strategic sovereign decoupling.',
+    tags: ['Lithium', 'SupplyChains', 'Geopolitics'],
+    category: 'Geopolitics',
+    timestamp: '2026-05-24',
+    upvotes: 42,
+    upvotedBy: ['user-2'],
+    commentsCount: 3
+  },
+  {
+    id: 'ins-2',
+    author: 'Dr. Alistair Vance',
+    role: 'Contributor',
+    badge: 'Sovereign Analyst',
+    reputation: 820,
+    content: 'Emerging market clearing indices flag an unprecedented capital reallocation. Over $140B in central bank assets migrated into non-G7 backed physical sovereign deposits during the last trading cycle.',
+    tags: ['SovereignDebt', 'YieldCurves', 'CapitalFlight'],
+    category: 'Macroeconomics',
+    timestamp: '2026-05-23',
+    upvotes: 28,
+    upvotedBy: [],
+    commentsCount: 1
+  },
+  {
+    id: 'ins-3',
+    author: 'Elena Rostova',
+    role: 'Contributor',
+    badge: 'Neural Architect',
+    reputation: 720,
+    content: 'Our Deep RL backtests just confirmed a 2.45 Information Ratio on out-of-sample order book spreads under high volatility regimes. The spatial-temporal graph models outperform traditional transformer vectors by a clean 45%.',
+    tags: ['Algorithmic', 'OrderBook', 'ReinforcementLearning'],
+    category: 'Quantitative Finance',
+    timestamp: '2026-05-22',
+    upvotes: 56,
+    upvotedBy: ['user-1'],
+    commentsCount: 4
+  }
+];
+
+// Initialize localStorage DB
 export const initializeDB = () => {
   if (!localStorage.getItem('quantora_papers')) {
     localStorage.setItem('quantora_papers', JSON.stringify(DEFAULT_PAPERS));
-  } else {
-    // Migration: Update existing paper-5 to use /report.pdf
-    try {
-      const papers = JSON.parse(localStorage.getItem('quantora_papers') || '[]');
-      let updated = false;
-      const updatedPapers = papers.map((p: any) => {
-        if (p.id === 'paper-5' && (!p.fileUrl || p.fileUrl === '#')) {
-          p.fileUrl = '/report.pdf';
-          updated = true;
-        }
-        return p;
-      });
-      if (updated) {
-        localStorage.setItem('quantora_papers', JSON.stringify(updatedPapers));
-      }
-    } catch (e) {
-      console.error(e);
-    }
   }
   if (!localStorage.getItem('quantora_user')) {
     localStorage.setItem('quantora_user', JSON.stringify(DEFAULT_USER));
-  } else {
-    // Migration: Update existing user to use the premium professional avatar
-    try {
-      const u = JSON.parse(localStorage.getItem('quantora_user') || '{}');
-      if (u.id === 'user-1' && (!u.avatarUrl || u.avatarUrl.includes('unsplash.com'))) {
-        u.avatarUrl = '/aditya.png';
-        localStorage.setItem('quantora_user', JSON.stringify(u));
-      }
-    } catch (e) {
-      console.error(e);
-    }
   }
   if (!localStorage.getItem('quantora_users')) {
     localStorage.setItem('quantora_users', JSON.stringify([DEFAULT_USER, {
@@ -236,34 +387,24 @@ export const initializeDB = () => {
       bookmarks: [],
       uploadedPapers: ['paper-2']
     }]));
-  } else {
-    // Migration: Update in users list
-    try {
-      const users = JSON.parse(localStorage.getItem('quantora_users') || '[]');
-      let updated = false;
-      const updatedUsers = users.map((u: any) => {
-        if (u.id === 'user-1' && (!u.avatarUrl || u.avatarUrl.includes('unsplash.com'))) {
-          u.avatarUrl = '/aditya.png';
-          updated = true;
-        }
-        return u;
-      });
-      if (updated) {
-        localStorage.setItem('quantora_users', JSON.stringify(updatedUsers));
-      }
-    } catch (e) {
-      console.error(e);
-    }
+  }
+  if (!localStorage.getItem('quantora_challenges')) {
+    localStorage.setItem('quantora_challenges', JSON.stringify(DEFAULT_CHALLENGES));
+  }
+  if (!localStorage.getItem('quantora_insights')) {
+    localStorage.setItem('quantora_insights', JSON.stringify(DEFAULT_INSIGHTS));
   }
 };
 
-// Clear DB to default values
 export const resetDB = () => {
   localStorage.setItem('quantora_papers', JSON.stringify(DEFAULT_PAPERS));
   localStorage.setItem('quantora_user', JSON.stringify(DEFAULT_USER));
+  localStorage.setItem('quantora_challenges', JSON.stringify(DEFAULT_CHALLENGES));
+  localStorage.setItem('quantora_insights', JSON.stringify(DEFAULT_INSIGHTS));
   return getPapers();
 };
 
+// Papers core API
 export const getPapers = (): Paper[] => {
   initializeDB();
   return JSON.parse(localStorage.getItem('quantora_papers') || '[]');
@@ -273,10 +414,10 @@ export const savePapers = (papers: Paper[]) => {
   localStorage.setItem('quantora_papers', JSON.stringify(papers));
 };
 
-export const addPaper = (paper: Omit<Paper, 'id' | 'date' | 'status' | 'citations' | 'downloads' | 'likes' | 'upvotedBy' | 'bookmarkedBy' | 'comments' | 'aiSummary'>): Paper => {
+export const addPaper = (paper: Omit<Paper, 'id' | 'date' | 'status' | 'citations' | 'downloads' | 'likes' | 'upvotedBy' | 'bookmarkedBy' | 'comments' | 'aiSummary'> & { trustLabel?: Paper['trustLabel']; forkedFrom?: string }): Paper => {
   const papers = getPapers();
   
-  // High-fidelity Mock AI Summary generation
+  // AI summary simulation
   const bullet1 = `• Addresses empirical key factors under the category of ${paper.category}.`;
   const bullet2 = `• Synthesized analytical patterns from researchers at ${paper.institution}.`;
   const bullet3 = `• Validates custom models with specialized focus in keywords: ${paper.tags.join(', ')}.`;
@@ -293,7 +434,14 @@ export const addPaper = (paper: Omit<Paper, 'id' | 'date' | 'status' | 'citation
     upvotedBy: [],
     bookmarkedBy: [],
     aiSummary,
-    comments: []
+    comments: [],
+    trustLabel: paper.trustLabel || 'Independent Submission',
+    forkedFrom: paper.forkedFrom,
+    versions: [
+      { version: '1.0.0', date: new Date().toISOString().split('T')[0], summary: 'Initial Submission', author: paper.author }
+    ],
+    ratings: [],
+    averageRating: 0
   };
 
   papers.push(newPaper);
@@ -309,11 +457,85 @@ export const addPaper = (paper: Omit<Paper, 'id' | 'date' | 'status' | 'citation
   return newPaper;
 };
 
+// Fork paper helper
+export const forkPaper = (parentPaperId: string): Paper | null => {
+  const papers = getPapers();
+  const parent = papers.find(p => p.id === parentPaperId);
+  const user = getCurrentUser();
+  if (!parent || !user) return null;
+
+  const forked: Omit<Paper, 'id' | 'date' | 'status' | 'citations' | 'downloads' | 'likes' | 'upvotedBy' | 'bookmarkedBy' | 'comments' | 'aiSummary'> & { trustLabel?: Paper['trustLabel']; forkedFrom?: string } = {
+    title: `Fork of: ${parent.title}`,
+    abstract: `Forked research branch investigating enhancements. Parent Abstract:\n${parent.abstract}`,
+    category: parent.category,
+    author: user.name,
+    institution: user.badge || 'Independent Fellow',
+    country: parent.country,
+    tags: [...parent.tags, 'Fork'],
+    references: parent.references,
+    fileUrl: parent.fileUrl,
+    fileName: parent.fileName,
+    fileSize: parent.fileSize,
+    peerReviewed: false,
+    trustLabel: 'Open Draft',
+    forkedFrom: parent.id
+  };
+
+  return addPaper(forked);
+};
+
+// Add revision version helper
+export const addPaperVersion = (id: string, version: string, summary: string): Paper | null => {
+  const papers = getPapers();
+  const index = papers.findIndex(p => p.id === id);
+  const user = getCurrentUser();
+  if (index !== -1 && user) {
+    const paper = papers[index];
+    if (!paper.versions) paper.versions = [];
+    paper.versions.push({
+      version,
+      date: new Date().toISOString().split('T')[0],
+      summary,
+      author: user.name
+    });
+    papers[index] = paper;
+    savePapers(papers);
+    return paper;
+  }
+  return null;
+};
+
+// Rating helper
+export const ratePaper = (paperId: string, rating: number): Paper | null => {
+  const papers = getPapers();
+  const index = papers.findIndex(p => p.id === paperId);
+  const user = getCurrentUser();
+  if (index !== -1 && user && rating >= 1 && rating <= 5) {
+    const paper = papers[index];
+    if (!paper.ratings) paper.ratings = [];
+    
+    // remove existing rating from user
+    paper.ratings = paper.ratings.filter(r => r.userId !== user.id);
+    paper.ratings.push({ userId: user.id, rating });
+    
+    const sum = paper.ratings.reduce((s, r) => s + r.rating, 0);
+    paper.averageRating = Number((sum / paper.ratings.length).toFixed(1));
+    
+    papers[index] = paper;
+    savePapers(papers);
+    return paper;
+  }
+  return null;
+};
+
 export const updatePaperStatus = (id: string, status: 'Approved' | 'Rejected'): Paper | null => {
   const papers = getPapers();
   const index = papers.findIndex(p => p.id === id);
   if (index !== -1) {
     papers[index].status = status;
+    if (status === 'Approved') {
+      papers[index].trustLabel = 'Verified Research';
+    }
     savePapers(papers);
     return papers[index];
   }
@@ -409,7 +631,7 @@ export const addComment = (paperId: string, author: string, text: string): Comme
       author,
       text,
       timestamp: new Date().toISOString().split('T')[0],
-      reputation: 50 // starting reputation for commenters
+      reputation: 50
     };
     papers[index].comments.push(newComment);
     savePapers(papers);
@@ -428,6 +650,7 @@ export const deletePaper = (id: string): boolean => {
   return false;
 };
 
+// Users core API
 export const getCurrentUser = (): User | null => {
   initializeDB();
   return JSON.parse(localStorage.getItem('quantora_user') || 'null');
@@ -436,7 +659,6 @@ export const getCurrentUser = (): User | null => {
 export const saveCurrentUser = (user: User | null) => {
   if (user) {
     localStorage.setItem('quantora_user', JSON.stringify(user));
-    // update in users list as well
     const users = getAllUsers();
     const index = users.findIndex(u => u.id === user.id);
     if (index !== -1) {
@@ -456,7 +678,6 @@ export const getAllUsers = (): User[] => {
 export const handleMockAuth = (email: string, _method: 'Google' | 'GitHub' | 'OTP'): User => {
   const users = getAllUsers();
   
-  // High-privilege clearance mapping for developer's direct credentials
   const isDeveloperEmail = [
     'scarfaceatwork@outlook.com',
     'aditya.kaushik@gmail.com',
@@ -477,7 +698,6 @@ export const handleMockAuth = (email: string, _method: 'Google' | 'GitHub' | 'OT
   existingUser = users.find(u => u.email === email);
   
   if (!existingUser) {
-    // Register new user
     const name = email.split('@')[0].replace('.', ' ').replace(/\b\w/g, c => c.toUpperCase());
     existingUser = {
       id: `user-${Date.now()}`,
@@ -495,4 +715,144 @@ export const handleMockAuth = (email: string, _method: 'Google' | 'GitHub' | 'OT
   
   saveCurrentUser(existingUser);
   return existingUser;
+};
+
+// Challenges core API
+export const getChallenges = (): RndChallenge[] => {
+  initializeDB();
+  return JSON.parse(localStorage.getItem('quantora_challenges') || '[]');
+};
+
+export const saveChallenges = (challenges: RndChallenge[]) => {
+  localStorage.setItem('quantora_challenges', JSON.stringify(challenges));
+};
+
+export const joinChallenge = (challengeId: string, userId: string): RndChallenge | null => {
+  const challenges = getChallenges();
+  const index = challenges.findIndex(c => c.id === challengeId);
+  if (index !== -1) {
+    const challenge = challenges[index];
+    if (!challenge.joinedUsers.includes(userId)) {
+      challenge.joinedUsers.push(userId);
+      challenge.teamsCount += 1;
+      challenges[index] = challenge;
+      saveChallenges(challenges);
+      
+      // increment user reputation slightly
+      const users = getAllUsers();
+      const userIdx = users.findIndex(u => u.id === userId);
+      if (userIdx !== -1) {
+        users[userIdx].reputation += 15;
+        localStorage.setItem('quantora_users', JSON.stringify(users));
+        const current = getCurrentUser();
+        if (current && current.id === userId) {
+          current.reputation += 15;
+          saveCurrentUser(current);
+        }
+      }
+      return challenge;
+    }
+  }
+  return null;
+};
+
+export const submitChallengeSolution = (challengeId: string, userId: string): RndChallenge | null => {
+  const challenges = getChallenges();
+  const index = challenges.findIndex(c => c.id === challengeId);
+  if (index !== -1) {
+    const challenge = challenges[index];
+    challenge.solutionsCount += 1;
+    challenges[index] = challenge;
+    saveChallenges(challenges);
+
+    // increment reputation
+    const users = getAllUsers();
+    const userIdx = users.findIndex(u => u.id === userId);
+    if (userIdx !== -1) {
+      users[userIdx].reputation += 50;
+      localStorage.setItem('quantora_users', JSON.stringify(users));
+      const current = getCurrentUser();
+      if (current && current.id === userId) {
+        current.reputation += 50;
+        saveCurrentUser(current);
+      }
+    }
+    return challenge;
+  }
+  return null;
+};
+
+// Insights core API
+export const getInsights = (): Insight[] => {
+  initializeDB();
+  return JSON.parse(localStorage.getItem('quantora_insights') || '[]');
+};
+
+export const saveInsights = (insights: Insight[]) => {
+  localStorage.setItem('quantora_insights', JSON.stringify(insights));
+};
+
+export const addInsight = (content: string, tags: string[], category: string): Insight | null => {
+  const user = getCurrentUser();
+  if (!user) return null;
+
+  const newInsight: Insight = {
+    id: `ins-${Date.now()}`,
+    author: user.name,
+    avatarUrl: user.avatarUrl,
+    role: user.role,
+    badge: user.badge,
+    reputation: user.reputation,
+    content,
+    tags,
+    category,
+    timestamp: new Date().toISOString().split('T')[0],
+    upvotes: 0,
+    upvotedBy: [],
+    commentsCount: 0
+  };
+
+  const insights = getInsights();
+  insights.unshift(newInsight);
+  saveInsights(insights);
+
+  // increase reputation for sharing insights
+  const users = getAllUsers();
+  const userIdx = users.findIndex(u => u.id === user.id);
+  if (userIdx !== -1) {
+    users[userIdx].reputation += 5;
+    localStorage.setItem('quantora_users', JSON.stringify(users));
+    user.reputation += 5;
+    saveCurrentUser(user);
+  }
+
+  return newInsight;
+};
+
+export const upvoteInsight = (id: string, userId: string): Insight | null => {
+  const insights = getInsights();
+  const index = insights.findIndex(ins => ins.id === id);
+  if (index !== -1) {
+    const insight = insights[index];
+    const upIdx = insight.upvotedBy.indexOf(userId);
+    if (upIdx === -1) {
+      insight.upvotedBy.push(userId);
+      insight.upvotes += 1;
+      
+      // increase author reputation
+      const users = getAllUsers();
+      const authorIdx = users.findIndex(u => u.name === insight.author);
+      if (authorIdx !== -1) {
+        users[authorIdx].reputation += 2;
+        localStorage.setItem('quantora_users', JSON.stringify(users));
+      }
+    } else {
+      insight.upvotedBy.splice(upIdx, 1);
+      insight.upvotes = Math.max(0, insight.upvotes - 1);
+    }
+    insights[index] = insight;
+    saveInsights(insights);
+    return insight;
+  }
+  return null;
 };

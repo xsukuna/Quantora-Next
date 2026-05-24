@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  LayoutDashboard, Settings,
-  Shield, LogOut, User, FileText, BookOpen,
-  Activity, Building2, Bell, Sun, Moon
+  LayoutDashboard, Settings, Shield, LogOut, FileText, BookOpen,
+  Activity, Building2, Bell, Sun, Moon, MessageCircle, Trophy, Users, Leaf
 } from 'lucide-react';
 
 // Component Imports
@@ -14,6 +13,10 @@ import { AdminDashboard } from './components/AdminDashboard';
 import { LiveTerminal } from './components/LiveTerminal';
 import { ProfessionalPages } from './components/ProfessionalPages';
 import { AuthModal } from './components/AuthModal';
+import { InsightsFeed } from './components/InsightsFeed';
+import { RndLab } from './components/RndLab';
+import { ResearcherProfiles } from './components/ResearcherProfiles';
+import { ClimateHub } from './components/ClimateHub';
 
 // DB Service Imports
 import { getCurrentUser, saveCurrentUser } from './services/db';
@@ -23,6 +26,7 @@ const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('HOME');
   const [currentUser, setCurrentUser] = useState<DBUser | null>(null);
   const [selectedPaperId, setSelectedPaperId] = useState<string | null>(null);
+  const [forkedFromPaperId, setForkedFromPaperId] = useState<string | null>(null);
   
   // Modals & Panels
   const [authOpen, setAuthOpen] = useState(false);
@@ -83,6 +87,11 @@ const App: React.FC = () => {
     }
   };
 
+  const handleFork = (paperId: string) => {
+    setForkedFromPaperId(paperId);
+    setActiveTab('SUBMIT');
+  };
+
   // Mock Notification logs
   const notifications = [
     { id: '1', title: 'Operational Clearance Granted', desc: 'Secure connection established to NY-HUB-04.' },
@@ -113,101 +122,163 @@ const App: React.FC = () => {
         </div>
 
         {/* Tab Items switches */}
-        <div className="flex flex-col gap-6 text-gray-500 mt-4">
+        <div className="flex flex-col gap-5 text-gray-500 mt-2 overflow-y-auto scrollbar-hide py-4 items-center">
           
           <button 
             onClick={() => handleNavigation('HOME')}
-            className={`flex flex-col items-center gap-1 group relative`}
+            className={`flex flex-col items-center gap-1 group relative shrink-0`}
+            title="Index Hub"
           >
             <LayoutDashboard 
-              className={`w-6 h-6 cursor-pointer group-hover:text-blue-400 transition-all ${
-                activeTab === 'HOME' ? 'text-blue-400 scale-115' : ''
+              className={`w-5 h-5 cursor-pointer group-hover:text-blue-400 transition-all ${
+                activeTab === 'HOME' ? 'text-blue-400 scale-110' : ''
               }`} 
             />
-            <span className="text-[8px] font-black uppercase tracking-wider scale-90 opacity-70 group-hover:opacity-100">Index</span>
-            {activeTab === 'HOME' && <span className="absolute left-0 top-1/3 w-1 h-3 bg-blue-500 rounded-r" />}
+            <span className="text-[7.5px] font-black uppercase tracking-wider opacity-70 group-hover:opacity-100">Index</span>
+            {activeTab === 'HOME' && <span className="absolute left-0 top-1/4 w-0.5 h-3 bg-blue-500 rounded-r" />}
           </button>
 
           <button 
             onClick={() => handleNavigation('LIBRARY')}
-            className={`flex flex-col items-center gap-1 group relative`}
+            className={`flex flex-col items-center gap-1 group relative shrink-0`}
+            title="Research Library"
           >
             <BookOpen 
-              className={`w-6 h-6 cursor-pointer group-hover:text-blue-400 transition-all ${
-                activeTab === 'LIBRARY' ? 'text-blue-400 scale-115' : ''
+              className={`w-5 h-5 cursor-pointer group-hover:text-blue-400 transition-all ${
+                activeTab === 'LIBRARY' ? 'text-blue-400 scale-110' : ''
               }`} 
             />
-            <span className="text-[8px] font-black uppercase tracking-wider scale-90 opacity-70 group-hover:opacity-100">Library</span>
-            {activeTab === 'LIBRARY' && <span className="absolute left-0 top-1/3 w-1 h-3 bg-blue-500 rounded-r" />}
+            <span className="text-[7.5px] font-black uppercase tracking-wider opacity-70 group-hover:opacity-100">Library</span>
+            {activeTab === 'LIBRARY' && <span className="absolute left-0 top-1/4 w-0.5 h-3 bg-blue-500 rounded-r" />}
+          </button>
+
+          <button 
+            onClick={() => handleNavigation('INSIGHTS')}
+            className={`flex flex-col items-center gap-1 group relative shrink-0`}
+            title="Intelligence Network"
+          >
+            <MessageCircle 
+              className={`w-5 h-5 cursor-pointer group-hover:text-blue-400 transition-all ${
+                activeTab === 'INSIGHTS' ? 'text-blue-400 scale-110' : ''
+              }`} 
+            />
+            <span className="text-[7.5px] font-black uppercase tracking-wider opacity-70 group-hover:opacity-100">Insights</span>
+            {activeTab === 'INSIGHTS' && <span className="absolute left-0 top-1/4 w-0.5 h-3 bg-blue-500 rounded-r" />}
+          </button>
+
+          <button 
+            onClick={() => handleNavigation('LAB_MARKET')}
+            className={`flex flex-col items-center gap-1 group relative shrink-0`}
+            title="Open R&D Lab"
+          >
+            <Trophy 
+              className={`w-5 h-5 cursor-pointer group-hover:text-amber-400 transition-all ${
+                activeTab === 'LAB_MARKET' ? 'text-amber-400 scale-110' : ''
+              }`} 
+            />
+            <span className="text-[7.5px] font-black uppercase tracking-wider opacity-70 group-hover:opacity-100">R&D Lab</span>
+            {activeTab === 'LAB_MARKET' && <span className="absolute left-0 top-1/4 w-0.5 h-3 bg-amber-500 rounded-r" />}
           </button>
 
           <button 
             onClick={() => handleNavigation('SUBMIT')}
-            className={`flex flex-col items-center gap-1 group relative`}
+            className={`flex flex-col items-center gap-1 group relative shrink-0`}
+            title="Submit Manuscript"
           >
             <FileText 
-              className={`w-6 h-6 cursor-pointer group-hover:text-emerald-400 transition-all ${
-                activeTab === 'SUBMIT' ? 'text-emerald-400 scale-115' : ''
+              className={`w-5 h-5 cursor-pointer group-hover:text-emerald-400 transition-all ${
+                activeTab === 'SUBMIT' ? 'text-emerald-400 scale-110' : ''
               }`} 
             />
-            <span className="text-[8px] font-black uppercase tracking-wider scale-90 opacity-70 group-hover:opacity-100">Submit</span>
-            {activeTab === 'SUBMIT' && <span className="absolute left-0 top-1/3 w-1 h-3 bg-emerald-500 rounded-r" />}
+            <span className="text-[7.5px] font-black uppercase tracking-wider opacity-70 group-hover:opacity-100">Submit</span>
+            {activeTab === 'SUBMIT' && <span className="absolute left-0 top-1/4 w-0.5 h-3 bg-emerald-500 rounded-r" />}
+          </button>
+
+          <button 
+            onClick={() => handleNavigation('PROFILE')}
+            className={`flex flex-col items-center gap-1 group relative shrink-0`}
+            title="Researcher Identity"
+          >
+            <Users 
+              className={`w-5 h-5 cursor-pointer group-hover:text-blue-400 transition-all ${
+                activeTab === 'PROFILE' ? 'text-blue-400 scale-110' : ''
+              }`} 
+            />
+            <span className="text-[7.5px] font-black uppercase tracking-wider opacity-70 group-hover:opacity-100">Profiles</span>
+            {activeTab === 'PROFILE' && <span className="absolute left-0 top-1/4 w-0.5 h-3 bg-blue-500 rounded-r" />}
+          </button>
+
+          <button 
+            onClick={() => handleNavigation('CLIMATE')}
+            className={`flex flex-col items-center gap-1 group relative shrink-0`}
+            title="Environmental Hub"
+          >
+            <Leaf 
+              className={`w-5 h-5 cursor-pointer group-hover:text-emerald-400 transition-all ${
+                activeTab === 'CLIMATE' ? 'text-emerald-400 scale-110' : ''
+              }`} 
+            />
+            <span className="text-[7.5px] font-black uppercase tracking-wider opacity-70 group-hover:opacity-100">Climate</span>
+            {activeTab === 'CLIMATE' && <span className="absolute left-0 top-1/4 w-0.5 h-3 bg-emerald-500 rounded-r" />}
           </button>
 
           <button 
             onClick={() => handleNavigation('TERMINAL')}
-            className={`flex flex-col items-center gap-1 group relative`}
+            className={`flex flex-col items-center gap-1 group relative shrink-0`}
+            title="Fintech Terminal"
           >
             <Activity 
-              className={`w-6 h-6 cursor-pointer group-hover:text-cyan-400 transition-all ${
-                activeTab === 'TERMINAL' ? 'text-cyan-400 scale-115' : ''
+              className={`w-5 h-5 cursor-pointer group-hover:text-cyan-400 transition-all ${
+                activeTab === 'TERMINAL' ? 'text-cyan-400 scale-110' : ''
               }`} 
             />
-            <span className="text-[8px] font-black uppercase tracking-wider scale-90 opacity-70 group-hover:opacity-100">Terminal</span>
-            {activeTab === 'TERMINAL' && <span className="absolute left-0 top-1/3 w-1 h-3 bg-cyan-500 rounded-r" />}
+            <span className="text-[7.5px] font-black uppercase tracking-wider opacity-70 group-hover:opacity-100">Terminal</span>
+            {activeTab === 'TERMINAL' && <span className="absolute left-0 top-1/4 w-0.5 h-3 bg-cyan-500 rounded-r" />}
           </button>
 
           <button 
             onClick={() => handleNavigation('PROFESSIONAL')}
-            className={`flex flex-col items-center gap-1 group relative`}
+            className={`flex flex-col items-center gap-1 group relative shrink-0`}
+            title="Institutional Hub"
           >
             <Building2 
-              className={`w-6 h-6 cursor-pointer group-hover:text-purple-400 transition-all ${
-                activeTab === 'PROFESSIONAL' ? 'text-purple-400 scale-115' : ''
+              className={`w-5 h-5 cursor-pointer group-hover:text-purple-400 transition-all ${
+                activeTab === 'PROFESSIONAL' ? 'text-purple-400 scale-110' : ''
               }`} 
             />
-            <span className="text-[8px] font-black uppercase tracking-wider scale-90 opacity-70 group-hover:opacity-100">Org</span>
-            {activeTab === 'PROFESSIONAL' && <span className="absolute left-0 top-1/3 w-1 h-3 bg-purple-500 rounded-r" />}
+            <span className="text-[7.5px] font-black uppercase tracking-wider opacity-70 group-hover:opacity-100">Org</span>
+            {activeTab === 'PROFESSIONAL' && <span className="absolute left-0 top-1/4 w-0.5 h-3 bg-purple-500 rounded-r" />}
           </button>
 
           {currentUser && currentUser.role === 'Admin' && (
             <button 
               onClick={() => handleNavigation('ADMIN')}
-              className={`flex flex-col items-center gap-1 group relative`}
+              className={`flex flex-col items-center gap-1 group relative shrink-0`}
+              title="Admin Workstation"
             >
               <Shield 
-                className={`w-6 h-6 cursor-pointer group-hover:text-red-400 transition-all ${
-                  activeTab === 'ADMIN' ? 'text-red-400 scale-115' : ''
+                className={`w-5 h-5 cursor-pointer group-hover:text-red-400 transition-all ${
+                  activeTab === 'ADMIN' ? 'text-red-400 scale-110' : ''
                 }`} 
               />
-              <span className="text-[8px] font-black uppercase tracking-wider scale-90 opacity-70 group-hover:opacity-100 text-red-500">Admin</span>
-              {activeTab === 'ADMIN' && <span className="absolute left-0 top-1/3 w-1 h-3 bg-red-500 rounded-r" />}
+              <span className="text-[7.5px] font-black uppercase tracking-wider opacity-70 group-hover:opacity-100 text-red-500 font-mono">Admin</span>
+              {activeTab === 'ADMIN' && <span className="absolute left-0 top-1/4 w-0.5 h-3 bg-red-500 rounded-r" />}
             </button>
           )}
 
         </div>
 
         {/* Bottom Utility controls */}
-        <div className="flex flex-col gap-5 text-gray-500 items-center">
+        <div className="flex flex-col gap-4 text-gray-500 items-center shrink-0">
           {/* Theme Preference switch */}
           <button 
             onClick={toggleTheme}
-            className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition-all flex items-center justify-center text-gray-400 hover:text-white"
+            className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 hover:border-white/20 transition-all flex items-center justify-center text-gray-400 hover:text-white"
           >
-            {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            {theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
           </button>
           
-          <Settings className="w-5 h-5 cursor-pointer hover:text-white transition-colors" />
+          <Settings className="w-4 h-4 cursor-pointer hover:text-white transition-colors" />
         </div>
       </div>
 
@@ -219,7 +290,7 @@ const App: React.FC = () => {
           <div className="flex items-center gap-8">
             <div className="flex flex-col cursor-pointer" onClick={() => handleNavigation('HOME')}>
               <span className="text-[12px] font-black tracking-[0.3em] text-blue-500 uppercase">Quantora Analytics</span>
-              <span className="text-[9px] text-gray-500 font-bold uppercase tracking-widest mt-0.5">Global Research & Intelligence Ecosystem</span>
+              <span className="text-[9px] text-gray-500 font-bold uppercase tracking-widest mt-0.5 font-sans">Global Research & Intelligence Ecosystem</span>
             </div>
           </div>
           
@@ -227,11 +298,11 @@ const App: React.FC = () => {
             
             {/* Live active connection indicators */}
             <div className="text-right border-r border-white/10 pr-6 hidden sm:block">
-              <div className="text-[10px] font-black text-emerald-400 flex items-center gap-1.5 justify-end">
+              <div className="text-[10px] font-black text-emerald-400 flex items-center gap-1.5 justify-end font-mono">
                 <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping" />
                 <span>SECURE SHAKESHAKE v4.2 [OK]</span>
               </div>
-              <div className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-0.5">Node: NY-HUB-04</div>
+              <div className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-0.5 font-mono">Node: NY-HUB-04</div>
             </div>
 
             {/* Notifications Feed */}
@@ -256,12 +327,12 @@ const App: React.FC = () => {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
                     >
-                      <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Clearance Notifications</h4>
+                      <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest font-mono">Clearance Notifications</h4>
                       <div className="space-y-3">
                         {notifications.map(n => (
                           <div key={n.id} className="p-3 bg-white/2 border border-white/5 rounded-xl space-y-1">
                             <span className="text-[10px] font-bold text-white uppercase block">{n.title}</span>
-                            <span className="text-[10px] text-gray-400 leading-normal block font-normal">{n.desc}</span>
+                            <span className="text-[10px] text-gray-400 leading-normal block font-normal font-sans">{n.desc}</span>
                           </div>
                         ))}
                       </div>
@@ -274,17 +345,13 @@ const App: React.FC = () => {
             {/* Authentication profile display */}
             {currentUser ? (
               <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/8 transition-all relative group select-none">
-                <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center shrink-0">
-                  {currentUser.avatarUrl ? (
-                    <img src={currentUser.avatarUrl} alt="Avatar" className="w-full h-full rounded-lg object-cover" />
-                  ) : (
-                    <User className="w-4 h-4 text-blue-400" />
-                  )}
+                <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center shrink-0 text-blue-400 font-bold uppercase text-xs">
+                  {currentUser.name.charAt(0)}
                 </div>
                 
                 <div className="flex flex-col text-left shrink-0">
                   <span className="text-xs font-bold text-white max-w-[100px] truncate">{currentUser.name}</span>
-                  <span className="text-[8px] font-black text-emerald-400 uppercase tracking-wider">{currentUser.badge} | Rep: {currentUser.reputation}</span>
+                  <span className="text-[8px] font-black text-emerald-400 uppercase tracking-wider font-mono">{currentUser.badge} | Rep: {currentUser.reputation}</span>
                 </div>
                 
                 <button 
@@ -297,7 +364,7 @@ const App: React.FC = () => {
             ) : (
               <button 
                 onClick={() => setAuthOpen(true)}
-                className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-lg shadow-blue-600/20"
+                className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-lg shadow-blue-600/20 font-sans"
               >
                 Request Clearance
               </button>
@@ -323,7 +390,20 @@ const App: React.FC = () => {
                   onClearSelectedPaper={() => setSelectedPaperId(null)} 
                   currentUser={currentUser}
                   openAuth={() => setAuthOpen(true)}
+                  onFork={handleFork}
                 />
+              </motion.div>
+            )}
+
+            {activeTab === 'INSIGHTS' && (
+              <motion.div key="insights" className="h-full flex flex-col" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <InsightsFeed openAuth={() => setAuthOpen(true)} currentUser={currentUser} />
+              </motion.div>
+            )}
+
+            {activeTab === 'LAB_MARKET' && (
+              <motion.div key="lab_market" className="h-full flex flex-col" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <RndLab openAuth={() => setAuthOpen(true)} currentUser={currentUser} />
               </motion.div>
             )}
 
@@ -333,7 +413,21 @@ const App: React.FC = () => {
                   currentUser={currentUser}
                   openAuth={() => setAuthOpen(true)}
                   onUploadSuccess={() => handleNavigation('LIBRARY')}
+                  forkedFromPaperId={forkedFromPaperId}
+                  onClearFork={() => setForkedFromPaperId(null)}
                 />
+              </motion.div>
+            )}
+
+            {activeTab === 'PROFILE' && (
+              <motion.div key="profile" className="h-full flex flex-col" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <ResearcherProfiles onNavigate={handleNavigation} />
+              </motion.div>
+            )}
+
+            {activeTab === 'CLIMATE' && (
+              <motion.div key="climate" className="h-full flex flex-col" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <ClimateHub />
               </motion.div>
             )}
 
@@ -360,7 +454,7 @@ const App: React.FC = () => {
 
         {/* 4. FOOTER RUNNING TICKER TAPE */}
         <footer className="h-10 border-t border-white/5 bg-[#050505] flex items-center px-6 overflow-hidden z-40 select-none shrink-0">
-          <div className="flex gap-12 text-[10px] font-black uppercase tracking-widest animate-ticker">
+          <div className="flex gap-12 text-[10px] font-black uppercase tracking-widest animate-ticker font-mono">
             {['S&P 500 +1.24%', 'NASDAQ 100 +0.85%', 'FTSE 100 -0.12%', 'USD/EUR +0.04%', 'BTC/USD +4.12%', 'NIKKEI 225 +0.56%', 'GOLD +0.22%', 'CRUDE OIL -1.45%'].map((tick, idx) => (
               <div key={idx} className="flex items-center gap-3">
                 <span className="text-gray-500">CORRIDOR-{idx+1}</span>

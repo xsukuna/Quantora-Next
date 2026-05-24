@@ -1,16 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, FileText, CheckCircle, ShieldAlert, ArrowRight, Loader2, Sparkles } from 'lucide-react';
-import { addPaper } from '../services/db';
+import { 
+  Upload, FileText, CheckCircle, ShieldAlert, ArrowRight, 
+  Loader2, Sparkles, GitFork, Trash2 
+} from 'lucide-react';
+import { addPaper, getPapers } from '../services/db';
 import type { User as DBUser } from '../services/db';
 
 interface UploadFormProps {
   currentUser: DBUser | null;
   openAuth: () => void;
   onUploadSuccess: () => void;
+  forkedFromPaperId?: string | null;
+  onClearFork?: () => void;
 }
 
-export const UploadForm: React.FC<UploadFormProps> = ({ currentUser, openAuth, onUploadSuccess }) => {
+export const UploadForm: React.FC<UploadFormProps> = ({ 
+  currentUser, openAuth, onUploadSuccess, forkedFromPaperId, onClearFork 
+}) => {
   const [title, setTitle] = useState('');
   const [abstract, setAbstract] = useState('');
   const [category, setCategory] = useState<any>('Macroeconomics');
@@ -18,6 +25,7 @@ export const UploadForm: React.FC<UploadFormProps> = ({ currentUser, openAuth, o
   const [country, setCountry] = useState('');
   const [tagsInput, setTagsInput] = useState('');
   const [references, setReferences] = useState('');
+  const [trustLabel, setTrustLabel] = useState<any>('Independent Submission');
   
   // File upload simulation states
   const [file, setFile] = useState<File | null>(null);
@@ -25,6 +33,24 @@ export const UploadForm: React.FC<UploadFormProps> = ({ currentUser, openAuth, o
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadPhase, setUploadPhase] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
+
+  // Check if we are running in forked mode
+  useEffect(() => {
+    if (forkedFromPaperId) {
+      const parent = getPapers().find(p => p.id === forkedFromPaperId);
+      if (parent) {
+        setTitle(`Fork of: ${parent.title}`);
+        setAbstract(`Forked research branch investigating enhancements.\n\nParent Abstract Context:\n${parent.abstract}`);
+        setCategory(parent.category);
+        setTagsInput([...parent.tags, 'Fork'].join(', '));
+        setReferences(parent.references || '');
+        setTrustLabel('Open Draft');
+        // pre-simulate file attachment for convenient demo flow
+        const dummyFile = new File(["Cloned source fork dataset.pdf"], "cloned_fork_manuscript.pdf", { type: "application/pdf" });
+        setFile(dummyFile);
+      }
+    }
+  }, [forkedFromPaperId]);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -116,7 +142,9 @@ export const UploadForm: React.FC<UploadFormProps> = ({ currentUser, openAuth, o
       fileUrl: '#',
       fileName: fileNameStr,
       fileSize: fileSizeStr,
-      peerReviewed: false // initially false, moderated by admin
+      peerReviewed: false,
+      trustLabel: trustLabel,
+      forkedFrom: forkedFromPaperId || undefined
     });
 
     setIsSuccess(true);
@@ -129,8 +157,10 @@ export const UploadForm: React.FC<UploadFormProps> = ({ currentUser, openAuth, o
     setCountry('');
     setTagsInput('');
     setReferences('');
+    setTrustLabel('Independent Submission');
     setFile(null);
     setIsSuccess(false);
+    if (onClearFork) onClearFork();
     onUploadSuccess();
   };
 
@@ -138,11 +168,31 @@ export const UploadForm: React.FC<UploadFormProps> = ({ currentUser, openAuth, o
     <div className="flex-1 overflow-y-auto bg-[#020202] p-8 md:p-12 text-white scrollbar-hide">
       <div className="max-w-3xl mx-auto space-y-8">
         
+        {/* Fork indicator header */}
+        {forkedFromPaperId && (
+          <div className="p-4 bg-blue-600/10 border border-blue-500/20 rounded-2xl flex justify-between items-center relative overflow-hidden">
+            <div className="flex gap-3 items-center">
+              <GitFork className="w-5 h-5 text-blue-400 shrink-0" />
+              <div>
+                <span className="text-[9px] font-black text-blue-400 uppercase tracking-widest block font-mono">Git Collaborative Fork Corridor</span>
+                <span className="text-xs text-white font-bold block truncate max-w-lg">Branching out from original index: {forkedFromPaperId}</span>
+              </div>
+            </div>
+            <button 
+              onClick={onClearFork}
+              className="p-2 hover:bg-red-600/10 text-gray-500 hover:text-red-400 rounded-lg transition-colors"
+              title="Cancel Fork Clones"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+
         {/* Header */}
         <div className="space-y-2">
           <span className="text-[10px] font-black text-blue-500 uppercase tracking-[0.2em]">Open Science Gateway</span>
           <h2 className="text-2xl md:text-4xl font-black uppercase tracking-wider text-white">Publish Public Research</h2>
-          <p className="text-xs md:text-sm text-gray-400 leading-relaxed">
+          <p className="text-xs md:text-sm text-gray-400 leading-relaxed font-sans">
             Quantora Analytics operates a decentralized peer-to-peer science index. Submit your research data, industry reports, policy critiques, or market algorithms. Once cleared by the editorial board, it will publish instantly to our digital public library.
           </p>
         </div>
@@ -153,7 +203,7 @@ export const UploadForm: React.FC<UploadFormProps> = ({ currentUser, openAuth, o
               <ShieldAlert className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
               <div>
                 <h4 className="text-xs font-bold uppercase text-white">Security clearance Required</h4>
-                <p className="text-[11px] text-gray-400 mt-0.5 leading-relaxed">You must register your digital credentials and obtain security clearance before uploading documents.</p>
+                <p className="text-[11px] text-gray-400 mt-0.5 leading-relaxed font-sans">You must register your digital credentials and obtain security clearance before uploading documents.</p>
               </div>
             </div>
             <button
@@ -179,8 +229,8 @@ export const UploadForm: React.FC<UploadFormProps> = ({ currentUser, openAuth, o
               </div>
               <div className="space-y-2">
                 <h3 className="text-lg font-black uppercase text-white">Manuscript clearance Initiated</h3>
-                <p className="text-xs text-gray-400 max-w-md mx-auto leading-relaxed">
-                  Your research paper <strong>"{title}"</strong> has been successfully submitted and labeled as <strong>"Pending Review"</strong>.
+                <p className="text-xs text-gray-400 max-w-md mx-auto leading-relaxed font-sans">
+                  Your research paper <strong>"{title}"</strong> has been successfully submitted and labeled as <strong>"Pending Review"</strong> under the <strong>{trustLabel}</strong> index.
                   The Quantora Editorial Council will verify references and peer credentials within 24 hours.
                 </p>
               </div>
@@ -245,13 +295,16 @@ export const UploadForm: React.FC<UploadFormProps> = ({ currentUser, openAuth, o
                   </select>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Author Identity</label>
-                  <input
-                    type="text"
-                    disabled
-                    value={currentUser ? `${currentUser.name} (${currentUser.badge})` : 'Awaiting clearance authorization'}
-                    className="w-full bg-white/2 border border-white/5 text-gray-500 rounded-xl px-4 py-3.5 text-xs outline-none font-bold"
-                  />
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Trust Classification Target</label>
+                  <select
+                    value={trustLabel}
+                    onChange={(e) => setTrustLabel(e.target.value as any)}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white outline-none focus:border-blue-500 transition-all appearance-none cursor-pointer font-bold font-mono"
+                  >
+                    <option className="bg-[#050505]" value="Independent Submission">Independent Submission</option>
+                    <option className="bg-[#050505]" value="Experimental Research">Experimental Research</option>
+                    <option className="bg-[#050505]" value="Open Draft">Open Draft</option>
+                  </select>
                 </div>
               </div>
 
@@ -277,7 +330,7 @@ export const UploadForm: React.FC<UploadFormProps> = ({ currentUser, openAuth, o
                   placeholder="Clearly outline the research methodology, findings, data models, and strategic takeaways. Must be written with professional rigor."
                   value={abstract}
                   onChange={(e) => setAbstract(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-xs text-white outline-none focus:border-blue-500 transition-all leading-relaxed"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-xs text-white outline-none focus:border-blue-500 transition-all leading-relaxed font-sans"
                 />
               </div>
 

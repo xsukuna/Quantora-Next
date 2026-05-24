@@ -130,16 +130,16 @@ const DEFAULT_PAPERS: Paper[] = [
   },
   {
     id: 'paper-1',
-    title: 'The Great Decoupling: Sovereign Debt Cycles (2026-2030)',
-    abstract: 'This paper analyzes the structural decoupling of sovereign debt regimes between G7 nations and emerging market blocks. Utilizing alternative capital flow indexing and multi-asset volatility modeling, we demonstrate the emergence of multi-currency clearing architectures and their impact on long-term treasury benchmarks.',
+    title: 'India’s Semiconductor Expansion & Global Supply Chains',
+    abstract: 'An empirical analysis of India’s domestic semiconductor fabrication buildout under industrial policy frameworks, exploring supply chain dependencies, geopolitical risk vectors, and emerging tech sovereignty.',
     category: 'Macroeconomics',
     author: 'Dr. Alistair Vance',
     institution: 'Quantora Analytics Institute',
-    country: 'United Kingdom',
-    tags: ['Sovereign Debt', 'Macroeconomics', 'Yield Curves', 'Decoupling'],
-    references: 'Vance, A. (2025). The Future of G7 Treasury Liquidity. Journal of Monetary Policy, 14(2), 112-140.',
+    country: 'India',
+    tags: ['Semiconductors', 'Supply Chain', 'Industrial Policy', 'India'],
+    references: 'Vance, A. (2025). India’s Fab Growth and Supply Chains. Journal of Technical Infrastructure Policy, 14(2), 112-140.',
     fileUrl: '#',
-    fileName: 'decoupling_debt_cycles_2026.pdf',
+    fileName: 'indias_semiconductor_expansion_2026.pdf',
     fileSize: '4.2 MB',
     date: '2026-05-12',
     status: 'Approved',
@@ -149,14 +149,14 @@ const DEFAULT_PAPERS: Paper[] = [
     upvotedBy: ['user-2'],
     bookmarkedBy: [],
     peerReviewed: true,
-    aiSummary: '• Analyzes G7 monetary decoupling and the emergence of competing global debt clearing circles.\n• Predicts a structural rise in G7 long-term yields due to localized sovereign containment policies.\n• Outlines robust asset allocations for sovereign funds under multi-currency sovereign regimes.',
+    aiSummary: '• Analyzes India’s semiconductor fabrication capital deployment and industrial policy vectors.\n• Evaluates domestic supply dependencies vs. external supply chain dependencies.\n• Details strategic recommendations for expanding raw materials storage and secure logistics.',
     comments: [
-      { id: 'c-1', author: 'Sarah Jenkins (WEF)', text: 'Exceptional modeling. The empirical analysis on EM clearing corridors matches our recent internal reports perfectly.', timestamp: '2026-05-13', reputation: 98 },
-      { id: 'c-2', author: 'Prof. Kenji Sato', text: 'Does this hold under severe inflation shock? The simulation should consider extreme supply shocks.', timestamp: '2026-05-15', reputation: 85 }
+      { id: 'c-1', author: 'Sarah Jenkins (WEF)', text: 'Exceptional modeling. The empirical analysis on fabrication logistics matches our recent industrial survey perfectly.', timestamp: '2026-05-13', reputation: 98 },
+      { id: 'c-2', author: 'Prof. Kenji Sato', text: 'Does this factor in energy load consistency? Fab facilities require exceptionally stable energy infrastructure.', timestamp: '2026-05-15', reputation: 85 }
     ],
     trustLabel: 'Verified Research',
     versions: [
-      { version: '1.0.0', date: '2026-05-12', summary: 'Released sovereign debt simulation models', author: 'Dr. Alistair Vance' }
+      { version: '1.0.0', date: '2026-05-12', summary: 'Released semiconductor logistics models', author: 'Dr. Alistair Vance' }
     ]
   },
   {
@@ -191,16 +191,16 @@ const DEFAULT_PAPERS: Paper[] = [
   },
   {
     id: 'paper-3',
-    title: 'Geopolitical Supply Fractures: Lithium & Transition Elements Pipeline Strategy',
-    abstract: 'This research presents a network flow optimization model mapping global lithium and rare-earth element supply chains. We stress-test this supply grid against diplomatic fractures, nationalization waves, and bilateral trade sanctions, proposing a strategic stockpile framework for industrial resilience.',
+    title: 'Renewable Transition in South Asia: Regional Grids and Carbon-Neutral Finance',
+    abstract: 'This paper presents strategic frameworks for cross-border grid integration and decentralized renewable energy infrastructure in South Asian developing economies, outlining funding models to scale green assets.',
     category: 'Public Policy',
     author: 'Marcus Aurelius Vance',
     institution: 'London School of Economics',
-    country: 'United Kingdom',
-    tags: ['Critical Minerals', 'Energy Transition', 'Geopolitics', 'Supply Chain'],
-    references: 'Vance, M. A. (2026). Lithium Pipeline Fragilities. Global Resources Policy Review, 19(1), 45-78.',
+    country: 'India',
+    tags: ['Renewable Energy', 'Climate Finance', 'South Asia', 'Grid Infrastructure'],
+    references: 'Vance, M. A. (2026). Renewable Grid Transitions in South Asia. Global Resources Policy Review, 19(1), 45-78.',
     fileUrl: '#',
-    fileName: 'lithium_supply_fractures_2026.pdf',
+    fileName: 'renewable_transition_south_asia_2026.pdf',
     fileSize: '5.1 MB',
     date: '2026-05-02',
     status: 'Approved',
@@ -210,11 +210,11 @@ const DEFAULT_PAPERS: Paper[] = [
     upvotedBy: [],
     bookmarkedBy: [],
     peerReviewed: true,
-    aiSummary: '• Stress-tests rare-earth supply networks against high-risk trade containment policies.\n• Identifies three key choke-points in Southeast Asian processing hubs that represent single-points-of-failure.\n• Provides a policy blueprint for multi-national public-private stockpile partnerships.',
+    aiSummary: '• Presents network models for integrating regional electricity markets in India, Nepal, and Bhutan.\n• Evaluates financial structures for scaling micro-grids in energy-deficient rural zones.\n• Stress-tests grid stability vectors against weather anomalies and peak summer loads.',
     comments: [],
     trustLabel: 'Verified Research',
     versions: [
-      { version: '1.0.0', date: '2026-05-02', summary: 'Lithium logistical pipeline stress draft', author: 'Marcus Aurelius Vance' }
+      { version: '1.0.0', date: '2026-05-02', summary: 'Renewable South Asia grid layout draft', author: 'Marcus Aurelius Vance' }
     ]
   },
   {

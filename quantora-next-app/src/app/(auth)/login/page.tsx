@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
@@ -64,7 +64,7 @@ export default function LoginPage() {
             <div className="w-8 h-8 bg-[#0062FF] rounded-lg flex items-center justify-center">
               <Zap size={16} className="text-white" />
             </div>
-            <span className="text-white font-black tracking-widest text-sm uppercase">Quantora Analytics</span>
+            <span className="text-white font-black tracking-widest text-sm uppercase">QUANTORA-NEXT</span>
           </Link>
           <h1 className="text-2xl font-extrabold text-white mb-2">Welcome Back</h1>
           <p className="text-[#A0AEC0] text-sm">Sign in to access the research platform</p>
@@ -167,7 +167,7 @@ export default function LoginPage() {
         {/* Back to platform */}
         <p className="text-center text-[#A0AEC0]/50 text-xs mt-6">
           <Link href="/" className="hover:text-[#A0AEC0] transition-colors">
-            ← Back to Quantora Analytics
+            ← Back to QUANTORA-NEXT
           </Link>
         </p>
       </div>

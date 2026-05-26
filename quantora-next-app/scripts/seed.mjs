@@ -1,4 +1,4 @@
-// Quantora Analytics — Direct Supabase Seed Script
+﻿// QUANTORA-NEXT — Direct Supabase Seed Script
 // Runs with: node scripts/seed.mjs
 
 import { createClient } from '@supabase/supabase-js'
@@ -11,7 +11,7 @@ const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
 })
 
 async function run() {
-  console.log('🚀 Quantora Analytics — Supabase Seed Script\n')
+  console.log('🚀 QUANTORA-NEXT — Supabase Seed Script\n')
 
   // ── 1. Confirm admin user emails ──────────────────────────────────
   console.log('Step 1: Confirming admin user accounts...')
@@ -52,7 +52,7 @@ async function run() {
       difficulty: 'Advanced',
       reward: '₹2,00,000 + Publication Credit',
       rep_award: 500,
-      sponsor: 'Quantora Analytics Institute',
+      sponsor: 'QUANTORA-NEXT Institute',
       is_active: true,
       teams_count: 0,
       solutions_count: 0,
@@ -78,7 +78,7 @@ async function run() {
       difficulty: 'Intermediate',
       reward: '₹75,000 + Platform Badge',
       rep_award: 300,
-      sponsor: 'Quantora Analytics',
+      sponsor: 'QUANTORA-NEXT',
       is_active: true,
       teams_count: 0,
       solutions_count: 0,
@@ -91,7 +91,7 @@ async function run() {
       difficulty: 'Beginner',
       reward: '₹25,000 + Certificate',
       rep_award: 150,
-      sponsor: 'Quantora Analytics',
+      sponsor: 'QUANTORA-NEXT',
       is_active: true,
       teams_count: 0,
       solutions_count: 0,

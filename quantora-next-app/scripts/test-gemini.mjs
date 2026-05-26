@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
+﻿import { GoogleGenerativeAI } from '@google/generative-ai'
 
 const genAI = new GoogleGenerativeAI('AIzaSyBtScpSY_2f-2QWHseynGUocNPQciw9zIc')
 
@@ -11,7 +11,7 @@ async function test() {
 
     // Test streaming
     const chat = model.startChat({ history: [] })
-    const stream = await chat.sendMessageStream('What is Quantora Analytics in one sentence?')
+    const stream = await chat.sendMessageStream('What is QUANTORA-NEXT in one sentence?')
     process.stdout.write('✅ Streaming: ')
     for await (const chunk of stream.stream) {
       process.stdout.write(chunk.text())

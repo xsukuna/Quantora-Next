@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -94,7 +94,7 @@ export default function SignupPage() {
             <div className="w-8 h-8 bg-[#0062FF] rounded-lg flex items-center justify-center">
               <Zap size={16} className="text-white" />
             </div>
-            <span className="text-white font-black tracking-widest text-sm uppercase">Quantora Analytics</span>
+            <span className="text-white font-black tracking-widest text-sm uppercase">QUANTORA-NEXT</span>
           </Link>
           <h1 className="text-2xl font-extrabold text-white mb-2">Create Account</h1>
           <p className="text-[#A0AEC0] text-sm">Join the open research network</p>

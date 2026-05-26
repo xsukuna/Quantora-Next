@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI, GenerateContentResult } from '@google/generative-ai'
+﻿import { GoogleGenerativeAI, GenerateContentResult } from '@google/generative-ai'
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
 
@@ -11,7 +11,7 @@ export async function generatePaperSummary(
   abstract: string,
   category: string
 ): Promise<{ summary: string; keywords: string[]; qualityScore: number }> {
-  const prompt = `You are an academic research assistant for Quantora Analytics, an open-access research platform.
+  const prompt = `You are an academic research assistant for QUANTORA-NEXT, an open-access research platform.
 
 Analyze this research paper and provide:
 1. A clear 2-3 sentence summary for a general academic audience
@@ -48,7 +48,7 @@ Respond ONLY with valid JSON in this exact format:
 
 // ─── Insight Tag Generation ─────────────────────────────────────────────────────
 export async function generateInsightTags(content: string): Promise<string[]> {
-  const prompt = `You are a research categorization assistant for Quantora Analytics.
+  const prompt = `You are a research categorization assistant for QUANTORA-NEXT.
 
 Given this research insight, generate 3-5 concise topic tags. Be specific and academic.
 
@@ -72,7 +72,7 @@ Respond ONLY with a JSON array of strings, e.g.: ["Macroeconomics", "India Polic
 export async function createResearchChat(systemContext?: string) {
   const model = genAI.getGenerativeModel({
     model: 'gemini-2.0-flash-lite',
-    systemInstruction: systemContext || `You are ARIA (Analytical Research Intelligence Assistant), the AI research assistant for Quantora Analytics — an open-access research platform based in New Delhi, India.
+    systemInstruction: systemContext || `You are ARIA (Analytical Research Intelligence Assistant), the AI research assistant for QUANTORA-NEXT — an open-access research platform based in New Delhi, India.
 
 You help researchers with:
 - Understanding research papers and complex academic concepts
@@ -102,7 +102,7 @@ export async function streamChatResponse(
 ): Promise<ReadableStream<Uint8Array>> {
   const model = genAI.getGenerativeModel({
     model: 'gemini-2.0-flash-lite',
-    systemInstruction: `You are ARIA, the AI research assistant for Quantora Analytics. Be concise, precise, and academically rigorous.`,
+    systemInstruction: `You are ARIA, the AI research assistant for QUANTORA-NEXT. Be concise, precise, and academically rigorous.`,
   })
 
   const chat = model.startChat({ history })
@@ -138,7 +138,7 @@ export async function scorePeerReview(
   overallRecommendation: 'APPROVE' | 'REVISE' | 'REJECT'
   reviewNotes: string
 }> {
-  const prompt = `You are a peer review committee member for Quantora Analytics research platform.
+  const prompt = `You are a peer review committee member for QUANTORA-NEXT research platform.
 
 Evaluate this research submission objectively:
 

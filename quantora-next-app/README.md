@@ -1,6 +1,6 @@
-# Quantora Analytics - Next.js 15+ Enterprise Platform
+﻿# QUANTORA-NEXT - Next.js 15+ Enterprise Platform
 
-Welcome to **Quantora Analytics**, a world-class, production-grade open-access digital research ecosystem, public intelligence platform, and collaborative innovation network.
+Welcome to **QUANTORA-NEXT**, a world-class, production-grade open-access digital research ecosystem, public intelligence platform, and collaborative innovation network.
 
 Developed in New Delhi, India, this platform democratizes research and public macro intelligence by enabling students, independent analysts, and academics to publish, download, and review macroeconomic and scientific papers without barriers.
 
@@ -57,4 +57,4 @@ Open your browser and navigate to [http://localhost:3000](http://localhost:3000)
 ---
 
 ## 📄 License & Autonomy
-Quantora Analytics operates under the MIT Open-Source License. Engineered under an environmentally responsible glassmorphic dark-theme optimizing session carbon footprints.
+QUANTORA-NEXT operates under the MIT Open-Source License. Engineered under an environmentally responsible glassmorphic dark-theme optimizing session carbon footprints.

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { X, Send, Loader2, Minimize2, Maximize2, GripHorizontal } from 'lucide-react'
 
@@ -15,7 +15,7 @@ interface Position {
 const QUICK_PROMPTS = [
   'Summarize India fiscal deficit 2026',
   'Explain rare earth supply chain risks',
-  'What is Quantora Analytics?',
+  'What is QUANTORA-NEXT?',
   'Insights on emerging markets',
 ]
 

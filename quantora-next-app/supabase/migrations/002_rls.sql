@@ -1,5 +1,5 @@
--- ============================================================
--- Quantora Analytics — Row Level Security Policies
+﻿-- ============================================================
+-- QUANTORA-NEXT — Row Level Security Policies
 -- Run AFTER 001_schema.sql
 -- ============================================================
 

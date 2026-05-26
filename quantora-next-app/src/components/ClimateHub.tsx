@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { 
   Leaf, Download, Globe, Database, Award, HeartHandshake 
 } from 'lucide-react';
@@ -62,7 +62,7 @@ export const ClimateHub: React.FC = () => {
             Environmental Responsibility Hub
           </h2>
           <p className="text-xs md:text-sm text-gray-400 leading-relaxed font-sans max-w-2xl">
-            Quantora Analytics operates under strict carbon-aware computational protocols. We minimize payload delivery headers, host on zero-emissions servers, and default to energy-efficient glassmorphic dark layouts to decrease global internet footprint.
+            QUANTORA-NEXT operates under strict carbon-aware computational protocols. We minimize payload delivery headers, host on zero-emissions servers, and default to energy-efficient glassmorphic dark layouts to decrease global internet footprint.
           </p>
         </div>
 

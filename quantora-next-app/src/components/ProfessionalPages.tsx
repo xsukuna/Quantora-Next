@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Building2, Users, Briefcase, FileSpreadsheet, Terminal, 
@@ -121,7 +121,7 @@ export const ProfessionalPages: React.FC = () => {
         {/* Header */}
         <div className="p-6 border-b border-white/5 bg-[#050505]/30 relative z-20 shrink-0">
           <h2 className="text-xl font-black uppercase tracking-widest text-white">
-            {activeSubTab === 'ABOUT' && 'About Quantora Analytics'}
+            {activeSubTab === 'ABOUT' && 'About QUANTORA-NEXT'}
             {activeSubTab === 'CAREERS' && 'Fellowships & Strategic Careers'}
             {activeSubTab === 'EDITORIAL' && 'Editorial Council & Research Ethics'}
             {activeSubTab === 'API' && 'Open API Gateway Documentation'}
@@ -147,7 +147,7 @@ export const ProfessionalPages: React.FC = () => {
                 <div className="space-y-4">
                   <h3 className="text-lg font-black uppercase text-white tracking-wider">A Global Sovereign Intelligence Collective</h3>
                   <p className="text-xs md:text-sm text-gray-400 leading-relaxed font-normal">
-                    Quantora Analytics operates at the convergence of open scientific collaboration, high-frequency quantitative modeling, and international public policy design.
+                    QUANTORA-NEXT operates at the convergence of open scientific collaboration, high-frequency quantitative modeling, and international public policy design.
                     Established as an independent decentralized research institute, we reject traditional siloed knowledge corridors in favor of transparent, peer-reviewed open science.
                   </p>
                 </div>

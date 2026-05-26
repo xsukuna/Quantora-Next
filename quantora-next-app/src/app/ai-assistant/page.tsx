@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
@@ -23,7 +23,7 @@ export default function AiAssistantPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'model',
-      parts: [{ text: 'Hello! I\'m **ARIA** — Analytical Research Intelligence Assistant for Quantora Analytics.\n\nI can help you:\n• Analyze and summarize research papers\n• Explain complex macroeconomic and quantitative concepts\n• Generate research hypotheses\n• Discuss India\'s policy landscape\n\nWhat would you like to explore today?' }]
+      parts: [{ text: 'Hello! I\'m **ARIA** — Analytical Research Intelligence Assistant for QUANTORA-NEXT.\n\nI can help you:\n• Analyze and summarize research papers\n• Explain complex macroeconomic and quantitative concepts\n• Generate research hypotheses\n• Discuss India\'s policy landscape\n\nWhat would you like to explore today?' }]
     }
   ])
   const [input, setInput] = useState('')
@@ -122,7 +122,7 @@ export default function AiAssistantPage() {
           </div>
           <div>
             <h1 className="text-lg font-extrabold text-white">ARIA — Research Copilot</h1>
-            <p className="text-xs text-[#A0AEC0]">Powered by Google Gemini · Quantora Analytics</p>
+            <p className="text-xs text-[#A0AEC0]">Powered by Google Gemini · QUANTORA-NEXT</p>
           </div>
           <div className="ml-auto flex items-center gap-1.5">
             <div className="w-1.5 h-1.5 bg-[#00FF00] rounded-full animate-pulse" />

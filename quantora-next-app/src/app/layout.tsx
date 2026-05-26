@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Quantora Analytics | Open Digital Infrastructure for Global Research",
-  description: "Quantora Analytics is a New Delhi based decentralized open-access digital research ecosystem, public intelligence platform, and collaborative innovation network.",
+  title: "QUANTORA-NEXT | Open Digital Infrastructure for Global Research",
+  description: "QUANTORA-NEXT is a New Delhi based decentralized open-access digital research ecosystem, public intelligence platform, and collaborative innovation network.",
 };
 
 export default function RootLayout({

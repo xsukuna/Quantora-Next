@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
@@ -160,7 +160,7 @@ export const PlatformShell: React.FC<{ children: React.ReactNode }> = ({ childre
         <header className="h-16 border-b border-[var(--border)] flex items-center justify-between px-8 bg-[var(--surface)]/95 backdrop-blur-md z-40 select-none shrink-0 transition-colors duration-300">
           <div className="flex items-center gap-8">
             <Link href="/" className="flex flex-col cursor-pointer">
-              <span className="text-[12px] font-black tracking-[0.3em] text-blue-500 uppercase">Quantora Analytics</span>
+              <span className="text-[12px] font-black tracking-[0.3em] text-blue-500 uppercase">QUANTORA-NEXT</span>
               <span className="text-[9px] text-[var(--foreground-dim)] font-bold uppercase tracking-widest mt-0.5 font-sans">Global Research & Intelligence Ecosystem</span>
             </Link>
           </div>

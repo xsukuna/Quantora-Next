@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { 
@@ -85,7 +85,7 @@ export default function Home() {
       case 'about':
         newLogs.push(
           '[QUANTORA INTELLIGENCE ARCHIVE]',
-          'Quantora Analytics is a decentralized knowledge network and sovereign R&D ecosystem.',
+          'QUANTORA-NEXT is a decentralized knowledge network and sovereign R&D ecosystem.',
           'We synthesize macroeconomics, custom quantitative algorithms, and geospatial analytics',
           'to fuel deep-value decisions for advanced global institutions.',
           'Engineered in New Delhi, India. Scaling decentralized research nodes globally.'
@@ -662,7 +662,7 @@ export default function Home() {
         </div>
 
         <div className="max-w-[1400px] mx-auto px-6 border-t border-white/5 pt-8 mt-12 text-center text-[10px] text-[#A0AEC0]/40 font-mono uppercase tracking-widest">
-          &copy; 2026 Quantora Analytics. All rights reserved. Decentralized academic infrastructure.
+          &copy; 2026 QUANTORA-NEXT. All rights reserved. Decentralized academic infrastructure.
         </div>
       </footer>
 

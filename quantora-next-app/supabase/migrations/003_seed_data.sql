@@ -1,4 +1,4 @@
-INSERT INTO rnd_challenges (title, description, details, category, difficulty, reward, rep_award, sponsor, deadline, is_active, teams_count, solutions_count)
+﻿INSERT INTO rnd_challenges (title, description, details, category, difficulty, reward, rep_award, sponsor, deadline, is_active, teams_count, solutions_count)
 VALUES
 (
   'AI-Driven Crop Yield Prediction for Indian Agriculture',
@@ -8,7 +8,7 @@ VALUES
   'Advanced',
   '₹2,00,000 + Publication Credit',
   500,
-  'Quantora Analytics Institute',
+  'QUANTORA-NEXT Institute',
   NOW() + INTERVAL '60 days',
   TRUE,
   0,
@@ -36,7 +36,7 @@ VALUES
   'Intermediate',
   '₹75,000 + Platform Badge',
   300,
-  'Quantora Analytics',
+  'QUANTORA-NEXT',
   NOW() + INTERVAL '30 days',
   TRUE,
   0,
@@ -50,7 +50,7 @@ VALUES
   'Beginner',
   '₹25,000 + Certificate',
   150,
-  'Quantora Analytics',
+  'QUANTORA-NEXT',
   NOW() + INTERVAL '90 days',
   TRUE,
   0,

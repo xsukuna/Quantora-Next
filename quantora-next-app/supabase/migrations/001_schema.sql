@@ -1,5 +1,5 @@
--- ============================================================
--- Quantora Analytics — Supabase PostgreSQL Schema
+﻿-- ============================================================
+-- QUANTORA-NEXT — Supabase PostgreSQL Schema
 -- Run this in: Supabase Dashboard → SQL Editor → New Query
 -- ============================================================
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Upload, FileText, CheckCircle, ShieldAlert, ArrowRight, 
@@ -221,7 +221,7 @@ export const UploadForm: React.FC<UploadFormProps> = ({
           <span className="text-[10px] font-black text-blue-500 uppercase tracking-[0.2em]">Open Science Gateway</span>
           <h2 className="text-2xl md:text-4xl font-black uppercase tracking-wider text-white">Publish Public Research</h2>
           <p className="text-xs md:text-sm text-gray-400 leading-relaxed font-sans">
-            Quantora Analytics operates a decentralized peer-to-peer science index. Submit your research data, industry reports, policy critiques, or market algorithms. Once cleared by the editorial board, it will publish instantly to our digital public library.
+            QUANTORA-NEXT operates a decentralized peer-to-peer science index. Submit your research data, industry reports, policy critiques, or market algorithms. Once cleared by the editorial board, it will publish instantly to our digital public library.
           </p>
         </div>
 

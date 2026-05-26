@@ -8,6 +8,8 @@ import {
 } from 'lucide-react'
 import type { Profile } from '@/types/database'
 
+export const dynamic = 'force-dynamic'
+
 function getInitials(name: string) {
   return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
 }

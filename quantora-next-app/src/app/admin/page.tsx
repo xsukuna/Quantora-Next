@@ -3,6 +3,8 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import {
+
+export const dynamic = 'force-dynamic'
   Shield, FileText, Users, TrendingUp, Download,
   CheckCircle, XCircle, Clock, Eye, BarChart3,
   AlertTriangle, Loader2, RefreshCw, Zap

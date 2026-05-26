@@ -3,6 +3,8 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { Search, Download, ExternalLink, CheckCircle, ShieldAlert, Sparkles, Filter, Loader2, ChevronDown } from 'lucide-react'
 import type { PaperWithAuthor } from '@/types/database'
 
+export const dynamic = 'force-dynamic'
+
 const CATEGORIES = ['All', 'Macroeconomics', 'Public Policy', 'Quant Strategy', 'Climate Finance', 'Political Economy', 'Development Economics', 'Geopolitics', 'Financial Markets', 'Technology Policy', 'Social Science']
 
 const TRUST_COLORS: Record<string, string> = {

@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import { Sparkles, Send, Quote, Lightbulb, Compass, Loader2, Bot, User } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 interface Message {
   role: 'user' | 'model'
   parts: [{ text: string }]

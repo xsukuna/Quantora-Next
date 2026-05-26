@@ -4,6 +4,8 @@ import { useAuth } from '@/context/AuthContext'
 import { Trophy, Users, Clock, Zap, CheckCircle, Loader2, AlertCircle, ChevronRight, Filter } from 'lucide-react'
 import type { RndChallenge } from '@/types/database'
 
+export const dynamic = 'force-dynamic'
+
 type ChallengeWithJoin = RndChallenge & { userHasJoined?: boolean }
 
 const CATEGORIES = ['All', 'Public Policy', 'Quant Strategy', 'Climate Finance', 'Macroeconomics', 'Technology']

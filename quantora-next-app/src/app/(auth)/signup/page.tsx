@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { Eye, EyeOff, Lock, Mail, User, AtSign, Zap, ArrowRight } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 export default function SignupPage() {
   const router = useRouter()
   const supabase = createClient()

@@ -4,6 +4,8 @@ import { useAuth } from '@/context/AuthContext'
 import { Heart, MessageSquare, Share2, Send, Tag, Award, Sparkles, Loader2, Plus, X, ChevronDown } from 'lucide-react'
 import type { InsightWithAuthor } from '@/types/database'
 
+export const dynamic = 'force-dynamic'
+
 const CATEGORIES = ['All', 'Macroeconomics', 'Public Policy', 'Quant Strategy', 'Climate Finance', 'Geopolitics', 'Financial Markets', 'General']
 
 function timeAgo(ts: string) {

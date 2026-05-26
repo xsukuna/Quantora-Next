@@ -1,9 +1,11 @@
-﻿'use client'
+'use client'
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { Eye, EyeOff, Lock, Mail, Zap, ArrowRight } from 'lucide-react'
+
+export const dynamic = 'force-dynamic'
 
 export default function LoginPage() {
   const router = useRouter()

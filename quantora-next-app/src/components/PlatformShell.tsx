@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
@@ -30,10 +30,9 @@ export const PlatformShell: React.FC<{ children: React.ReactNode }> = ({ childre
       setTheme(savedTheme);
       applyTheme(savedTheme);
     } else {
-      const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-      const initial = prefersLight ? 'light' : 'dark';
-      setTheme(initial);
-      applyTheme(initial);
+      // Default to dark mode regardless of system preference
+      setTheme('dark');
+      applyTheme('dark');
     }
   }, []);
 

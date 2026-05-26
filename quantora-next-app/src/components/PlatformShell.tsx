@@ -73,8 +73,8 @@ export const PlatformShell: React.FC<{ children: React.ReactNode }> = ({ childre
   return (
     <div className="flex h-screen overflow-hidden font-sans bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300">
       
-      {/* 1. DYNAMIC SIDE NAVIGATION BAR */}
-      <div className="w-20 border-r border-[var(--border)] flex flex-col items-center justify-between py-6 bg-[var(--surface)] z-50 shrink-0 transition-colors duration-300">
+      {/* 1. DYNAMIC SIDE NAVIGATION BAR (Desktop Only) */}
+      <div className="hidden md:flex w-20 border-r border-[var(--border)] flex-col items-center justify-between py-6 bg-[var(--surface)] z-50 shrink-0 transition-colors duration-300">
         
         {/* Core Branding logo */}
         <Link 
@@ -245,12 +245,12 @@ export const PlatformShell: React.FC<{ children: React.ReactNode }> = ({ childre
         </header>
 
         {/* 3. DYNAMIC CONTENT RENDERING */}
-        <main className="flex-1 overflow-y-auto bg-[var(--background)] relative transition-colors duration-300">
+        <main className="flex-1 overflow-y-auto bg-[var(--background)] relative transition-colors duration-300 pb-16 md:pb-0">
           {children}
         </main>
 
-        {/* 4. FOOTER RUNNING TICKER TAPE */}
-        <footer className="h-10 border-t border-[var(--border)] bg-[var(--surface)] flex items-center px-6 overflow-hidden z-40 select-none shrink-0 transition-colors duration-300">
+        {/* 4. FOOTER RUNNING TICKER TAPE (Desktop Only) */}
+        <footer className="hidden md:flex h-10 border-t border-[var(--border)] bg-[var(--surface)] items-center px-6 overflow-hidden z-40 select-none shrink-0 transition-colors duration-300">
           <div className="flex gap-12 text-[10px] font-black uppercase tracking-widest animate-ticker font-mono">
             {['S&P 500 +1.24%', 'NASDAQ 100 +0.85%', 'FTSE 100 -0.12%', 'USD/EUR +0.04%', 'BTC/USD +4.12%', 'NIKKEI 225 +0.56%', 'GOLD +0.22%', 'CRUDE OIL -1.45%'].map((tick, idx) => (
               <div key={idx} className="flex items-center gap-3">
@@ -262,6 +262,21 @@ export const PlatformShell: React.FC<{ children: React.ReactNode }> = ({ childre
           </div>
         </footer>
 
+        {/* 5. MOBILE BOTTOM NAVIGATION BAR */}
+        <div className="md:hidden flex items-center justify-around h-16 bg-[var(--surface)] border-t border-[var(--border)] z-50 shrink-0 w-full safe-area-bottom">
+          {navItems.filter(i => ['Index', 'Library', 'Insights', 'Submit', 'Profiles'].includes(i.name)).map((item) => {
+            const isActive = pathname === item.path;
+            const Icon = item.icon;
+            return (
+              <Link key={item.name} href={item.path} className="flex flex-col items-center gap-1 w-1/5 py-2">
+                <Icon className={`w-5 h-5 transition-all ${isActive ? item.activeColor : 'text-[var(--foreground-muted)]'}`} />
+                <span className={`text-[8px] font-black uppercase tracking-wider ${isActive ? item.activeColor : 'text-[var(--foreground-muted)]'}`}>
+                  {item.name}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
       </div>
 
       {/* Auth handled via /login route */}

@@ -214,7 +214,7 @@ export default function ProfilesPage() {
       </div>
 
       {/* Stats Row */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         {[
           { label: 'Reputation', value: profile?.reputation ?? 0, icon: TrendingUp, color: '#0062FF' },
           { label: 'Papers Published', value: paperCount, icon: FileText, color: '#00F0FF' },

@@ -135,15 +135,16 @@ export function QBrainWidget() {
       i % 2 === 1 ? <strong key={i} className="text-white font-bold">{part}</strong> : part
     )
 
-  const panelH = expanded ? 580 : 480
-  const panelW = expanded ? 400 : 350
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 450
+  const panelH = expanded && !isMobile ? 580 : 480
+  const panelW = isMobile ? (typeof window !== 'undefined' ? window.innerWidth - 32 : 340) : (expanded ? 400 : 350)
 
   const widgetStyle: React.CSSProperties = isDefaultPos
-    ? { position: 'fixed', right: 20, bottom: 90, zIndex: 9999 }
+    ? { position: 'fixed', right: 16, bottom: isMobile ? 80 : 24, zIndex: 9999 }
     : { position: 'fixed', left: position.x, top: position.y, zIndex: 9999 }
 
   const panelStyle: React.CSSProperties = isDefaultPos
-    ? { position: 'fixed', right: 20, bottom: 158, width: panelW, height: panelH, zIndex: 9998 }
+    ? { position: 'fixed', right: 16, bottom: isMobile ? 144 : 88, width: panelW, height: panelH, zIndex: 9998 }
     : {
         position: 'fixed',
         left: position.x + 64 > window.innerWidth / 2 ? position.x - panelW - 8 : position.x + 64,

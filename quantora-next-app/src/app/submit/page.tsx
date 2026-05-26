@@ -253,7 +253,7 @@ export default function SubmitPage() {
         </div>
 
         {/* Institution + Country */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-bold text-[#A0AEC0] uppercase tracking-wider mb-2">Institution</label>
             <input name="institution" type="text" value={form.institution} onChange={handleChange}

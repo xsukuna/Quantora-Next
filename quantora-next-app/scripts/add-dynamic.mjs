@@ -1,12 +1,9 @@
-// Add force-dynamic to all pages that use Supabase/client hooks
-import { readdirSync, statSync, readFileSync, writeFileSync } from 'fs'
-import { join, extname } from 'path'
+// Fix: properly insert force-dynamic AFTER all imports are complete
+import { readFileSync, writeFileSync } from 'fs'
 
-const SKIP = new Set(['node_modules', '.git', '.next'])
 const MARKER = "export const dynamic = 'force-dynamic'"
 
-// Pages that need force-dynamic
-const TARGET_PAGES = [
+const FILES = [
   'src/app/(auth)/login/page.tsx',
   'src/app/(auth)/signup/page.tsx',
   'src/app/admin/page.tsx',
@@ -22,29 +19,56 @@ const TARGET_PAGES = [
   'src/app/page.tsx',
 ]
 
-let count = 0
-for (const rel of TARGET_PAGES) {
-  const full = join('.', rel)
+for (const rel of FILES) {
   try {
-    const content = readFileSync(full, 'utf8')
-    if (content.includes(MARKER)) {
-      console.log(`Already has dynamic: ${rel}`)
-      continue
-    }
-    // Add after the last import line
+    let content = readFileSync(rel, 'utf8')
+
+    // 1. Remove any existing badly-placed MARKER first
+    content = content.replace(/\n?\nexport const dynamic = 'force-dynamic'\n?/g, '\n')
+    content = content.replace(/^export const dynamic = 'force-dynamic'\n/gm, '')
+
+    // 2. Find the index of the last import line
+    //    Walk line by line; track if we're inside a multi-line import
     const lines = content.split('\n')
-    let lastImport = 0
+    let insideImport = false
+    let lastImportEnd = -1
+
     for (let i = 0; i < lines.length; i++) {
-      if (lines[i].startsWith('import ') || lines[i].startsWith("'use client'") || lines[i].startsWith('"use client"')) {
-        lastImport = i
+      const line = lines[i].trim()
+
+      if (!insideImport) {
+        // Single-line import: import X from 'y'
+        if (line.startsWith('import ') && line.includes(' from ')) {
+          lastImportEnd = i
+        }
+        // Multi-line import starts: import {
+        else if (line.startsWith('import ') || line === "import {") {
+          insideImport = true
+        }
+        // 'use client' directive
+        else if (line === "'use client'" || line === '"use client"') {
+          lastImportEnd = i
+        }
+      } else {
+        // Look for closing of multi-line import: } from 'module'
+        if (line.includes('} from ') || line.match(/^}\s*from\s+['"].+['"]$/)) {
+          lastImportEnd = i
+          insideImport = false
+        }
       }
     }
-    lines.splice(lastImport + 1, 0, '', MARKER)
-    writeFileSync(full, lines.join('\n'), 'utf8')
-    console.log(`✅ Added dynamic to: ${rel}`)
-    count++
+
+    if (lastImportEnd === -1) {
+      console.log(`⚠️  Could not find imports in: ${rel}`)
+      continue
+    }
+
+    // 3. Insert marker right after the last import line
+    lines.splice(lastImportEnd + 1, 0, '', MARKER)
+    writeFileSync(rel, lines.join('\n'), 'utf8')
+    console.log(`✅ Fixed: ${rel} (after line ${lastImportEnd + 1})`)
   } catch (e) {
-    console.log(`⚠️  Skipped (not found): ${rel}`)
+    console.log(`⚠️  Skipped: ${rel} — ${e.message}`)
   }
 }
-console.log(`\nDone! Updated ${count} files.`)
+console.log('\nDone!')

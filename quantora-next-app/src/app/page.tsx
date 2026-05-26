@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { 
-
-export const dynamic = 'force-dynamic'
   LineChart, Shield, Cpu, BarChart3, Globe, Activity, Zap, 
   AlertTriangle, ExternalLink, Download, Mail, Linkedin, Twitter, 
   Terminal as TerminalIcon, ShieldAlert, CheckCircle, Award, Leaf, Users
 } from 'lucide-react';
+
+export const dynamic = 'force-dynamic'
 
 export default function Home() {
   // UI State

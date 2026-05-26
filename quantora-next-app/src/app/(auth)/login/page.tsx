@@ -1,13 +1,12 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
-import { Eye, EyeOff, Lock, Mail, Zap, ArrowRight } from 'lucide-react'
+import { Eye, EyeOff, Lock, Mail, Zap, ArrowRight, Loader2 } from 'lucide-react'
 
-export const dynamic = 'force-dynamic'
-
-export default function LoginPage() {
+// Inner component that uses useSearchParams — must be wrapped in Suspense
+function LoginContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirect = searchParams.get('redirect') || '/'
@@ -18,8 +17,6 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-
-  // Animated background particles
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
 
@@ -27,9 +24,7 @@ export default function LoginPage() {
     e.preventDefault()
     setLoading(true)
     setError('')
-
     const { error } = await supabase.auth.signInWithPassword({ email, password })
-
     if (error) {
       setError(error.message)
       setLoading(false)
@@ -42,25 +37,17 @@ export default function LoginPage() {
   const handleGoogleLogin = async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: {
-        redirectTo: `${location.origin}/auth/callback?next=${redirect}`,
-      },
+      options: { redirectTo: `${location.origin}/auth/callback?next=${redirect}` },
     })
   }
 
   return (
     <div className="min-h-screen bg-[#020202] flex items-center justify-center relative overflow-hidden">
-      {/* Animated grid background */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(0,98,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,98,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px]" />
-
-      {/* Glow orbs */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#0062FF]/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#00F0FF]/5 rounded-full blur-[120px] pointer-events-none" />
 
-      {/* Login Card */}
       <div className={`relative z-10 w-full max-w-md mx-4 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-
-        {/* Header */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-3 mb-6 group">
             <div className="w-8 h-8 bg-[#0062FF] rounded-lg flex items-center justify-center">
@@ -72,10 +59,7 @@ export default function LoginPage() {
           <p className="text-[#A0AEC0] text-sm">Sign in to access the research platform</p>
         </div>
 
-        {/* Card */}
         <div className="bg-[#0a0f1e]/80 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-[0_25px_50px_rgba(0,0,0,0.5)]">
-
-          {/* Google OAuth */}
           <button
             onClick={handleGoogleLogin}
             className="w-full flex items-center justify-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white py-3 px-4 rounded-xl text-sm font-medium transition-all mb-6"
@@ -89,90 +73,67 @@ export default function LoginPage() {
             Continue with Google
           </button>
 
-          {/* Divider */}
           <div className="flex items-center gap-4 mb-6">
             <div className="flex-1 h-px bg-white/10" />
             <span className="text-[#A0AEC0] text-xs font-mono">OR</span>
             <div className="flex-1 h-px bg-white/10" />
           </div>
 
-          {/* Form */}
           <form onSubmit={handleLogin} className="space-y-4">
             {error && (
-              <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3 text-red-400 text-sm">
-                {error}
-              </div>
+              <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3 text-red-400 text-sm">{error}</div>
             )}
-
-            {/* Email */}
             <div>
               <label className="block text-xs font-bold text-[#A0AEC0] uppercase tracking-wider mb-2">Email</label>
               <div className="relative">
                 <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#A0AEC0]" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  placeholder="researcher@institution.edu"
-                  required
-                  className="w-full bg-white/5 border border-white/10 focus:border-[#0062FF]/50 focus:ring-2 focus:ring-[#0062FF]/20 rounded-xl pl-10 pr-4 py-3 text-white text-sm placeholder:text-[#A0AEC0]/50 outline-none transition-all"
-                />
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+                  placeholder="researcher@institution.edu" required
+                  className="w-full bg-white/5 border border-white/10 focus:border-[#0062FF]/50 focus:ring-2 focus:ring-[#0062FF]/20 rounded-xl pl-10 pr-4 py-3 text-white text-sm placeholder:text-[#A0AEC0]/50 outline-none transition-all" />
               </div>
             </div>
-
-            {/* Password */}
             <div>
               <label className="block text-xs font-bold text-[#A0AEC0] uppercase tracking-wider mb-2">Password</label>
               <div className="relative">
                 <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#A0AEC0]" />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  className="w-full bg-white/5 border border-white/10 focus:border-[#0062FF]/50 focus:ring-2 focus:ring-[#0062FF]/20 rounded-xl pl-10 pr-12 py-3 text-white text-sm placeholder:text-[#A0AEC0]/50 outline-none transition-all"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A0AEC0] hover:text-white transition-colors"
-                >
+                <input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)}
+                  placeholder="••••••••" required
+                  className="w-full bg-white/5 border border-white/10 focus:border-[#0062FF]/50 focus:ring-2 focus:ring-[#0062FF]/20 rounded-xl pl-10 pr-12 py-3 text-white text-sm placeholder:text-[#A0AEC0]/50 outline-none transition-all" />
+                <button type="button" onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A0AEC0] hover:text-white transition-colors">
                   {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
                 </button>
               </div>
             </div>
-
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex items-center justify-center gap-2 bg-[#0062FF] hover:bg-[#0056e0] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-xl text-sm transition-all shadow-[0_4px_20px_rgba(0,98,255,0.4)] hover:shadow-[0_4px_28px_rgba(0,98,255,0.6)] hover:-translate-y-0.5"
-            >
-              {loading ? (
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              ) : (
-                <>Sign In <ArrowRight size={14} /></>
-              )}
+            <button type="submit" disabled={loading}
+              className="w-full flex items-center justify-center gap-2 bg-[#0062FF] hover:bg-[#0056e0] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-xl text-sm transition-all shadow-[0_4px_20px_rgba(0,98,255,0.4)] hover:shadow-[0_4px_28px_rgba(0,98,255,0.6)] hover:-translate-y-0.5">
+              {loading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <>Sign In <ArrowRight size={14} /></>}
             </button>
           </form>
 
-          {/* Footer */}
           <p className="text-center text-[#A0AEC0] text-xs mt-6">
             No account?{' '}
-            <Link href="/signup" className="text-[#00F0FF] hover:underline font-medium">
-              Create one free
-            </Link>
+            <Link href="/signup" className="text-[#00F0FF] hover:underline font-medium">Create one free</Link>
           </p>
         </div>
 
-        {/* Back to platform */}
         <p className="text-center text-[#A0AEC0]/50 text-xs mt-6">
-          <Link href="/" className="hover:text-[#A0AEC0] transition-colors">
-            ← Back to QUANTORA-NEXT
-          </Link>
+          <Link href="/" className="hover:text-[#A0AEC0] transition-colors">← Back to QUANTORA-NEXT</Link>
         </p>
       </div>
     </div>
+  )
+}
+
+// Suspense wrapper — required by Next.js for useSearchParams in client components
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#020202] flex items-center justify-center">
+        <Loader2 size={32} className="animate-spin text-[#0062FF]" />
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
   )
 }

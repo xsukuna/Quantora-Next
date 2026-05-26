@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -116,7 +116,7 @@ export default function SignupPage() {
               <div className="relative">
                 <User size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#A0AEC0]" />
                 <input name="name" type="text" value={form.name} onChange={handleChange}
-                  placeholder="Dr. Aditya Kaushik" required
+                  placeholder="John Doe" required
                   className="w-full bg-white/5 border border-white/10 focus:border-[#0062FF]/50 focus:ring-2 focus:ring-[#0062FF]/20 rounded-xl pl-10 pr-4 py-3 text-white text-sm placeholder:text-[#A0AEC0]/50 outline-none transition-all"
                 />
               </div>
@@ -128,7 +128,7 @@ export default function SignupPage() {
               <div className="relative">
                 <AtSign size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#A0AEC0]" />
                 <input name="username" type="text" value={form.username} onChange={handleChange}
-                  placeholder="aditya_k" required
+                  placeholder="john_doe" required
                   className="w-full bg-white/5 border border-white/10 focus:border-[#0062FF]/50 focus:ring-2 focus:ring-[#0062FF]/20 rounded-xl pl-10 pr-4 py-3 text-white text-sm placeholder:text-[#A0AEC0]/50 outline-none transition-all"
                 />
               </div>

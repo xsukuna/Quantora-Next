@@ -226,48 +226,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* Global Premium Navigation */}
-      <nav className="sticky top-0 z-50 w-full border-b border-white/5 bg-[#050505]/95 backdrop-blur-md transition-all">
-        <div className="max-w-[1400px] mx-auto px-6 py-4 flex justify-between items-center">
-          
-          {/* 3D Isometric Logo Concept */}
-          <div className="flex items-center gap-3">
-            <div className="w-7 h-7 relative [perspective:120px] inline-block shrink-0">
-              <div className="w-full h-full absolute [transform-style:preserve-3d] [transform:rotateX(-20deg)_rotateY(45deg)] animate-[rotateCube_8s_infinite_linear]">
-                <div className="absolute inset-0 border border-[#0062FF] bg-[#0062FF]/10 shadow-[0_0_10px_rgba(0,98,255,0.2)] [transform:rotateY(0deg)_translateZ(14px)]" />
-                <div className="absolute inset-0 border border-[#0062FF] bg-[#0062FF]/10 shadow-[0_0_10px_rgba(0,98,255,0.2)] [transform:rotateY(90deg)_translateZ(14px)]" />
-                <div className="absolute inset-0 border border-[#00F0FF] bg-[#00F0FF]/15 shadow-[0_0_10px_rgba(0,240,255,0.2)] [transform:rotateX(90deg)_translateZ(14px)]" />
-                <div className="absolute inset-0 border border-[#0062FF] bg-[#0062FF]/10 shadow-[0_0_10px_rgba(0,98,255,0.2)] [transform:rotateX(-90deg)_translateZ(14px)]" />
-              </div>
-            </div>
-            <span className="bg-gradient-to-r from-white to-[#0062FF] bg-clip-text text-transparent font-black tracking-widest text-lg">QUANTORA</span>
-          </div>
 
-          {/* Links */}
-          <div className="hidden md:flex items-center gap-8 text-xs font-semibold tracking-wider text-[#A0AEC0]">
-            <a href="#services" className="hover:text-white transition-colors">DISCIPLINES</a>
-            <a href="#research" className="hover:text-white transition-colors">RESEARCH</a>
-            <a href="#contributors" className="hover:text-white transition-colors">CONTRIBUTORS</a>
-            <a href="#rdlab" className="hover:text-white transition-colors">R&D LAB</a>
-            <a href="#locations" className="hover:text-white transition-colors">GENESIS</a>
-            <span className="text-white/20">|</span>
-            <a 
-              href="/library" 
-              className="text-[#00F0FF] border border-[#00F0FF]/30 bg-[#00F0FF]/5 hover:bg-[#00F0FF]/15 px-3 py-1.5 rounded transition-all"
-            >
-              LAUNCH PLATFORM
-            </a>
-          </div>
-
-          <button 
-            onClick={() => setTerminalOpen(true)}
-            className="flex items-center gap-2 bg-[#0062FF] text-white hover:bg-[#0056e0] px-4 py-2 text-xs font-bold tracking-wider rounded shadow-[0_4px_15px_rgba(0,98,255,0.3)] transition-all cursor-pointer shrink-0"
-          >
-            <TerminalIcon size={14} />
-            <span>TERMINAL ACCESS</span>
-          </button>
-        </div>
-      </nav>
 
       {/* Hero Section */}
       <section className="relative z-10 min-h-[90vh] flex items-center max-w-[1400px] mx-auto px-6 py-20">

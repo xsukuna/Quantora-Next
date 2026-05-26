@@ -11,11 +11,39 @@ interface RndLabProps {
   currentUser: DBUser | null;
 }
 
+const RndChallengeSkeleton: React.FC = () => {
+  return (
+    <div className="border border-white/5 bg-[#0a0f1e]/10 rounded-xl p-5 relative overflow-hidden flex flex-col justify-between h-40">
+      {/* Moving Shimmer Bar Overlay */}
+      <div className="absolute inset-0 animate-shimmer pointer-events-none" />
+      <div className="space-y-3 animate-pulse">
+        <div className="flex justify-between items-start gap-4">
+          <div className="space-y-2 flex-1">
+            <div className="h-3.5 w-20 bg-white/5 rounded" />
+            <div className="h-5 w-3/4 bg-white/10 rounded" />
+          </div>
+          <div className="h-6 w-20 bg-white/5 rounded" />
+        </div>
+        <div className="h-3 w-[95%] bg-white/5 rounded" />
+        <div className="h-3 w-[70%] bg-white/5 rounded" />
+      </div>
+      <div className="flex justify-between items-center border-t border-white/5 pt-3 animate-pulse">
+        <div className="flex gap-4">
+          <div className="h-3.5 w-16 bg-white/5 rounded" />
+          <div className="h-3.5 w-20 bg-white/5 rounded" />
+        </div>
+        <div className="h-7 w-28 bg-white/10 rounded" />
+      </div>
+    </div>
+  );
+};
+
 export const RndLab: React.FC<RndLabProps> = ({ openAuth, currentUser }) => {
   const [challenges, setChallenges] = useState<RndChallenge[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('ALL');
   const [selectedChallenge, setSelectedChallenge] = useState<RndChallenge | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   
   // Submit solution state
   const [selectedPaperId, setSelectedPaperId] = useState('');
@@ -23,11 +51,24 @@ export const RndLab: React.FC<RndLabProps> = ({ openAuth, currentUser }) => {
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
 
   useEffect(() => {
-    loadChallenges();
+    setIsLoading(true);
+    const delay = setTimeout(() => {
+      loadChallenges();
+      setIsLoading(false);
+    }, 650);
+    return () => clearTimeout(delay);
   }, []);
 
   const loadChallenges = () => {
     setChallenges(getChallenges());
+  };
+
+  const handleCategorySelect = (cat: string) => {
+    setActiveCategory(cat);
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 450);
   };
 
   const handleJoin = (e: React.MouseEvent, challengeId: string) => {
@@ -80,6 +121,7 @@ export const RndLab: React.FC<RndLabProps> = ({ openAuth, currentUser }) => {
   // Get user papers that can be submitted as solutions
   const userPapers = getPapers().filter(p => currentUser && (p.author === currentUser.name || p.bookmarkedBy.includes(currentUser.id)));
 
+
   return (
     <div className="flex-1 flex overflow-hidden bg-[#020202]">
       
@@ -97,7 +139,7 @@ export const RndLab: React.FC<RndLabProps> = ({ openAuth, currentUser }) => {
           {categories.map(cat => (
             <button
               key={cat}
-              onClick={() => setActiveCategory(cat)}
+              onClick={() => handleCategorySelect(cat)}
               className={`w-full text-left px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-between group ${
                 activeCategory === cat 
                   ? 'bg-blue-600/10 text-blue-400 border border-blue-500/20 shadow-inner' 
@@ -135,7 +177,13 @@ export const RndLab: React.FC<RndLabProps> = ({ openAuth, currentUser }) => {
 
         {/* Challenges Grid */}
         <div className="flex-1 overflow-y-auto p-6 space-y-4 scrollbar-hide">
-          {filteredChallenges.length === 0 ? (
+          {isLoading ? (
+            <div className="space-y-4">
+              <RndChallengeSkeleton />
+              <RndChallengeSkeleton />
+              <RndChallengeSkeleton />
+            </div>
+          ) : filteredChallenges.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center p-8">
               <Trophy className="w-12 h-12 text-gray-600 mb-4 animate-bounce" />
               <h3 className="text-sm font-bold text-white uppercase tracking-wider">No Active Challenges</h3>
@@ -145,6 +193,7 @@ export const RndLab: React.FC<RndLabProps> = ({ openAuth, currentUser }) => {
             <div className="grid grid-cols-1 gap-4">
               {filteredChallenges.map(challenge => {
                 const hasJoined = currentUser && challenge.joinedUsers.includes(currentUser.id);
+
                 return (
                   <div
                     key={challenge.id}

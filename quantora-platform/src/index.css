@@ -123,3 +123,25 @@ body {
   0% { transform: rotateX(-20deg) rotateY(0deg); }
   100% { transform: rotateX(-20deg) rotateY(360deg); }
 }
+
+/* Premium Moving Shimmer Effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.01) 25%,
+    rgba(255, 255, 255, 0.05) 37%,
+    rgba(255, 255, 255, 0.01) 63%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite linear;
+}
+

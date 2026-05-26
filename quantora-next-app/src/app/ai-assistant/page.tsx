@@ -1,188 +1,225 @@
-'use client';
-
-import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Sparkles, Send, Volume2, Quote, Lightbulb, Compass, AlertCircle } from 'lucide-react';
-import { chatCopilot } from '../../lib/ai/gemini';
+'use client'
+import { useState, useRef, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/context/AuthContext'
+import { Sparkles, Send, Quote, Lightbulb, Compass, Loader2, Bot, User } from 'lucide-react'
 
 interface Message {
-  role: 'user' | 'model';
-  parts: { text: string }[];
+  role: 'user' | 'model'
+  parts: [{ text: string }]
 }
 
-export default function AiAssistant() {
+const QUICK_PROMPTS = [
+  { text: 'Analyze India\'s fiscal deficit trend and implications for 2026', icon: Compass },
+  { text: 'Explain multi-agent reinforcement learning in simple terms', icon: Lightbulb },
+  { text: 'Summarize key risks in emerging market sovereign debt', icon: Quote },
+  { text: 'What are rare-earth mineral supply chain vulnerabilities?', icon: Sparkles },
+]
+
+export default function AiAssistantPage() {
+  const { user, loading: authLoading } = useAuth()
+  const router = useRouter()
+
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'model',
-      parts: [{ text: 'Hello! I am the Quantora AI Research Assistant. I am deeply integrated with Google Gemini AI to help you analyze, summarize, simplify, or generate new academic ideas. How can I facilitate your research today?' }]
+      parts: [{ text: 'Hello! I\'m **ARIA** — Analytical Research Intelligence Assistant for Quantora Analytics.\n\nI can help you:\n• Analyze and summarize research papers\n• Explain complex macroeconomic and quantitative concepts\n• Generate research hypotheses\n• Discuss India\'s policy landscape\n\nWhat would you like to explore today?' }]
     }
-  ]);
-  const [inputVal, setInputVal] = useState('');
-  const [loading, setLoading] = useState(false);
-  
-  const chatEndRef = useRef<HTMLDivElement>(null);
+  ])
+  const [input, setInput] = useState('')
+  const [streaming, setStreaming] = useState(false)
+  const chatEndRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
-  // Auto-scroll chat
   useEffect(() => {
-    if (chatEndRef.current) {
-      chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [messages]);
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages, streaming])
 
-  // Handle prompt submissions
-  const handleSend = async (textToSend: string) => {
-    if (!textToSend.trim() || loading) return;
+  const sendMessage = async (text: string) => {
+    if (!text.trim() || streaming) return
 
-    const userMsg: Message = { role: 'user', parts: [{ text: textToSend }] };
-    const nextMessages = [...messages, userMsg];
-    setMessages(nextMessages);
-    setInputVal('');
-    setLoading(true);
+    const userMsg: Message = { role: 'user', parts: [{ text }] }
+    const updatedHistory = [...messages, userMsg]
+    setMessages(updatedHistory)
+    setInput('')
+    setStreaming(true)
+
+    // Add empty assistant message to fill
+    const assistantMsgIndex = updatedHistory.length
+    setMessages(prev => [...prev, { role: 'model', parts: [{ text: '' }] }])
 
     try {
-      // Map prompt history cleanly for the API
-      const history = nextMessages.slice(0, -1);
-      
-      const responseText = await chatCopilot(
-        "Global Research Ecosystem Context",
-        "Quantora Analytics is an open access digital platform focusing on Macroeconomics, Stock Market factor alphas, AI deep reinforcement architectures, and Indian agricultural budget exposé audits.",
-        history as any,
-        textToSend
-      );
+      const res = await fetch('/api/ai/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: text,
+          history: messages.slice(1), // skip initial greeting
+        }),
+      })
 
-      setMessages([...nextMessages, { role: 'model', parts: [{ text: responseText }] }]);
-    } catch (error) {
-      console.error('Chat error:', error);
-      setMessages([...nextMessages, { role: 'model', parts: [{ text: 'Connection latency temporarily saturated. Please re-initialize secure prompt.' }] }]);
+      if (!res.ok || !res.body) throw new Error('AI service unavailable')
+
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder()
+      let accumulated = ''
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        accumulated += decoder.decode(value, { stream: true })
+        // Update the last message in real-time
+        setMessages(prev => {
+          const updated = [...prev]
+          updated[assistantMsgIndex] = { role: 'model', parts: [{ text: accumulated }] }
+          return updated
+        })
+      }
+    } catch (err) {
+      setMessages(prev => {
+        const updated = [...prev]
+        updated[assistantMsgIndex] = {
+          role: 'model',
+          parts: [{ text: 'I apologize — I\'m experiencing a connection issue. Please try again.' }]
+        }
+        return updated
+      })
     } finally {
-      setLoading(false);
+      setStreaming(false)
+      inputRef.current?.focus()
     }
-  };
+  }
 
-  const quickPrompts = [
-    { text: "Summarize Broken Promises Agriculture paper", icon: Quote },
-    { text: "Explain multi-agent reinforcement learning simply", icon: Lightbulb },
-    { text: "Identify key rare-earth mineral logistics choke-points", icon: Compass },
-    { text: "Generate Indian crop credit leakage citations", icon: Sparkles }
-  ];
+  // Simple markdown renderer for bold, bullet points
+  const renderContent = (text: string) => {
+    const lines = text.split('\n')
+    return lines.map((line, i) => {
+      // Bold text
+      const parts = line.split(/\*\*(.*?)\*\*/g)
+      const rendered = parts.map((part, j) =>
+        j % 2 === 1 ? <strong key={j} className="text-white font-bold">{part}</strong> : part
+      )
+      return (
+        <span key={i}>
+          {line.startsWith('•') ? (
+            <span className="block pl-2 text-[#A0AEC0]">{rendered}</span>
+          ) : (
+            <span className="block">{rendered}</span>
+          )}
+          {i < lines.length - 1 && line === '' && <br />}
+        </span>
+      )
+    })
+  }
 
   return (
-    <div className="min-h-screen bg-[#050505] text-[#FFFFFF] font-sans selection:bg-[#0062FF] selection:text-white pb-20">
-      
-      {/* Dynamic Grid Matrix */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,rgba(0,98,255,0.06),transparent_40%),radial-gradient(circle_at_80%_80%,rgba(0,240,255,0.06),transparent_40%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:45px_45px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_20%,transparent_100%)]" />
-      </div>
-
-      <div className="max-w-[900px] mx-auto px-6 pt-12 relative z-10">
-        
-        {/* Back Link */}
-        <a href="/" className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-[#A0AEC0] hover:text-white uppercase mb-8 transition-colors">
-          <ArrowLeft size={14} />
-          <span>Genesis Landing Page</span>
-        </a>
-
-        {/* Title */}
-        <div className="mb-10 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#0062FF] to-[#00F0FF] flex items-center justify-center text-white shadow-[0_0_20px_rgba(0,98,255,0.35)] animate-pulse">
-            <Sparkles size={24} />
+    <div className="flex flex-col h-[calc(100vh-64px)] max-w-[900px] mx-auto px-4">
+      {/* Header */}
+      <div className="py-6 shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0062FF] to-[#00F0FF] flex items-center justify-center shadow-[0_0_20px_rgba(0,98,255,0.4)]">
+            <Sparkles size={20} className="text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-black tracking-tight bg-gradient-to-r from-white to-[#0062FF] bg-clip-text text-transparent">AI RESEARCH COPILOT</h1>
-            <p className="text-sm text-[#A0AEC0] mt-1">Deeply integrated Google Gemini AI engine assisting document analysis, summaries, and idea syntheses.</p>
+            <h1 className="text-lg font-extrabold text-white">ARIA — Research Copilot</h1>
+            <p className="text-xs text-[#A0AEC0]">Powered by Google Gemini · Quantora Analytics</p>
+          </div>
+          <div className="ml-auto flex items-center gap-1.5">
+            <div className="w-1.5 h-1.5 bg-[#00FF00] rounded-full animate-pulse" />
+            <span className="text-[10px] text-[#A0AEC0] font-mono">ONLINE</span>
           </div>
         </div>
+      </div>
 
-        {/* Chat Terminal Box */}
-        <div className="w-full bg-[#0a0f1e]/40 border border-[#0062FF]/30 rounded-xl overflow-hidden shadow-[0_0_40px_rgba(0,98,255,0.1)] h-[55vh] flex flex-col mb-6">
-          
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-4 min-h-0 pr-4 scrollbar-thin">
-            {messages.map((msg, i) => {
-              const isAi = msg.role === 'model';
-              return (
-                <div 
-                  key={i} 
-                  className={`flex gap-4 items-start ${isAi ? '' : 'flex-row-reverse'}`}
-                >
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-extrabold text-xs shrink-0 ${
-                    isAi 
-                      ? 'bg-gradient-to-br from-[#0062FF] to-[#00F0FF] text-white border border-[#00F0FF]/30 shadow-[0_0_10px_rgba(0,240,255,0.2)]' 
-                      : 'bg-black border border-white/20 text-[#A0AEC0]'
-                  }`}>
-                    {isAi ? 'AI' : 'US'}
-                  </div>
-
-                  <div className={`rounded-xl p-4 max-w-[80%] text-xs md:text-sm leading-relaxed text-justify ${
-                    isAi 
-                      ? 'bg-black/60 border border-white/5 text-[#A0AEC0]' 
-                      : 'bg-[#0062FF]/15 border border-[#0062FF]/40 text-white'
-                  }`}>
-                    <p className="whitespace-pre-line">{msg.parts[0].text}</p>
-                  </div>
-                </div>
-              );
-            })}
-            
-            {loading && (
-              <div className="flex gap-4 items-start">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#0062FF] to-[#00F0FF] text-white flex items-center justify-center font-extrabold text-xs shadow-lg animate-spin">
-                  AI
-                </div>
-                <div className="bg-black/60 border border-white/5 rounded-xl p-4 text-xs font-mono text-[#00F0FF] animate-pulse">
-                  Synthesizing neural model vectors...
-                </div>
+      {/* Chat window */}
+      <div className="flex-1 overflow-y-auto space-y-4 pb-4 pr-1 min-h-0">
+        {messages.map((msg, i) => {
+          const isAi = msg.role === 'model'
+          return (
+            <div key={i} className={`flex gap-3 items-start ${isAi ? '' : 'flex-row-reverse'}`}>
+              {/* Avatar */}
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-extrabold shrink-0 ${
+                isAi
+                  ? 'bg-gradient-to-br from-[#0062FF] to-[#00F0FF] text-white shadow-[0_0_10px_rgba(0,98,255,0.3)]'
+                  : 'bg-[#0a0f1e] border border-white/10 text-[#A0AEC0]'
+              }`}>
+                {isAi ? <Bot size={14} /> : <User size={14} />}
               </div>
-            )}
-            
-            <div ref={chatEndRef} />
-          </div>
 
-          {/* Form Input */}
-          <div className="p-4 border-t border-[#0062FF]/20 bg-[#020202] flex items-center gap-3 shrink-0">
-            <input
-              type="text"
-              value={inputVal}
-              onChange={(e) => setInputVal(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') handleSend(inputVal);
-              }}
-              className="bg-black/40 border border-white/10 rounded-lg py-3 px-4 text-xs md:text-sm text-white placeholder:text-[#A0AEC0]/40 outline-none flex-1 focus:border-[#0062FF]/50"
-              placeholder="Ask for research synthesis, summaries, or citations..."
-              disabled={loading}
-            />
-            
-            <button 
-              onClick={() => handleSend(inputVal)}
-              className="bg-[#0062FF] hover:bg-[#0056e0] text-white p-3 rounded-lg flex items-center justify-center shadow-[0_4px_12px_rgba(0,98,255,0.3)] transition-all cursor-pointer shrink-0 disabled:opacity-50"
-              disabled={loading}
-            >
-              <Send size={16} />
-            </button>
-          </div>
-        </div>
+              {/* Bubble */}
+              <div className={`rounded-xl px-4 py-3 max-w-[80%] text-xs md:text-sm leading-relaxed ${
+                isAi
+                  ? 'bg-[#0a0f1e]/80 border border-white/5 text-[#B0BEC5]'
+                  : 'bg-[#0062FF]/15 border border-[#0062FF]/30 text-white'
+              }`}>
+                {msg.parts[0].text ? (
+                  <div className="whitespace-pre-wrap">{renderContent(msg.parts[0].text)}</div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <div className="flex gap-1">
+                      {[0, 1, 2].map(n => (
+                        <div key={n} className="w-1.5 h-1.5 bg-[#0062FF] rounded-full animate-bounce"
+                          style={{ animationDelay: `${n * 0.15}s` }} />
+                      ))}
+                    </div>
+                    <span className="text-[10px] font-mono text-[#0062FF] animate-pulse">Thinking...</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )
+        })}
+        <div ref={chatEndRef} />
+      </div>
 
-        {/* Quick Prompts Cards */}
-        <h4 className="text-xs font-mono tracking-widest text-[#0062FF] uppercase font-bold mb-4">RECOMMENDED ANALYSIS ROUTINES</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {quickPrompts.map((prompt, i) => {
-            const Icon = prompt.icon;
+      {/* Quick prompts (only show when fresh chat) */}
+      {messages.length === 1 && (
+        <div className="grid grid-cols-2 gap-2 mb-4 shrink-0">
+          {QUICK_PROMPTS.map((prompt, i) => {
+            const Icon = prompt.icon
             return (
-              <div 
-                key={i}
-                onClick={() => handleSend(prompt.text)}
-                className="bg-[#0a0f1e]/15 border border-white/5 rounded-xl p-4 flex items-center gap-3 cursor-pointer hover:border-[#0062FF]/40 hover:bg-[#0a0f1e]/30 transition-all hover:-translate-y-0.5"
-              >
-                <div className="text-[#00F0FF] p-2 bg-[#00F0FF]/5 rounded-lg border border-[#00F0FF]/10 shrink-0">
-                  <Icon size={14} />
-                </div>
-                <span className="text-xs text-[#A0AEC0] leading-snug">{prompt.text}</span>
-              </div>
-            );
+              <button key={i} onClick={() => sendMessage(prompt.text)}
+                className="flex items-center gap-2 bg-[#0a0f1e]/60 border border-white/5 hover:border-[#0062FF]/30 rounded-lg p-3 text-left transition-all group">
+                <Icon size={12} className="text-[#0062FF] shrink-0" />
+                <span className="text-xs text-[#A0AEC0] group-hover:text-white transition-colors leading-snug">{prompt.text}</span>
+              </button>
+            )
           })}
         </div>
+      )}
 
+      {/* Input bar */}
+      <div className="py-4 border-t border-white/5 shrink-0">
+        {!user && !authLoading && (
+          <div className="flex items-center gap-2 bg-[#0062FF]/5 border border-[#0062FF]/20 rounded-lg px-4 py-2 mb-3 text-xs text-[#A0AEC0]">
+            <Sparkles size={12} className="text-[#0062FF]" />
+            <span>Sign in to use the full AI Research Copilot</span>
+            <button onClick={() => router.push('/login')} className="ml-auto text-[#0062FF] font-bold hover:underline">
+              Sign In →
+            </button>
+          </div>
+        )}
+        <div className="flex items-center gap-3 bg-[#0a0f1e]/60 border border-white/10 focus-within:border-[#0062FF]/50 rounded-xl px-4 py-3 transition-all">
+          <input
+            ref={inputRef}
+            type="text"
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && !e.shiftKey && sendMessage(input)}
+            placeholder="Ask about research, economics, markets, or policy..."
+            disabled={streaming}
+            className="flex-1 bg-transparent text-white text-sm placeholder:text-[#A0AEC0]/50 outline-none"
+          />
+          <button onClick={() => sendMessage(input)}
+            disabled={streaming || !input.trim()}
+            className="w-8 h-8 bg-[#0062FF] hover:bg-[#0056e0] disabled:opacity-40 text-white rounded-lg flex items-center justify-center shrink-0 transition-all">
+            {streaming ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
+          </button>
+        </div>
+        <p className="text-[9px] text-[#A0AEC0]/50 text-center mt-2 font-mono">
+          ARIA may produce inaccuracies. Always verify critical research claims.
+        </p>
       </div>
     </div>
-  );
+  )
 }

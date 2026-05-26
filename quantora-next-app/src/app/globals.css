@@ -1,43 +1,483 @@
 @import "tailwindcss";
 
+/* ==========================================
+   UNIFIED DUAL-MODE SEMANTIC PALETTE SYSTEM
+   ========================================== */
 :root {
-  --background: #050505;
-  --foreground: #ffffff;
+  /* Premium Dark Mode (Default Theme) */
+  --background: #030303;        /* Pure deep carbon black */
+  --surface: #080b14;           /* Sleek steel-blue card panel background */
+  --surface-hover: #0d1220;     /* Soft steel hover highlight */
+  --foreground: #ffffff;        /* High-contrast pure white text */
+  --foreground-muted: #a0aec0;  /* Cool grey-slate secondary text */
+  --foreground-dim: #64748b;    /* Table header dim slate */
+  --border: rgba(255, 255, 255, 0.05); /* Faint white border outline */
+  --border-accent: rgba(0, 98, 255, 0.15); /* Soft blue accent border */
+  --accent: #0062FF;            /* Electric royal blue accent */
+  --accent-glow: rgba(0, 98, 255, 0.25);
+  --cyan: #00F0FF;              /* High-tech cyan glow */
+  --success: #10B981;           /* Emerald green */
+  --error: #EF4444;             /* Crimson red */
+  --warn: #F59E0B;              /* Vibrant amber yellow */
   
-  --primary: #0A0F1E;
-  --accent: #0062FF;
-  --accent-glow: rgba(0, 98, 255, 0.4);
-  --cyan: #00F0FF;
-  --text-muted: #A0AEC0;
-  --glass: rgba(15, 20, 35, 0.7);
+  --glass: rgba(10, 15, 30, 0.7);
   --glass-border: rgba(255, 255, 255, 0.08);
+  --highlight-bg: rgba(255, 255, 255, 0.05);
+  --highlight-bg-subtle: rgba(255, 255, 255, 0.02);
 }
 
+.light {
+  /* Premium Bright Mode (Slate Light Theme) */
+  --background: #f8fafc;        /* Crisp Slate 50 background */
+  --surface: #ffffff;           /* Pure paper-white card panel */
+  --surface-hover: #f1f5f9;     /* Soft grey hover state */
+  --foreground: #0f172a;        /* High-contrast Slate 900 text */
+  --foreground-muted: #475569;  /* Slate 600 secondary text */
+  --foreground-dim: #64748b;    /* Slate 500 table headers */
+  --border: #e2e8f0;            /* Slate 200 grid border lines */
+  --border-accent: #bfdbfe;     /* Soft slate-blue accent border */
+  --accent: #0052CC;            /* Standard high-contrast royal-blue */
+  --accent-glow: rgba(0, 98, 255, 0.05);
+  --cyan: #0284c7;              /* Sky 600 high-contrast blue */
+  --success: #047857;           /* High-contrast Pine green */
+  --error: #b91c1c;             /* High-contrast crimson red */
+  --warn: #b45309;              /* High-contrast amber brown */
+  
+  --glass: #ffffff;
+  --glass-border: #e2e8f0;
+  --highlight-bg: rgba(15, 23, 42, 0.04);
+  --highlight-bg-subtle: rgba(15, 23, 42, 0.015);
+}
+
+/* ==========================================
+   GLOBAL BACKGROUNDS & CONTENT RESETS
+   ========================================== */
 body {
   background: var(--background);
   color: var(--foreground);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Custom Premium Scrollbar */
+main {
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+/* 3D Background Grid - Dynamic Theme Color Lines */
+.fixed.inset-0.z-0 {
+  transition: all 0.3s ease;
+}
+.light .fixed.inset-0.z-0 {
+  background: radial-gradient(circle at 50% 0%, rgba(0, 98, 255, 0.04), transparent 60%),
+              radial-gradient(circle at 100% 100%, rgba(2, 132, 199, 0.02), transparent 60%) !important;
+}
+.light .fixed.inset-0.z-0 .bg-\[linear-gradient\(rgba\(255\255\255\0\.015\)_1px\,transparent_1px\)\,linear-gradient\(90deg\,rgba\(255\255\255\0\.015\)_1px\,transparent_1px\)\] {
+  background-image: linear-gradient(rgba(15, 23, 42, 0.02) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(15, 23, 42, 0.02) 1px, transparent 1px) !important;
+}
+.light .fixed.inset-0.z-0 .bg-\[linear-gradient\(rgba\(255\255\255\0\.01\)_1px\,transparent_1px\)\,linear-gradient\(90deg\,rgba\(255\255\255\0\.01\)_1px\,transparent_1px\)\] {
+  background-image: linear-gradient(rgba(15, 23, 42, 0.015) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(15, 23, 42, 0.015) 1px, transparent 1px) !important;
+}
+
+/* Soften glow blobs on light mode */
+.light .fixed.inset-0.z-0 div {
+  opacity: 0.12 !important;
+}
+
+/* ==========================================
+   CUSTOM DUAL-MODE SCROLLBARS
+   ========================================== */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #050505;
+  background: var(--background);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--accent);
+  background: var(--border-accent);
   border-radius: 10px;
 }
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
 
-/* Scrollbar thin utility class */
 .scrollbar-thin::-webkit-scrollbar {
   width: 4px;
 }
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: rgba(0, 240, 255, 0.3);
+  background: var(--border-accent);
 }
+
+/* ==========================================
+   DYNAMIC UTILITY MAPPINGS FOR BOTH THEMES
+   ========================================== */
+
+/* Transparent white overlays — valid CSS attribute selectors */
+[class*="bg-white/10"],
+[class*="bg-white/8"],
+[class*="bg-white/5"] {
+  background-color: var(--highlight-bg) !important;
+}
+
+[class*="bg-white/2"] {
+  background-color: var(--highlight-bg-subtle) !important;
+}
+
+/* Border adaptations */
+[class*="border-white/5"],
+[class*="border-white/10"] {
+  border-color: var(--border) !important;
+}
+
+[class*="border-white/20"] {
+  border-color: var(--border-accent) !important;
+}
+
+/* Light mode text adaptations */
+.light .text-gray-300,
+.light .text-gray-400 {
+  color: var(--foreground-muted) !important;
+}
+
+.light .text-gray-500 {
+  color: var(--foreground-dim) !important;
+}
+
+.light .text-\[\#A0AEC0\] {
+  color: var(--foreground-muted) !important;
+}
+
+/* Citation and stats label fixes */
+.light .text-white\/40 { color: #64748b !important; }
+.light .text-white\/50 { color: #475569 !important; }
+.light .text-white\/60 { color: #334155 !important; }
+
+/* ==========================================
+   GLOBAL COMPONENT PALETTE OVERRIDES
+   ========================================== */
+
+/* 1. Sidebar & Header Enclosures */
+aside, header, footer {
+  background-color: var(--background) !important;
+  border-color: var(--border) !important;
+  transition: all 0.3s ease;
+}
+
+aside button:hover,
+aside a:hover {
+  background-color: var(--surface-hover) !important;
+}
+
+/* Sidebar nav label spans only — target the tiny uppercase nav text labels */
+aside .text-gray-500 {
+  color: var(--foreground-dim) !important;
+}
+
+/* 2. Unified Cards System (Research Papers, Challenges, Opinions) */
+.glass {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.01) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Card Hover Elevation Effect */
+.glass:hover {
+  border-color: var(--border-accent) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px -10px var(--accent-glow) !important;
+}
+
+/* Skeletons loader */
+.bg-white\/10 {
+  background-color: var(--surface-hover) !important;
+}
+
+/* 3. Global Typography & Texts */
+/* Only plain headings and strong elements — do NOT include .text-white here
+   as that would wipe out intentional accent blue/cyan colored text */
+h1, h2, h3, h4, h5, h6,
+strong {
+  color: var(--foreground) !important;
+}
+
+/* .text-white maps to foreground in light mode only */
+.light .text-white,
+.light .text-\[\#FFFFFF\] {
+  color: var(--foreground) !important;
+}
+
+.text-gray-300,
+.text-\[\#A0AEC0\],
+.text-gray-400,
+.text-gray-500 {
+  color: var(--foreground-muted) !important;
+}
+
+/* Citation and stats label fixes */
+.light .text-white\/40 { color: #64748b !important; }
+.light .text-white\/50 { color: #475569 !important; }
+.light .text-white\/60 { color: #334155 !important; }
+
+/* 4. Beautiful Soft Badge System (Pastel/Glow Dual mode) */
+/* IMPORTANT: bg-* and text-* rules are FULLY SEPARATED.
+   Background + border ONLY applies to actual badge containers (bg-* classes).
+   Text-color classes are standalone — no background added. */
+
+/* Blue badge containers only */
+.bg-blue-600\/10,
+.bg-\[\#0062FF\]\/10,
+.bg-\[\#0062FF\]\/20 {
+  background-color: var(--accent-glow) !important;
+  border: 1px solid var(--border-accent) !important;
+}
+
+/* Blue text color only — NO background or border */
+.text-blue-500,
+.text-blue-400,
+.text-\[\#0062FF\] {
+  color: var(--accent) !important;
+}
+
+/* Emerald badge containers only */
+.bg-emerald-500\/10,
+.bg-emerald-400\/10,
+.bg-\[\#00FF00\]\/15,
+.bg-\[\#00FF00\]\/5,
+.bg-\[\#00FF00\]\/10 {
+  background-color: rgba(16, 185, 129, 0.08) !important;
+  border: 1px solid rgba(16, 185, 129, 0.15) !important;
+}
+
+/* Emerald text color only — NO background or border */
+.text-emerald-400,
+.text-emerald-500 {
+  color: var(--success) !important;
+}
+
+/* Amber badge containers only */
+.bg-amber-500\/10,
+.bg-amber-400\/10 {
+  background-color: rgba(245, 158, 11, 0.08) !important;
+  border: 1px solid rgba(245, 158, 11, 0.15) !important;
+}
+
+/* Amber text color only — NO background or border */
+.text-amber-500 {
+  color: var(--warn) !important;
+}
+
+/* Purple badge containers only */
+.bg-purple-600\/10,
+.bg-purple-500\/10 {
+  background-color: rgba(168, 85, 247, 0.08) !important;
+  border: 1px solid rgba(168, 85, 247, 0.15) !important;
+}
+
+/* Purple text color only — NO background or border */
+.text-purple-400 {
+  color: #a855f7 !important;
+}
+.light .text-purple-400 {
+  color: var(--cyan) !important;
+}
+
+/* Red badge containers only */
+.bg-red-500\/10,
+.bg-red-600\/10 {
+  background-color: rgba(239, 68, 68, 0.08) !important;
+  border: 1px solid rgba(239, 68, 68, 0.15) !important;
+}
+
+/* Red text color only — NO background or border */
+.text-red-400 {
+  color: var(--error) !important;
+}
+
+/* 5. World-Class Table & Screener Ledger */
+table {
+  background-color: var(--background) !important;
+}
+
+thead tr {
+  background-color: var(--surface) !important;
+  border-color: var(--border) !important;
+}
+
+th {
+  color: var(--foreground-dim) !important;
+  border-bottom: 2px solid var(--border) !important;
+}
+
+tbody tr {
+  border-color: var(--border) !important;
+  transition: background-color 0.2s ease;
+}
+
+tbody tr:hover {
+  background-color: var(--surface-hover) !important;
+}
+
+td {
+  color: var(--foreground-muted) !important;
+}
+
+/* 6. Form inputs & selections */
+input, select, textarea {
+  background-color: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--foreground) !important;
+  transition: all 0.2s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px var(--accent-glow) !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--foreground-dim) !important;
+}
+
+/* 7. World-Class Live Terminal Overlay */
+.fixed.inset-0.z-\[10000\] .bg-black\/95 {
+  background-color: rgba(3, 3, 3, 0.6) !important; /* Elegant overlay blur */
+  backdrop-filter: blur(12px) !important;
+}
+
+.fixed.inset-0.z-\[10000\] .bg-\[\#000000\] {
+  background-color: var(--background) !important;
+  border-color: var(--border-accent) !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+}
+
+.fixed.inset-0.z-\[10000\] .bg-\[\#070707\] {
+  background-color: var(--surface) !important;
+  border-color: var(--border) !important;
+}
+
+.fixed.inset-0.z-\[10000\] .bg-\[\#050505\],
+.fixed.inset-0.z-\[10000\] .bg-\[\#020202\] {
+  background-color: var(--surface) !important;
+  border-color: var(--border) !important;
+}
+
+.text-\[\#00FF00\],
+.fixed.inset-0.z-\[10000\] .text-\[\#00FF00\] {
+  color: var(--foreground-muted) !important;
+}
+
+.fixed.inset-0.z-\[10000\] .text-white {
+  color: var(--accent) !important;
+}
+
+/* 8. SVG Visual Handshakes */
+svg text {
+  fill: var(--foreground-muted) !important;
+  transition: fill 0.3s ease;
+}
+
+svg line,
+svg path[stroke="rgba(255, 255, 255, 0.015)"] {
+  stroke: var(--border) !important;
+  transition: stroke 0.3s ease;
+}
+
+svg circle[fill="#FFF"] {
+  fill: var(--accent) !important;
+  transition: fill 0.3s ease;
+}
+
+.light svg path[stroke="url(#blue-grad)"] {
+  stroke: #cbd5e1 !important;
+  opacity: 0.8 !important;
+}
+
+/* Ticker tape footer colors */
+footer .text-gray-500,
+footer .text-gray-800 {
+  color: var(--foreground-dim) !important;
+}
+
+/* ==========================================
+   BRIGHT MODE ADVANCED STYLING POLISH
+   ========================================== */
+
+/* Fix Hero Gradient disappearing in light mode */
+.light .bg-gradient-to-b.from-white {
+  background-image: linear-gradient(to bottom, #0052cc, #0062ff) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  color: transparent !important;
+}
+
+/* Fix Abstract boxes showing as dark smudges in cards */
+.light .bg-black\/40,
+.light .bg-black\/20,
+.light .bg-black\/60 {
+  background-color: #f1f5f9 !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+/* Fix orange warning contrast on light cards */
+.light .text-\[\#FF7050\] {
+  color: #c2410c !important; /* Rich readable Orange 700 */
+}
+
+/* Fix dynamic map vectors and locations in light mode */
+.light svg path[stroke="#00F0FF"] { stroke: var(--cyan) !important; }
+.light svg circle[fill="#00F0FF"] { fill: var(--cyan) !important; }
+
+/* Fix dynamic avatars and contributor badges */
+.light .border-\[\#00F0FF\] {
+  border-color: var(--border-accent) !important;
+}
+.light .w-20.h-20.rounded-full {
+  background-color: #f8fafc !important;
+  color: var(--accent) !important;
+}
+
+/* ==========================================
+   3D ISOMETRIC LOGO ROTATION CLASSES
+   ========================================== */
+.logo-3d-container {
+  width: 28px;
+  height: 28px;
+  perspective: 120px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.cube-3d {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(-20deg) rotateY(45deg);
+  animation: rotateCube 8s infinite linear;
+}
+
+.cube-face {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--accent);
+  background: var(--accent-glow);
+  box-shadow: 0 0 10px var(--accent-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cube-face-front  { transform: rotateY(0deg) translateZ(14px); }
+.cube-face-back   { transform: rotateY(180deg) translateZ(14px); }
+.cube-face-left   { transform: rotateY(-90deg) translateZ(14px); }
+.cube-face-right  { transform: rotateY(90deg) translateZ(14px); }
+.cube-face-top    { transform: rotateX(90deg) translateZ(14px); background: rgba(0, 240, 255, 0.15); border-color: var(--cyan); }
+.cube-face-bottom { transform: rotateX(-90deg) translateZ(14px); }
 
 /* Isometric 3D Cube Rotation keyframes */
 @keyframes rotateCube {
@@ -65,4 +505,21 @@ body {
 @keyframes flow {
   from { stroke-dashoffset: 200; }
   to { stroke-dashoffset: 0; }
+}
+
+/* Premium Moving Shimmer Effect */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.01) 25%,
+    rgba(255, 255, 255, 0.05) 37%,
+    rgba(255, 255, 255, 0.01) 63%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite linear;
 }

@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LayoutDashboard, BookOpen, MessageCircle, Trophy, FileText, 
   Users, Leaf, Activity, Building2, Shield, Settings, Sun, Moon, 
-  Bell, LogOut
+  Bell, LogOut, GraduationCap
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { QBrainWidget } from './QBrainWidget';
@@ -59,15 +59,16 @@ export const PlatformShell: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Active navigation items matching paths
   const navItems = [
-    { name: 'Index', icon: LayoutDashboard, path: '/', color: 'group-hover:text-blue-400', activeColor: 'text-blue-400', accentBorder: 'bg-blue-500', title: 'Index Hub' },
-    { name: 'Library', icon: BookOpen, path: '/library', color: 'group-hover:text-blue-400', activeColor: 'text-blue-400', accentBorder: 'bg-blue-500', title: 'Research Library' },
+    { name: 'HOME', icon: LayoutDashboard, path: '/', color: 'group-hover:text-blue-400', activeColor: 'text-blue-400', accentBorder: 'bg-blue-500', title: 'Index Hub' },
+    { name: 'library', icon: BookOpen, path: '/library', color: 'group-hover:text-blue-400', activeColor: 'text-blue-400', accentBorder: 'bg-blue-500', title: 'Research Library' },
+    { name: 'Study', icon: GraduationCap, path: '/learning-paths', color: 'group-hover:text-amber-400', activeColor: 'text-amber-400', accentBorder: 'bg-amber-500', title: 'Smart Learning Paths' },
     { name: 'Insights', icon: MessageCircle, path: '/insights', color: 'group-hover:text-blue-400', activeColor: 'text-blue-400', accentBorder: 'bg-blue-500', title: 'Intelligence Network' },
-    { name: 'R&D Lab', icon: Trophy, path: '/rnd-lab', color: 'group-hover:text-amber-400', activeColor: 'text-amber-400', accentBorder: 'bg-amber-500', title: 'Open R&D Lab' },
-    { name: 'Submit', icon: FileText, path: '/submit', color: 'group-hover:text-emerald-400', activeColor: 'text-emerald-400', accentBorder: 'bg-emerald-500', title: 'Submit Manuscript' },
-    { name: 'Profiles', icon: Users, path: '/profiles', color: 'group-hover:text-blue-400', activeColor: 'text-blue-400', accentBorder: 'bg-blue-500', title: 'Researcher Identity' },
+    { name: 'Publish', icon: FileText, path: '/submit', color: 'group-hover:text-emerald-400', activeColor: 'text-emerald-400', accentBorder: 'bg-emerald-500', title: 'Submit Manuscript' },
     { name: 'Climate', icon: Leaf, path: '/climate', color: 'group-hover:text-emerald-400', activeColor: 'text-emerald-400', accentBorder: 'bg-emerald-500', title: 'Environmental Hub' },
-    { name: 'Terminal', icon: Activity, path: '/terminal', color: 'group-hover:text-cyan-400', activeColor: 'text-cyan-400', accentBorder: 'bg-cyan-500', title: 'Fintech Terminal' },
-    { name: 'Org', icon: Building2, path: '/institutional', color: 'group-hover:text-purple-400', activeColor: 'text-purple-400', accentBorder: 'bg-purple-500', title: 'Institutional Hub' },
+    { name: 'R&D Lab', icon: Trophy, path: '/rnd-lab', color: 'group-hover:text-amber-400', activeColor: 'text-amber-400', accentBorder: 'bg-amber-500', title: 'Open R&D Lab' },
+    { name: 'PROfile', icon: Users, path: '/profiles', color: 'group-hover:text-blue-400', activeColor: 'text-blue-400', accentBorder: 'bg-blue-500', title: 'Researcher Identity' },
+    { name: 'terminal', icon: Activity, path: '/terminal', color: 'group-hover:text-cyan-400', activeColor: 'text-cyan-400', accentBorder: 'bg-cyan-500', title: 'Fintech Terminal' },
+    { name: 'organisation', icon: Building2, path: '/institutional', color: 'group-hover:text-purple-400', activeColor: 'text-purple-400', accentBorder: 'bg-purple-500', title: 'Institutional Hub' },
   ];
 
   return (
@@ -264,7 +265,7 @@ export const PlatformShell: React.FC<{ children: React.ReactNode }> = ({ childre
 
         {/* 5. MOBILE BOTTOM NAVIGATION BAR */}
         <div className="md:hidden flex items-center justify-around h-16 bg-[var(--surface)] border-t border-[var(--border)] z-50 shrink-0 w-full safe-area-bottom">
-          {navItems.filter(i => ['Index', 'Library', 'Insights', 'Submit', 'Profiles'].includes(i.name)).map((item) => {
+          {navItems.filter(i => ['HOME', 'library', 'Insights', 'Publish', 'PROfile'].includes(i.name)).map((item) => {
             const isActive = pathname === item.path;
             const Icon = item.icon;
             return (

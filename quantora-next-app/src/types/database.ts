@@ -17,6 +17,8 @@ export interface Database {
           institution: string | null
           country: string | null
           website: string | null
+          linkedin?: string | null
+          orcid?: string | null
           created_at: string
           updated_at: string
         }

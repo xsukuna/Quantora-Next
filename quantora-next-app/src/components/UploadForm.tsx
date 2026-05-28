@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Upload, FileText, CheckCircle, ShieldAlert, ArrowRight, 
@@ -84,7 +84,7 @@ export const UploadForm: React.FC<UploadFormProps> = ({
   };
 
   const validateAndSetFile = (f: File) => {
-    const validExtensions = ['pdf', 'docx', 'xlsx', 'csv', 'zip', 'pptx'];
+    const validExtensions = ['pdf', 'doc', 'docx', 'html', 'csv', 'zip', 'pptx', 'txt'];
     const ext = f.name.split('.').pop()?.toLowerCase() || '';
     if (!validExtensions.includes(ext)) {
       alert(`Invalid format. Quantora accepts: ${validExtensions.join(', ').toUpperCase()}`);
@@ -93,7 +93,7 @@ export const UploadForm: React.FC<UploadFormProps> = ({
     setFile(f);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentUser) {
       openAuth();
@@ -105,76 +105,85 @@ export const UploadForm: React.FC<UploadFormProps> = ({
     }
 
     setUploading(true);
-    setUploadProgress(0);
-    setUploadPhase('Encrypting payload...');
+    setUploadProgress(15);
+    setUploadPhase('Uploading manuscript payload...');
 
-    // Phase 1: Uploading file simulation
-    const interval = setInterval(() => {
-      setUploadProgress(prev => {
-        if (prev < 30) {
-          return prev + 5;
-        } else if (prev < 65) {
-          setUploadPhase('Analyzing manuscript via Quantora NLP model...');
-          return prev + 4;
-        } else if (prev < 90) {
-          setUploadPhase('Running security clearance & anti-plagiarism checks...');
-          return prev + 3;
-        } else if (prev < 98) {
-          setUploadPhase('Finalizing peer submission ledger...');
-          return prev + 1;
-        } else {
-          clearInterval(interval);
-          setUploading(false);
-          saveSubmission();
-          return 100;
-        }
+    try {
+      // 1. Upload to Supabase Storage
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const uploadRes = await fetch('/api/research/upload', {
+        method: 'POST',
+        body: formData,
       });
-    }, 120);
-  };
 
-  const saveSubmission = () => {
-    if (!currentUser) return;
-    
-    const tags = tagsInput
-      .split(',')
-      .map(t => t.trim())
-      .filter(t => t.length > 0);
+      if (!uploadRes.ok) {
+        const errData = await uploadRes.json();
+        throw new Error(errData.error || 'File upload failed');
+      }
 
-    const labelMapping: Record<string, string> = {
-      'Independent Submission': 'INDEPENDENT_SUBMISSION',
-      'Experimental Research': 'EXPERIMENTAL_RESEARCH',
-      'Open Draft': 'OPEN_DRAFT',
-      'Verified Research': 'VERIFIED_RESEARCH',
-      'Community Reviewed': 'COMMUNITY_REVIEWED',
-    };
+      setUploadProgress(55);
+      setUploadPhase('Extracting metadata & generating AI summary...');
 
-    const email = currentUser.email || 'scarfaceatwork@outlook.com';
+      const uploadData = await uploadRes.json();
+      const { url: fileUrl, name: fileName, size: fileSize } = uploadData;
 
-    fetch('/api/research', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        title,
-        abstract,
-        category,
-        institution: institution || 'Independent Fellow',
-        country: country || 'Global',
-        tags: tags.length > 0 ? tags : ['General-Research'],
-        authorEmail: email,
-        trustLabel: labelMapping[trustLabel] || 'INDEPENDENT_SUBMISSION'
-      })
-    })
-      .then(res => {
-        if (!res.ok) throw new Error('Upload transaction failed.');
-        return res.json();
-      })
-      .then(() => {
+      // 2. Submit paper metadata
+      const tags = tagsInput
+        .split(',')
+        .map(t => t.trim())
+        .filter(t => t.length > 0);
+
+      const labelMapping: Record<string, string> = {
+        'Independent Submission': 'INDEPENDENT_SUBMISSION',
+        'Experimental Research': 'EXPERIMENTAL_RESEARCH',
+        'Open Draft': 'OPEN_DRAFT',
+        'Verified Research': 'VERIFIED_RESEARCH',
+        'Community Reviewed': 'COMMUNITY_REVIEWED',
+      };
+
+      const email = currentUser.email || 'scarfaceatwork@outlook.com';
+
+      setUploadProgress(85);
+      setUploadPhase('Registering manuscript in global research index...');
+
+      const submitRes = await fetch('/api/research', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title,
+          abstract,
+          category,
+          institution: institution || 'Independent Fellow',
+          country: country || 'Global',
+          tags: tags.length > 0 ? tags : ['General-Research'],
+          file_url: fileUrl,
+          file_name: fileName,
+          file_size: fileSize,
+          references_text: references,
+          authorEmail: email,
+          trustLabel: labelMapping[trustLabel] || 'INDEPENDENT_SUBMISSION'
+        })
+      });
+
+      if (!submitRes.ok) {
+        const errData = await submitRes.json();
+        throw new Error(errData.error || 'Paper registration failed');
+      }
+
+      setUploadProgress(100);
+      setUploadPhase('Manuscript indexed successfully!');
+      setTimeout(() => {
+        setUploading(false);
         setIsSuccess(true);
-      })
-      .catch((err) => {
-        console.error('Failed to submit manuscript:', err);
-        alert('Failed to upload manuscript. Please try again.');
-      });
+      }, 500);
+
+    } catch (err: any) {
+      console.error('Submission pipeline error:', err);
+      alert(err.message || 'Failed to submit manuscript. Please try again.');
+      setUploading(false);
+    }
   };
 
 
@@ -405,7 +414,7 @@ export const UploadForm: React.FC<UploadFormProps> = ({
                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Core References (APA/MLA Format)</label>
                   <input
                     type="text"
-                    placeholder="e.g. Vance, A. (2025). The Future of Sovereign Bonds. Journal of Monetary Policy..."
+                    placeholder="e.g. Kaushik, A. (2026). Broken Promises in the Fields..."
                     value={references}
                     onChange={(e) => setReferences(e.target.value)}
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white outline-none focus:border-blue-500 transition-all"
@@ -415,7 +424,7 @@ export const UploadForm: React.FC<UploadFormProps> = ({
 
               {/* Drag & Drop File Zone */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Manuscript Payload File (.PDF, .ZIP, .DOCX, .XLSX)</label>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Manuscript Payload File (PDF, HTML, DOC, DOCX, CSV, ZIP, PPTX, TXT)</label>
                 <div
                   onDragOver={handleDragOver}
                   onDrop={handleDrop}
@@ -427,7 +436,7 @@ export const UploadForm: React.FC<UploadFormProps> = ({
                     type="file"
                     id="manuscript-file"
                     onChange={handleFileChange}
-                    accept=".pdf,.docx,.xlsx,.csv,.zip,.pptx"
+                    accept=".pdf,.doc,.docx,.html,.csv,.zip,.pptx,.txt"
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   />
                   
@@ -443,7 +452,7 @@ export const UploadForm: React.FC<UploadFormProps> = ({
                     ) : (
                       <div className="space-y-1">
                         <p className="text-xs font-bold text-gray-300">Drag & Drop Manuscript or click here</p>
-                        <p className="text-[10px] text-gray-500">Supports PDF, DOCX, XLSX, CSV, PPTX and ZIP (Max 15MB)</p>
+                        <p className="text-[10px] text-gray-500">Supports PDF, HTML, DOC, DOCX, CSV, ZIP, PPTX and TXT (Max 50MB)</p>
                       </div>
                     )}
                   </div>

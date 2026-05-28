@@ -421,7 +421,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ currentUser, ope
 
                   <div className="space-y-2.5 font-mono text-[10px] text-gray-500 max-h-[180px] overflow-y-auto pr-2">
                     <div className="flex gap-3 py-1.5 border-b border-white/2"><span className="text-emerald-400">[08:42:15]</span> <span>Security Check [OK] - Plagiarism engine passed for decoupling_debt_cycles_2026.pdf</span></div>
-                    <div className="flex gap-3 py-1.5 border-b border-white/2"><span className="text-blue-400">[08:10:42]</span> <span>Indexing completed - Citation matrix mapped for Elena Rostova (Neural Alpha)</span></div>
+                    <div className="flex gap-3 py-1.5 border-b border-white/2"><span className="text-blue-400">[08:10:42]</span> <span>Indexing completed - Citation matrix mapped for Aditya Kaushik (Broken Promises)</span></div>
                     <div className="flex gap-3 py-1.5 border-b border-white/2"><span className="text-amber-500">[07:44:09]</span> <span>Plagiarism Filter - Purged 1 duplicate submission from guest anonymous IP</span></div>
                     <div className="flex gap-3 py-1.5 border-b border-white/2"><span className="text-cyan-400">[06:30:10]</span> <span>Automated Backup [SUCCESS] - Replicated 14.2 GB payload archive to London transit hub</span></div>
                   </div>

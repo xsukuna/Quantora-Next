@@ -118,7 +118,7 @@ export async function chatCopilot(
       `Under the framework of "${paperTitle}", this finding indicates that structural gaps are directly correlated with local out-of-pocket leakages.`,
       `Excellent question. If you analyze the abstract's core parameters, the model suggests a critical stress-test threshold of 45% under severe supply fractures.`,
       `According to the author's methodology, agricultural lines are frequently diverted. A decentralized ledger could mitigate this by mapping validation nodes directly.`,
-      `We recommend exploring Dr. Vance's related papers on macroeconomic credit flows to further understand these structural dynamics.`
+      `We recommend exploring Aditya Kaushik's related papers on public policy and forensic audits to further understand these structural dynamics.`
     ];
     return responses[Math.floor(Math.random() * responses.length)];
   }

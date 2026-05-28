@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User as UserIcon, BookOpen as BookIcon, Download as DownloadIcon, 
   ThumbsUp as UpvoteIcon, ChevronRight as RightIcon,
-  Users, Search, Mail, Activity
+  Users, Search, Mail, Activity, Trophy
 } from 'lucide-react';
 
 export interface DBUser {
@@ -42,6 +42,22 @@ export const ResearcherProfiles: React.FC<ResearcherProfilesProps> = ({ onNaviga
   const [papers, setPapers] = useState<Paper[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState<DBUser | null>(null);
+  const [activeSidebarTab, setActiveSidebarTab] = useState<'ROSTER' | 'LEADERBOARD'>('ROSTER');
+
+  const handleRepChange = (type: 'UP' | 'DOWN') => {
+    if (!selectedUser) return;
+    const offset = type === 'UP' ? 10 : -10;
+    
+    setUsers(prev => prev.map(u => {
+      if (u.id !== selectedUser.id) return u;
+      return { ...u, reputation: Math.max(0, u.reputation + offset) };
+    }));
+    
+    setSelectedUser(prev => {
+      if (!prev) return null;
+      return { ...prev, reputation: Math.max(0, prev.reputation + offset) };
+    });
+  };
 
   useEffect(() => {
     // Fetch users and papers in parallel from SQLite APIs
@@ -96,60 +112,128 @@ export const ResearcherProfiles: React.FC<ResearcherProfilesProps> = ({ onNaviga
     <div className="flex-1 flex overflow-hidden bg-[#020202]">
       
       {/* 1. RESEARCHER DIRECTORY COLUMN */}
-      <aside className="w-80 border-r border-white/5 bg-[#050505] p-6 flex flex-col gap-6 select-none shrink-0 overflow-y-auto scrollbar-hide">
-        <div className="space-y-2">
-          <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest">Global Roster</span>
+      <aside className="w-80 border-r border-white/5 bg-[#050505] p-6 flex flex-col gap-5 select-none shrink-0 overflow-y-auto scrollbar-hide">
+        <div className="space-y-1">
+          <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest block">Fellow Network</span>
           <h3 className="text-sm font-black uppercase text-white tracking-wider flex items-center gap-2">
-            <UserIcon className="w-4 h-4 text-blue-400 animate-pulse" />
-            <span>Fellow Researchers</span>
+            <Users className="w-4 h-4 text-blue-400" />
+            <span>Research Directory</span>
           </h3>
         </div>
 
-        {/* Search */}
-        <div className="relative">
-          <Search className="absolute left-3 top-2.5 text-gray-500 w-4 h-4" />
-          <input
-            type="text"
-            placeholder="Search academic profiles..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-3 py-2 text-xs outline-none focus:border-blue-500 focus:bg-white/10 text-white transition-all"
-          />
+        {/* Sidebar Toggle tab switcher */}
+        <div className="flex gap-1 bg-[#020202] border border-white/5 p-1 rounded-xl shrink-0">
+          <button
+            onClick={() => setActiveSidebarTab('ROSTER')}
+            className={`flex-1 text-center py-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${
+              activeSidebarTab === 'ROSTER' ? 'bg-white text-black font-black' : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            All Fellows
+          </button>
+          <button
+            onClick={() => setActiveSidebarTab('LEADERBOARD')}
+            className={`flex-1 text-center py-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${
+              activeSidebarTab === 'LEADERBOARD' ? 'bg-white text-black font-black' : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            Leaderboard
+          </button>
         </div>
 
-        {/* List */}
-        <div className="flex flex-col gap-2">
-          {filteredUsers.map(user => {
-            const isSelected = selectedUser && selectedUser.id === user.id;
-            return (
-              <button
-                key={user.id}
-                onClick={() => setSelectedUser(user)}
-                className={`w-full text-left p-4 rounded-xl border transition-all flex gap-3 group relative overflow-hidden ${
-                  isSelected 
-                    ? 'bg-blue-600/10 text-blue-400 border-blue-500/20 shadow-inner' 
-                    : 'border-transparent text-gray-400 hover:bg-white/5 hover:text-white'
-                }`}
-              >
-                {/* Glow border element */}
-                {isSelected && <div className="absolute left-0 top-1/4 bottom-1/4 w-0.5 bg-blue-500" />}
+        {activeSidebarTab === 'ROSTER' ? (
+          <>
+            {/* Search */}
+            <div className="relative shrink-0">
+              <Search className="absolute left-3 top-2.5 text-gray-500 w-4 h-4" />
+              <input
+                type="text"
+                placeholder="Search academic profiles..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-3 py-2 text-xs outline-none focus:border-blue-500 focus:bg-white/10 text-white transition-all"
+              />
+            </div>
 
-                <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center font-black uppercase text-xs shrink-0 select-none text-blue-400">
-                  {user.name.charAt(0)}
-                </div>
+            {/* List */}
+            <div className="flex flex-col gap-2">
+              {filteredUsers.map(user => {
+                const isSelected = selectedUser && selectedUser.id === user.id;
+                return (
+                  <button
+                    key={user.id}
+                    onClick={() => setSelectedUser(user)}
+                    className={`w-full text-left p-4 rounded-xl border transition-all flex gap-3 group relative overflow-hidden ${
+                      isSelected 
+                        ? 'bg-blue-600/10 text-blue-400 border-blue-500/20 shadow-inner' 
+                        : 'border-transparent text-gray-400 hover:bg-white/5 hover:text-white'
+                    }`}
+                  >
+                    {/* Glow border element */}
+                    {isSelected && <div className="absolute left-0 top-1/4 bottom-1/4 w-0.5 bg-blue-500" />}
 
-                <div className="flex flex-col justify-center min-w-0 flex-1">
-                  <span className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors truncate">{user.name}</span>
-                  <span className="text-[9px] font-bold text-gray-500 truncate mt-0.5 uppercase tracking-wider">{user.badge}</span>
-                </div>
+                    <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center font-black uppercase text-xs shrink-0 select-none text-blue-400">
+                      {user.name.charAt(0)}
+                    </div>
 
-                <RightIcon className={`w-3.5 h-3.5 self-center opacity-0 group-hover:opacity-100 transition-all ${
-                  isSelected ? 'opacity-100 text-blue-400' : 'text-gray-500'
-                }`} />
-              </button>
-            );
-          })}
-        </div>
+                    <div className="flex flex-col justify-center min-w-0 flex-1">
+                      <span className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors truncate">{user.name}</span>
+                      <span className="text-[9px] font-bold text-gray-500 truncate mt-0.5 uppercase tracking-wider">{user.badge}</span>
+                    </div>
+
+                    <RightIcon className={`w-3.5 h-3.5 self-center opacity-0 group-hover:opacity-100 transition-all ${
+                      isSelected ? 'opacity-100 text-blue-400' : 'text-gray-500'
+                    }`} />
+                  </button>
+                );
+              })}
+            </div>
+          </>
+        ) : (
+          /* Leaderboard sorted list */
+          <div className="flex flex-col gap-2.5">
+            {[...users].sort((a, b) => b.reputation - a.reputation).map((user, idx) => {
+              const isSelected = selectedUser && selectedUser.id === user.id;
+              const rank = idx + 1;
+              
+              // Honor Badge colors
+              let rankStyle = 'bg-white/5 border-white/10 text-gray-400';
+              let isTopThree = false;
+              if (rank === 1) { rankStyle = 'bg-amber-400/10 border-amber-500/30 text-amber-400'; isTopThree = true; }
+              else if (rank === 2) { rankStyle = 'bg-slate-300/10 border-slate-300/30 text-slate-300'; isTopThree = true; }
+              else if (rank === 3) { rankStyle = 'bg-orange-500/10 border-orange-500/30 text-orange-400'; isTopThree = true; }
+
+              return (
+                <button
+                  key={user.id}
+                  onClick={() => setSelectedUser(user)}
+                  className={`w-full text-left p-3.5 rounded-xl border transition-all flex justify-between items-center gap-3 relative overflow-hidden group ${
+                    isSelected 
+                      ? 'bg-blue-600/10 border-blue-500/30 shadow-inner' 
+                      : 'border-white/5 hover:border-white/10 text-gray-400 hover:text-white'
+                  }`}
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    {/* Rank Badge */}
+                    <div className={`w-6 h-6 rounded-lg border flex items-center justify-center text-[10px] font-mono font-black shrink-0 ${rankStyle}`}>
+                      {isTopThree ? <Trophy size={11} /> : rank}
+                    </div>
+                    
+                    <div className="flex flex-col min-w-0">
+                      <span className="text-xs font-bold text-white truncate">{user.name}</span>
+                      <span className="text-[8px] text-gray-500 mt-0.5 truncate uppercase tracking-widest font-mono font-bold">{user.badge}</span>
+                    </div>
+                  </div>
+
+                  <div className="text-right shrink-0">
+                    <span className="text-xs font-mono font-bold text-emerald-400 block">{user.reputation}</span>
+                    <span className="text-[7px] text-gray-500 uppercase tracking-widest block font-mono">Rep</span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        )}
       </aside>
 
       {/* 2. RESEARCHER PROFILE DISPLAY SPACE */}
@@ -195,6 +279,56 @@ export const ResearcherProfiles: React.FC<ResearcherProfilesProps> = ({ onNaviga
                     {selectedUser.reputation}
                   </span>
                   <span className="text-[8px] text-gray-500 font-mono font-bold uppercase mt-0.5 block">Nodes Impact Verified</span>
+                </div>
+              </div>
+
+              {/* Badge Cabinets & Reputation Actions */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Rep Actions */}
+                <div className="glass rounded-xl border border-white/5 p-4 flex justify-between items-center bg-white/[0.01]">
+                  <div>
+                    <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest block">Endorse Researcher</span>
+                    <p className="text-[10px] text-gray-400 mt-1">Upvote to recognize academic contributions & verify credentials.</p>
+                  </div>
+                  <div className="flex gap-2 shrink-0">
+                    <button 
+                      onClick={() => handleRepChange('UP')}
+                      className="px-3 py-1.5 bg-emerald-600/10 hover:bg-emerald-600/20 border border-emerald-500/25 text-emerald-400 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all"
+                    >
+                      + Upvote
+                    </button>
+                    <button 
+                      onClick={() => handleRepChange('DOWN')}
+                      className="px-3 py-1.5 bg-red-600/10 hover:bg-red-600/20 border border-red-500/25 text-red-400 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all"
+                    >
+                      - Downvote
+                    </button>
+                  </div>
+                </div>
+
+                {/* Badge Cabinets */}
+                <div className="glass rounded-xl border border-white/5 p-4 flex flex-col gap-2 bg-white/[0.01]">
+                  <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest block">Verification Badges Cabinet</span>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {selectedUser.badge === 'Lead Architect' && (
+                      <>
+                        <span className="bg-[#00F0FF]/15 border border-[#00F0FF]/25 text-[#00F0FF] rounded-lg px-2.5 py-1 text-[8px] font-bold tracking-widest uppercase">Welfare Auditor</span>
+                        <span className="bg-purple-500/15 border border-purple-500/25 text-purple-400 rounded-lg px-2.5 py-1 text-[8px] font-bold tracking-widest uppercase">Methodology Expert</span>
+                      </>
+                    )}
+                    {selectedUser.badge === 'Neural Architect' && (
+                      <>
+                        <span className="bg-[#0062FF]/15 border border-[#0062FF]/25 text-[#0062FF] rounded-lg px-2.5 py-1 text-[8px] font-bold tracking-widest uppercase">Ethics Reviewer</span>
+                        <span className="bg-emerald-500/15 border border-emerald-500/25 text-emerald-400 rounded-lg px-2.5 py-1 text-[8px] font-bold tracking-widest uppercase">Deep Learning Pioneer</span>
+                      </>
+                    )}
+                    {selectedUser.badge !== 'Lead Architect' && selectedUser.badge !== 'Neural Architect' && (
+                      <>
+                        <span className="bg-white/5 border border-white/10 text-gray-400 rounded-lg px-2.5 py-1 text-[8px] font-bold tracking-widest uppercase">Verified Researcher</span>
+                        <span className="bg-blue-500/15 border border-blue-500/25 text-blue-400 rounded-lg px-2.5 py-1 text-[8px] font-bold tracking-widest uppercase">Sovereign Analyst</span>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
 

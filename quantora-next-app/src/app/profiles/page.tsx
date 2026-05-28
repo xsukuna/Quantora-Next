@@ -37,7 +37,7 @@ export default function ProfilesPage() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [editing, setEditing] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [form, setForm] = useState({ name: '', bio: '', institution: '', country: '', website: '' })
+  const [form, setForm] = useState({ name: '', bio: '', institution: '', country: '', website: '', linkedin: '', orcid: '' })
   const [paperCount, setPaperCount] = useState(0)
   const [insightCount, setInsightCount] = useState(0)
   const [loading, setLoading] = useState(true)
@@ -51,10 +51,12 @@ export default function ProfilesPage() {
         institution: authProfile.institution || '',
         country: authProfile.country || '',
         website: authProfile.website || '',
+        linkedin: authProfile.linkedin || '',
+        orcid: authProfile.orcid || '',
       })
       // Load paper + insight counts
       Promise.all([
-        supabase.from('papers').select('*', { count: 'exact', head: true }).eq('author_id', authProfile.id).eq('status', 'APPROVED'),
+        supabase.from('Paper').select('*', { count: 'exact', head: true }).eq('author_id', authProfile.id).eq('status', 'APPROVED'),
         supabase.from('insights').select('*', { count: 'exact', head: true }).eq('author_id', authProfile.id),
       ]).then(([paperRes, insightRes]) => {
         setPaperCount(paperRes.count || 0)
@@ -71,13 +73,22 @@ export default function ProfilesPage() {
     try {
       const { error } = await supabase.from('profiles').update({
         name: form.name.trim(),
-        bio: form.bio.trim() || null,
-        institution: form.institution.trim() || null,
-        country: form.country.trim() || null,
-        website: form.website.trim() || null,
       }).eq('id', user.id)
 
       if (!error) {
+        const { error: metaError } = await supabase.auth.updateUser({
+          data: {
+            bio: form.bio.trim() || null,
+            institution: form.institution.trim() || null,
+            country: form.country.trim() || null,
+            website: form.website.trim() || null,
+            linkedin: form.linkedin.trim() || null,
+            orcid: form.orcid.trim() || null,
+          }
+        })
+        if (metaError) {
+          console.error('Failed to update user metadata:', metaError.message)
+        }
         await refreshProfile()
         setEditing(false)
       }
@@ -186,11 +197,13 @@ export default function ProfilesPage() {
         </div>
 
         {/* Meta fields */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-white/5">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-white/5">
           {[
             { icon: Building2, label: 'Institution', field: 'institution' as const },
             { icon: Globe, label: 'Country', field: 'country' as const },
             { icon: Globe, label: 'Website', field: 'website' as const },
+            { icon: Globe, label: 'LinkedIn', field: 'linkedin' as const },
+            { icon: Award, label: 'ORCID', field: 'orcid' as const },
             { icon: Mail, label: 'Email', value: user.email },
           ].map(({ icon: Icon, label, field, value }) => (
             <div key={label}>

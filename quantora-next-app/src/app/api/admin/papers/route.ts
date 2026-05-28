@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
   const status = searchParams.get('status') || 'PENDING'
 
   const { data, error, count } = await admin
-    .from('papers')
+    .from('Paper')
     .select(`
       *,
       profiles:author_id (id, name, username, email, institution)

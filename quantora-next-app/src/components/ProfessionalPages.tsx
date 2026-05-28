@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Building2, Users, Briefcase, FileSpreadsheet, Terminal, 
@@ -350,7 +350,7 @@ export const ProfessionalPages: React.FC = () => {
                       required
                       value={applyName}
                       onChange={(e) => setApplyName(e.target.value)}
-                      placeholder="e.g. Dr. Alistair Vance"
+                      placeholder="e.g. Aditya Kaushik"
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-blue-500 font-bold"
                     />
                   </div>
@@ -362,7 +362,7 @@ export const ProfessionalPages: React.FC = () => {
                       required
                       value={applyEmail}
                       onChange={(e) => setApplyEmail(e.target.value)}
-                      placeholder="e.g. vance@quantora.org"
+                      placeholder="e.g. aditya@quantora.org"
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-blue-500 font-mono"
                     />
                   </div>

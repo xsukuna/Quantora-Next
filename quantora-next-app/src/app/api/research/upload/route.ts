@@ -19,16 +19,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     }
 
-    // Validate file type
-    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
-    if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json({ error: 'Only PDF and Word documents are allowed' }, { status: 400 })
-    }
-
     // Validate file size (50MB max)
     if (file.size > 52428800) {
       return NextResponse.json({ error: 'File exceeds 50MB limit' }, { status: 400 })
     }
+
 
     const adminClient = createAdminClient()
     const timestamp = Date.now()

@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
@@ -39,21 +39,29 @@ export default function AdminDashboard() {
 
   const [stats, setStats] = useState<AdminStats | null>(null)
   const [pendingPapers, setPendingPapers] = useState<PendingPaper[]>([])
+  const [users, setUsers] = useState<any[]>([])
+  const [userSearch, setUserSearch] = useState('')
   const [activeTab, setActiveTab] = useState<'overview' | 'papers' | 'users'>('overview')
   const [loading, setLoading] = useState(true)
   const [reviewing, setReviewing] = useState<string | null>(null)
+  const [updatingUserId, setUpdatingUserId] = useState<string | null>(null)
 
   const fetchData = useCallback(async () => {
     setLoading(true)
     try {
-      const [statsRes, papersRes] = await Promise.all([
+      const [statsRes, papersRes, usersRes] = await Promise.all([
         fetch('/api/admin/stats'),
         fetch('/api/admin/papers?status=PENDING'),
+        fetch('/api/users?page=1&limit=100'),
       ])
       if (statsRes.ok) setStats(await statsRes.json())
       if (papersRes.ok) {
         const { papers } = await papersRes.json()
         setPendingPapers(papers || [])
+      }
+      if (usersRes.ok) {
+        const { users: fetchedUsers } = await usersRes.json()
+        setUsers(fetchedUsers || [])
       }
     } catch (e) {
       console.error(e)
@@ -90,6 +98,28 @@ export default function AdminDashboard() {
       }
     } finally {
       setReviewing(null)
+    }
+  }
+
+  const handleRoleChange = async (userId: string, newRole: string) => {
+    setUpdatingUserId(userId)
+    try {
+      const res = await fetch('/api/users', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, role: newRole }),
+      })
+      if (res.ok) {
+        setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: newRole } : u))
+      } else {
+        const err = await res.json()
+        alert(err.error || 'Failed to update user role')
+      }
+    } catch (err) {
+      console.error('Error changing user role:', err)
+      alert('Internal server error updating user role')
+    } finally {
+      setUpdatingUserId(null)
     }
   }
 
@@ -244,6 +274,118 @@ export default function AdminDashboard() {
             <div>
               <div className="text-2xl font-extrabold text-[#FF7050]">{stats?.pendingPapers ?? 0}</div>
               <div className="text-[9px] text-[#A0AEC0] uppercase tracking-wider mt-1">Awaiting Review</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'users' && (
+        <div className="space-y-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+            <div className="flex items-center gap-2">
+              <Users size={14} className="text-[#0062FF]" />
+              <h2 className="text-sm font-bold text-white uppercase tracking-wider">
+                User Role Assignment Workstation ({users.length})
+              </h2>
+            </div>
+            <div className="w-full md:w-80">
+              <input
+                type="text"
+                value={userSearch}
+                onChange={e => setUserSearch(e.target.value)}
+                placeholder="Search users by name, email, or username..."
+                className="w-full bg-[#0a0f1e]/60 border border-white/10 focus:border-[#0062FF]/50 focus:ring-2 focus:ring-[#0062FF]/20 rounded-xl px-4 py-2.5 text-white text-xs placeholder:text-[#A0AEC0]/50 outline-none transition-all"
+              />
+            </div>
+          </div>
+
+          <div className="bg-[#0a0f1e]/60 border border-white/5 rounded-xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-white/5 bg-black/25 text-[10px] font-mono text-[#A0AEC0] uppercase tracking-wider">
+                    <th className="p-4">User Details</th>
+                    <th className="p-4">Credentials</th>
+                    <th className="p-4">Registered</th>
+                    <th className="p-4">Reputation</th>
+                    <th className="p-4">Current Role</th>
+                    <th className="p-4">Assign Role</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5 text-xs">
+                  {users
+                    .filter(u => {
+                      const term = userSearch.toLowerCase().trim()
+                      if (!term) return true
+                      return (
+                        (u.name || '').toLowerCase().includes(term) ||
+                        (u.email || '').toLowerCase().includes(term) ||
+                        (u.username || '').toLowerCase().includes(term)
+                      )
+                    })
+                    .map(u => (
+                      <tr key={u.id} className="hover:bg-white/[0.01] transition-colors">
+                        <td className="p-4">
+                          <div className="flex items-center gap-3">
+                            {u.avatar_url ? (
+                              <img src={u.avatar_url} alt={u.name} className="w-8 h-8 rounded-lg object-cover" />
+                            ) : (
+                              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0062FF] to-[#00F0FF] flex items-center justify-center text-white font-extrabold text-[10px]">
+                                {u.name ? u.name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2) : 'U'}
+                              </div>
+                            )}
+                            <div>
+                              <div className="font-extrabold text-white">{u.name || 'Anonymous'}</div>
+                              <div className="text-[10px] text-[#A0AEC0] font-mono">@{u.username} · {u.email}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-4 text-[#A0AEC0]">
+                          <div>{u.institution || 'Independent Contributor'}</div>
+                          <div className="text-[10px]">{u.country || 'Global'}</div>
+                        </td>
+                        <td className="p-4 text-[#A0AEC0] font-mono text-[10px]">
+                          {u.created_at ? new Date(u.created_at).toLocaleDateString() : 'N/A'}
+                        </td>
+                        <td className="p-4">
+                          <div className="font-extrabold text-white">{u.reputation ?? 10}</div>
+                          <div className="text-[9px] font-bold text-[#0062FF] uppercase tracking-wider">{u.badge || 'Fellow'}</div>
+                        </td>
+                        <td className="p-4">
+                          <span className={`px-2 py-0.5 rounded-full text-[9px] font-mono font-bold ${
+                            u.role === 'ADMIN' ? 'bg-red-500/10 border border-red-500/20 text-red-400' :
+                            u.role === 'CONTRIBUTOR' ? 'bg-[#0062FF]/10 border border-[#0062FF]/20 text-[#0062FF]' :
+                            'bg-gray-500/10 border border-gray-500/20 text-gray-400'
+                          }`}>
+                            {u.role}
+                          </span>
+                        </td>
+                        <td className="p-4">
+                          <div className="flex items-center gap-1">
+                            {['ADMIN', 'CONTRIBUTOR', 'GUEST'].map(r => (
+                              <button
+                                key={r}
+                                disabled={updatingUserId === u.id}
+                                onClick={() => handleRoleChange(u.id, r)}
+                                className={`px-2.5 py-1 rounded-lg text-[9px] font-mono font-bold transition-all ${
+                                  u.role === r 
+                                    ? 'bg-[#0062FF] text-white shadow-glow' 
+                                    : 'bg-white/5 border border-white/10 text-[#A0AEC0] hover:text-white hover:bg-white/10'
+                                }`}
+                              >
+                                {updatingUserId === u.id ? (
+                                  <Loader2 size={10} className="animate-spin" />
+                                ) : (
+                                  r
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

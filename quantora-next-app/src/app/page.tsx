@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { 
@@ -344,56 +344,22 @@ export default function Home() {
         <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white to-[#00F0FF] bg-clip-text text-transparent mb-2">PIONEERING CONTRIBUTORS</h2>
         <p className="text-sm md:text-base text-[#A0AEC0] mb-12">Meet the researchers, student architects, and independent analysts publishing sovereign ideas without barrier.</p>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="flex justify-center">
           
           {/* Aditya */}
-          <div className="bg-[#0a0f1e]/60 border border-white/5 p-6 rounded-xl flex flex-col justify-between items-center text-center relative overflow-hidden group">
+          <div className="bg-[#0a0f1e]/60 border border-white/5 p-8 rounded-xl flex flex-col justify-between items-center text-center relative overflow-hidden group max-w-md w-full">
             <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-[#00F0FF]/10 border border-[#00F0FF]/30 px-2 py-0.5 rounded text-[10px] text-[#00F0FF] font-bold">
               <Award size={10} />
-              <span>LEAD ARCHITECT</span>
+              <span>GENESIS FOUNDER & LEAD ARCHITECT</span>
             </div>
             <div className="w-20 h-20 rounded-full border-2 border-[#00F0FF] flex items-center justify-center bg-black font-extrabold text-2xl text-[#00F0FF] mb-4">AK</div>
             <h3 className="font-extrabold text-sm tracking-wider text-white">Aditya Kaushik</h3>
-            <p className="text-xs text-[#A0AEC0] leading-relaxed min-h-[48px] max-w-[240px] mt-2 mb-4">
+            <p className="text-xs md:text-sm text-[#A0AEC0] leading-relaxed min-h-[48px] max-w-[280px] mt-2 mb-4">
               Public policy analyst conducting forensic budgetary audits and agricultural credit leakages diagnostics in New Delhi.
             </p>
             <div className="w-full flex justify-between border-t border-white/5 pt-4 text-xs text-[#A0AEC0]">
               <span>Papers: <strong>14</strong></span>
               <span>Reputation: <strong className="text-[#00FF00]">980</strong></span>
-            </div>
-          </div>
-
-          {/* Elena */}
-          <div className="bg-[#0a0f1e]/60 border border-white/5 p-6 rounded-xl flex flex-col justify-between items-center text-center relative overflow-hidden group">
-            <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-[#0062FF]/10 border border-[#0062FF]/30 px-2 py-0.5 rounded text-[10px] text-[#0062FF] font-bold">
-              <Award size={10} />
-              <span>NEURAL ARCHITECT</span>
-            </div>
-            <div className="w-20 h-20 rounded-full border-2 border-[#0062FF] flex items-center justify-center bg-black font-extrabold text-2xl text-[#0062FF] mb-4">ER</div>
-            <h3 className="font-extrabold text-sm tracking-wider text-white">Elena Rostova</h3>
-            <p className="text-xs text-[#A0AEC0] leading-relaxed min-h-[48px] max-w-[240px] mt-2 mb-4">
-              MIT Fellow formulating multi-agent deep reinforcement algorithms for complex order books.
-            </p>
-            <div className="w-full flex justify-between border-t border-white/5 pt-4 text-xs text-[#A0AEC0]">
-              <span>Papers: <strong>8</strong></span>
-              <span>Reputation: <strong className="text-[#00FF00]">720</strong></span>
-            </div>
-          </div>
-
-          {/* Alistair */}
-          <div className="bg-[#0a0f1e]/60 border border-white/5 p-6 rounded-xl flex flex-col justify-between items-center text-center relative overflow-hidden group">
-            <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-white/5 border border-white/10 px-2 py-0.5 rounded text-[10px] text-white/60 font-bold">
-              <Award size={10} />
-              <span>FELLOW ANALYST</span>
-            </div>
-            <div className="w-20 h-20 rounded-full border-2 border-white/20 flex items-center justify-center bg-black font-extrabold text-2xl text-white/70 mb-4">AV</div>
-            <h3 className="font-extrabold text-sm tracking-wider text-white">Dr. Alistair Vance</h3>
-            <p className="text-xs text-[#A0AEC0] leading-relaxed min-h-[48px] max-w-[240px] mt-2 mb-4">
-              Quantitative macroeconomist stress-testing sovereign yield curves, EM currency flows, and trade corridors.
-            </p>
-            <div className="w-full flex justify-between border-t border-white/5 pt-4 text-xs text-[#A0AEC0]">
-              <span>Papers: <strong>22</strong></span>
-              <span>Reputation: <strong className="text-[#00FF00]">820</strong></span>
             </div>
           </div>
 
@@ -414,16 +380,16 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="flex justify-center">
           
           {/* Card 1: Aditya paper */}
-          <div className="bg-[#0f1423]/50 border-2 border-[#0062FF]/50 rounded-xl p-6 flex flex-col justify-between hover:shadow-[0_0_40px_rgba(0,98,255,0.2)] transition-all group">
+          <div className="bg-[#0f1423]/50 border-2 border-[#0062FF]/50 rounded-xl p-8 flex flex-col justify-between hover:shadow-[0_0_40px_rgba(0,98,255,0.2)] transition-all group max-w-xl w-full">
             <div>
               <div className="flex justify-between items-center mb-4">
                 <span className="text-[10px] font-bold text-[#FF7050] tracking-widest uppercase">PUBLIC POLICY</span>
                 <span className="bg-[#FF7050]/15 text-[#FF7050] border border-[#FF7050]/20 px-2 py-0.5 text-[9px] font-extrabold tracking-widest rounded uppercase">FEATURED EXPOSÉ</span>
               </div>
-              <h4 className="font-extrabold text-sm md:text-base leading-snug text-white hover:text-[#00F0FF] transition-colors mb-3">
+              <h4 className="font-extrabold text-base md:text-lg leading-snug text-white hover:text-[#00F0FF] transition-colors mb-3">
                 <a href="/report.html" target="_blank">
                   Broken Promises in the Fields:
                   <br />
@@ -443,60 +409,6 @@ export default function Home() {
               >
                 <span>Read Audit</span>
                 <ExternalLink size={12} />
-              </a>
-            </div>
-          </div>
-
-          {/* Card 2: Semiconductor */}
-          <div className="bg-[#0a0f1e]/40 border border-white/5 hover:border-[#0062FF]/60 hover:shadow-[0_0_30px_rgba(0,98,255,0.15)] rounded-xl p-6 flex flex-col justify-between transition-all group">
-            <div>
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-[10px] font-bold text-[#00F0FF] tracking-widest uppercase">MACROECONOMICS</span>
-                <span className="bg-white/5 text-white/60 border border-white/10 px-2 py-0.5 text-[9px] font-bold tracking-widest rounded uppercase">VERIFIED</span>
-              </div>
-              <h4 className="font-extrabold text-sm md:text-base leading-snug text-white group-hover:text-[#00F0FF] transition-colors mb-3">
-                India’s Semiconductor Expansion
-              </h4>
-              <p className="text-xs md:text-sm text-[#A0AEC0] leading-relaxed mb-6">
-                Analyzing the domestic industrial infrastructure buildout and its impact on emerging market technology supply-chains.
-              </p>
-            </div>
-            <div className="flex justify-between items-center border-t border-white/5 pt-4 text-xs mt-auto">
-              <span className="text-[#A0AEC0]">By <strong>Dr. Alistair Vance</strong></span>
-              <a 
-                href="/report.pdf" 
-                download="Indias_Semiconductor_Expansion.pdf" 
-                className="text-[#00F0FF] font-bold flex items-center gap-1.5 hover:underline cursor-pointer"
-              >
-                <span>Download PDF</span>
-                <Download size={12} />
-              </a>
-            </div>
-          </div>
-
-          {/* Card 3: Neural Alpha */}
-          <div className="bg-[#0a0f1e]/40 border border-white/5 hover:border-[#0062FF]/60 hover:shadow-[0_0_30px_rgba(0,98,255,0.15)] rounded-xl p-6 flex flex-col justify-between transition-all group">
-            <div>
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-[10px] font-bold text-[#0062FF] tracking-widest uppercase">QUANT STRATEGY</span>
-                <span className="bg-white/5 text-white/60 border border-white/10 px-2 py-0.5 text-[9px] font-bold tracking-widest rounded uppercase">VERIFIED</span>
-              </div>
-              <h4 className="font-extrabold text-sm md:text-base leading-snug text-white group-hover:text-[#00F0FF] transition-colors mb-3">
-                Neural Alpha in Volatile Regimes
-              </h4>
-              <p className="text-xs md:text-sm text-[#A0AEC0] leading-relaxed mb-6">
-                How spatial-temporal graph transformer models outperform standard architectures under non-stationary order books.
-              </p>
-            </div>
-            <div className="flex justify-between items-center border-t border-white/5 pt-4 text-xs mt-auto">
-              <span className="text-[#A0AEC0]">By <strong>Elena Rostova</strong></span>
-              <a 
-                href="/report.pdf" 
-                download="Neural_Alpha_in_Volatile_Regimes.pdf" 
-                className="text-[#00F0FF] font-bold flex items-center gap-1.5 hover:underline cursor-pointer"
-              >
-                <span>Download PDF</span>
-                <Download size={12} />
               </a>
             </div>
           </div>

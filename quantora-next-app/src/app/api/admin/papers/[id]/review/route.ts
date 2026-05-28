@@ -26,7 +26,7 @@ export async function PATCH(
   const newStatus = action === 'APPROVE' ? 'APPROVED' : 'REJECTED'
 
   const { data, error } = await admin
-    .from('papers')
+    .from('Paper')
     .update({
       status: newStatus,
       trust_label: action === 'APPROVE' ? 'VERIFIED_RESEARCH' : 'REJECTED_SUBMISSION',

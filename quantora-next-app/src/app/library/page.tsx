@@ -1,7 +1,10 @@
 'use client'
 import { useState, useEffect, useRef, useCallback } from 'react'
+import Link from 'next/link'
 import { Search, Download, ExternalLink, CheckCircle, ShieldAlert, Sparkles, Filter, Loader2, ChevronDown } from 'lucide-react'
 import type { PaperWithAuthor } from '@/types/database'
+import { CitationModal } from '@/components/CitationModal'
+import { AnimatePresence } from 'framer-motion'
 
 export const dynamic = 'force-dynamic'
 
@@ -32,6 +35,7 @@ export default function LibraryPage() {
   const [total, setTotal] = useState(0)
   const [showFilters, setShowFilters] = useState(false)
   const [sortBy, setSortBy] = useState('newest')
+  const [selectedCitationPaper, setSelectedCitationPaper] = useState<PaperWithAuthor | null>(null)
   const searchTimeout = useRef<ReturnType<typeof setTimeout>>(null)
 
   const fetchPapers = useCallback(async (p: number, reset: boolean) => {
@@ -194,19 +198,27 @@ export default function LibraryPage() {
 
                     {/* Title */}
                     <h2 className="text-white font-extrabold text-sm leading-snug mb-2 group-hover:text-[#00F0FF] transition-colors">
-                      {paper.title}
+                      <Link href={`/library/${paper.id}`} className="hover:underline">
+                        {paper.title}
+                      </Link>
                     </h2>
 
                     {/* Author */}
-                    <p className="text-xs text-[#A0AEC0] mb-3">
+                    <p className="text-xs text-[#A0AEC0] mb-3 flex items-center gap-1.5">
                       <span className="text-white font-medium">{paper.profiles?.name || 'Anonymous'}</span>
-                      {paper.profiles?.institution && ` · ${paper.institution}`}
+                      {paper.profiles?.institution && ` · ${paper.profiles.institution}`}
                       {paper.country && ` · ${paper.country}`}
+                      {/* Simulating ORCID linking dynamically based on name */}
+                      {paper.profiles?.name === 'Aditya Kaushik' && (
+                        <span className="inline-flex items-center gap-0.5 ml-1 text-emerald-400 font-mono text-[9px] bg-emerald-500/10 border border-emerald-500/25 px-1 rounded cursor-help" title="ORCID iD Verified Contributor">
+                          <span className="font-extrabold text-[8px] text-emerald-400">iD</span>
+                        </span>
+                      )}
                     </p>
-
+ 
                     {/* Abstract */}
                     <p className="text-xs text-[#A0AEC0] leading-relaxed line-clamp-2 mb-3">{paper.abstract}</p>
-
+ 
                     {/* AI Summary */}
                     {paper.ai_summary && (
                       <div className="flex items-start gap-2 p-3 bg-[#0062FF]/5 border border-[#0062FF]/15 rounded-lg mb-3">
@@ -214,7 +226,7 @@ export default function LibraryPage() {
                         <p className="text-[11px] text-[#A0AEC0] leading-relaxed">{paper.ai_summary}</p>
                       </div>
                     )}
-
+ 
                     {/* Tags */}
                     {paper.tags && (
                       <div className="flex flex-wrap gap-1.5">
@@ -226,7 +238,7 @@ export default function LibraryPage() {
                       </div>
                     )}
                   </div>
-
+ 
                   {/* Stats + Actions */}
                   <div className="flex flex-row lg:flex-col gap-4 items-start lg:items-end shrink-0">
                     <div className="flex gap-4 text-center">
@@ -243,9 +255,11 @@ export default function LibraryPage() {
                       <button
                         onClick={() => handleDownload(paper)}
                         className="flex items-center gap-1.5 text-xs text-white bg-[#0062FF] hover:bg-[#0056e0] px-3 py-2 rounded-lg transition-all">
-                        <Download size={12} />PDF
+                        <Download size={12} />Open File
                       </button>
-                      <button className="flex items-center gap-1.5 text-xs text-[#A0AEC0] border border-white/10 hover:border-white/20 px-3 py-2 rounded-lg transition-all">
+                      <button 
+                        onClick={() => setSelectedCitationPaper(paper)}
+                        className="flex items-center gap-1.5 text-xs text-[#A0AEC0] border border-white/10 hover:border-white/20 px-3 py-2 rounded-lg transition-all">
                         <ExternalLink size={12} />Cite
                       </button>
                     </div>
@@ -267,6 +281,15 @@ export default function LibraryPage() {
           )}
         </div>
       )}
+      {/* Citation Modal overlay wrapper */}
+      <AnimatePresence>
+        {selectedCitationPaper && (
+          <CitationModal 
+            paper={selectedCitationPaper} 
+            onClose={() => setSelectedCitationPaper(null)} 
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }

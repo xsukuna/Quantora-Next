@@ -16,14 +16,19 @@ export async function GET(request: NextRequest) {
   const category = searchParams.get('category')
   const search = searchParams.get('search')
   const status = searchParams.get('status') || 'APPROVED'
+  const authorId = searchParams.get('authorId') || searchParams.get('author_id')
   const page = parseInt(searchParams.get('page') || '1')
   const limit = parseInt(searchParams.get('limit') || '12')
   const offset = (page - 1) * limit
 
   if (!isSupabaseEnabled) {
     try {
-      let whereClause: any = {
-        status: status.toUpperCase(),
+      let whereClause: any = {}
+      if (status && status.toUpperCase() !== 'ALL') {
+        whereClause.status = status.toUpperCase()
+      }
+      if (authorId) {
+        whereClause.authorId = authorId
       }
       if (category && category !== 'all' && category !== 'All') {
         whereClause.category = category
@@ -96,10 +101,15 @@ export async function GET(request: NextRequest) {
         *,
         profiles:author_id (id, name, username, avatar_url, institution)
       `, { count: 'exact' })
-      .eq('status', status)
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1)
 
+    if (status && status.toUpperCase() !== 'ALL') {
+      query = query.eq('status', status)
+    }
+    if (authorId) {
+      query = query.eq('author_id', authorId)
+    }
     if (category && category !== 'all') {
       query = query.eq('category', category)
     }

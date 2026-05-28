@@ -1,240 +1,79 @@
 'use client'
-import { useState, useEffect, useCallback } from 'react'
-import { useAuth } from '@/context/AuthContext'
-import { Trophy, Users, Clock, Zap, CheckCircle, Loader2, AlertCircle, ChevronRight, Filter } from 'lucide-react'
-import type { RndChallenge } from '@/types/database'
-
-export const dynamic = 'force-dynamic'
-
-type ChallengeWithJoin = RndChallenge & { userHasJoined?: boolean }
-
-const CATEGORIES = ['All', 'Public Policy', 'Quant Strategy', 'Climate Finance', 'Macroeconomics', 'Technology']
-const DIFFICULTY_COLORS: Record<string, string> = {
-  Beginner: '#00FF00',
-  Intermediate: '#FFD700',
-  Advanced: '#FF7050',
-  Expert: '#a855f7',
-}
+import { Trophy, Clock, Zap, Shield } from 'lucide-react'
 
 export default function RndLabPage() {
-  const { user } = useAuth()
-  const [challenges, setChallenges] = useState<ChallengeWithJoin[]>([])
-  const [loading, setLoading] = useState(true)
-  const [joiningId, setJoiningId] = useState<string | null>(null)
-  const [category, setCategory] = useState('All')
-  const [expandedId, setExpandedId] = useState<string | null>(null)
-
-  const fetchChallenges = useCallback(async () => {
-    setLoading(true)
-    try {
-      const params = new URLSearchParams()
-      if (category !== 'All') params.set('category', category)
-      const res = await fetch(`/api/rnd?${params}`)
-      if (!res.ok) throw new Error('Failed')
-      const { challenges } = await res.json()
-      setChallenges(challenges || [])
-    } catch (e) {
-      console.error(e)
-    } finally {
-      setLoading(false)
-    }
-  }, [category])
-
-  useEffect(() => {
-    fetchChallenges()
-  }, [fetchChallenges])
-
-  const handleJoin = async (challengeId: string) => {
-    if (!user) return
-    setJoiningId(challengeId)
-    try {
-      const res = await fetch(`/api/rnd/${challengeId}/join`, { method: 'POST' })
-      if (!res.ok) throw new Error('Failed')
-      const { action } = await res.json()
-      // Optimistic update
-      setChallenges(prev => prev.map(c => {
-        if (c.id !== challengeId) return c
-        return {
-          ...c,
-          userHasJoined: action === 'joined',
-          teams_count: action === 'joined' ? c.teams_count + 1 : Math.max(0, c.teams_count - 1)
-        }
-      }))
-    } catch (e) {
-      console.error(e)
-    } finally {
-      setJoiningId(null)
-    }
-  }
-
-  const getDaysLeft = (deadline: string | null) => {
-    if (!deadline) return 'Open'
-    const diff = new Date(deadline).getTime() - Date.now()
-    const days = Math.ceil(diff / (1000 * 60 * 60 * 24))
-    if (days < 0) return 'Closed'
-    if (days === 0) return 'Today'
-    return `${days}d left`
-  }
-
   return (
-    <div className="max-w-[1200px] mx-auto px-6 py-10">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-10">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <Zap size={14} className="text-[#0062FF]" />
-            <span className="text-xs font-mono text-[#0062FF] uppercase tracking-widest">Innovation Engine</span>
-          </div>
-          <h1 className="text-3xl font-extrabold text-white">R&D Marketplace</h1>
-          <p className="text-[#A0AEC0] text-sm mt-1">
-            Sponsored research challenges · Real rewards · Global talent pool
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="text-center">
-            <div className="text-2xl font-extrabold text-white">{challenges.length}</div>
-            <div className="text-[9px] text-[#A0AEC0] uppercase tracking-wider">Active Challenges</div>
-          </div>
-          <div className="w-px h-10 bg-white/10" />
-          <div className="text-center">
-            <div className="text-2xl font-extrabold text-[#0062FF]">
-              {challenges.reduce((sum, c) => sum + c.teams_count, 0)}
+    <div className="min-h-[80vh] flex flex-col items-center justify-center max-w-[1200px] mx-auto px-6 py-12 relative overflow-hidden">
+      {/* Background Decorative Glows */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-tr from-[#0062FF]/10 to-[#00F0FF]/5 rounded-full blur-[120px] pointer-events-none z-0" />
+      
+      <div className="relative z-10 max-w-2xl w-full text-center space-y-8">
+        {/* Animated Trophy Icon Container */}
+        <div className="inline-flex items-center justify-center">
+          <div className="relative">
+            <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-[#0062FF] to-[#00F0FF] opacity-40 blur animate-pulse" />
+            <div className="relative w-16 h-16 bg-[#0a0f1e]/80 border border-white/10 rounded-full flex items-center justify-center text-[#00F0FF]">
+              <Trophy size={28} />
             </div>
-            <div className="text-[9px] text-[#A0AEC0] uppercase tracking-wider">Participants</div>
           </div>
         </div>
+
+        {/* Section Header */}
+        <div className="space-y-3">
+          <div className="inline-flex items-center gap-1.5 bg-[#0062FF]/10 border border-[#0062FF]/20 px-3 py-1 rounded-full text-[10px] text-[#00F0FF] font-mono tracking-widest uppercase">
+            <Zap size={10} className="animate-pulse" />
+            <span>Open R&D Labs Pipeline</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white uppercase">
+            R&D Challenges <span className="bg-gradient-to-r from-[#00F0FF] to-[#0062FF] bg-clip-text text-transparent">COMING SOON</span>
+          </h1>
+          <div className="h-[2px] w-24 bg-gradient-to-r from-[#00F0FF] to-[#0062FF] mx-auto my-4" />
+        </div>
+
+        {/* Curated Research Quote Box */}
+        <div className="bg-[#0f1423]/50 border border-white/10 p-8 rounded-2xl relative overflow-hidden backdrop-blur-md group hover:border-[#00F0FF]/30 transition-all shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
+          <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-[#00F0FF] to-[#0062FF]" />
+          <p className="text-[#E2E8F0] text-sm md:text-base italic leading-relaxed font-medium">
+            "Great research is not rushed. We are curating forensic, institutional, and macroeconomic challenges from sovereign groups and global agencies. Connect your identity, review the archives, and prepare to publish."
+          </p>
+          <div className="mt-4 flex items-center justify-center gap-2 text-[10px] font-mono text-[#A0AEC0] uppercase tracking-wider">
+            <Clock size={12} className="text-[#00F0FF]" />
+            <span>Deployment Phase Init · Q3 2026</span>
+          </div>
+        </div>
+
+        {/* Informative Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+          <div className="bg-[#0a0f1e]/40 border border-white/5 p-5 rounded-xl flex gap-4">
+            <div className="w-10 h-10 rounded-lg bg-[#0062FF]/10 border border-[#0062FF]/20 flex items-center justify-center text-[#0062FF] shrink-0">
+              <Shield size={18} />
+            </div>
+            <div>
+              <h3 className="font-extrabold text-white text-xs tracking-wider uppercase mb-1">Sovereign Validation</h3>
+              <p className="text-[11px] text-[#A0AEC0] leading-relaxed">
+                All challenges will be vetted by institutional partners and sovereign regulatory frameworks.
+              </p>
+            </div>
+          </div>
+          <div className="bg-[#0a0f1e]/40 border border-white/5 p-5 rounded-xl flex gap-4">
+            <div className="w-10 h-10 rounded-lg bg-[#00F0FF]/10 border border-[#00F0FF]/20 flex items-center justify-center text-[#00F0FF] shrink-0">
+              <Trophy size={18} />
+            </div>
+            <div>
+              <h3 className="font-extrabold text-white text-xs tracking-wider uppercase mb-1">Decentralized Bounties</h3>
+              <p className="text-[11px] text-[#A0AEC0] leading-relaxed">
+                Earn platform reputation badges, verified co-authorships, and real-time funding payouts.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Visual Pulse Pipeline Label */}
+        <div className="text-[11px] font-mono tracking-widest text-[#00F0FF] font-bold uppercase pt-4 animate-pulse">
+          ⚡ Core Engine Online · Awaiting Challenge Seed...
+        </div>
       </div>
-
-      {/* Category Filter */}
-      <div className="flex items-center gap-2 mb-8 overflow-x-auto pb-1 scrollbar-none">
-        <Filter size={12} className="text-[#A0AEC0] shrink-0" />
-        {CATEGORIES.map(cat => (
-          <button key={cat} onClick={() => setCategory(cat)}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all shrink-0 ${category === cat ? 'bg-[#0062FF] text-white' : 'bg-[#0a0f1e]/60 border border-white/10 text-[#A0AEC0] hover:border-[#0062FF]/40 hover:text-white'}`}>
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      {/* Challenges */}
-      {loading ? (
-        <div className="flex items-center justify-center py-32">
-          <Loader2 size={32} className="animate-spin text-[#0062FF]" />
-        </div>
-      ) : challenges.length === 0 ? (
-        <div className="text-center py-24">
-          <Trophy size={32} className="text-[#A0AEC0] mx-auto mb-4" />
-          <p className="text-white font-medium mb-2">No active challenges</p>
-          <p className="text-[#A0AEC0] text-sm">Check back soon for new R&D opportunities.</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {challenges.map(challenge => {
-            const daysLeft = getDaysLeft(challenge.deadline)
-            const diffColor = DIFFICULTY_COLORS[challenge.difficulty] || '#A0AEC0'
-            const isExpanded = expandedId === challenge.id
-
-            return (
-              <div key={challenge.id}
-                className={`bg-[#0a0f1e]/60 border rounded-xl overflow-hidden transition-all ${challenge.userHasJoined ? 'border-[#0062FF]/30' : 'border-white/5 hover:border-white/10'}`}>
-
-                {/* Card Header */}
-                <div className="p-6">
-                  {/* Sponsor + Status row */}
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 bg-[#0062FF]/10 border border-[#0062FF]/20 rounded-lg flex items-center justify-center">
-                        <Zap size={12} className="text-[#0062FF]" />
-                      </div>
-                      <span className="text-[10px] font-mono text-[#0062FF] uppercase tracking-widest">{challenge.sponsor}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[9px] font-mono uppercase tracking-widest px-2 py-0.5 rounded-full border"
-                        style={{ color: diffColor, borderColor: `${diffColor}30`, background: `${diffColor}10` }}>
-                        {challenge.difficulty}
-                      </span>
-                      <span className={`text-[9px] font-mono uppercase tracking-widest ${daysLeft === 'Closed' ? 'text-red-400' : daysLeft === 'Today' ? 'text-[#FFD700]' : 'text-[#A0AEC0]'}`}>
-                        {daysLeft}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Title */}
-                  <h2 className="text-white font-extrabold text-sm leading-snug mb-2">{challenge.title}</h2>
-
-                  {/* Description */}
-                  <p className="text-xs text-[#A0AEC0] leading-relaxed mb-4 line-clamp-2">{challenge.description}</p>
-
-                  {/* Reward banner */}
-                  <div className="flex items-center gap-3 p-3 bg-[#FFD700]/5 border border-[#FFD700]/20 rounded-lg mb-4">
-                    <Trophy size={14} className="text-[#FFD700] shrink-0" />
-                    <div>
-                      <div className="text-[#FFD700] font-extrabold text-sm">{challenge.reward}</div>
-                      <div className="text-[9px] text-[#A0AEC0]">+{challenge.rep_award} reputation points</div>
-                    </div>
-                  </div>
-
-                  {/* Stats row */}
-                  <div className="flex items-center gap-4 mb-4 text-xs text-[#A0AEC0]">
-                    <span className="flex items-center gap-1">
-                      <Users size={11} />{challenge.teams_count} teams
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <CheckCircle size={11} />{challenge.solutions_count} solutions
-                    </span>
-                    <span className="text-[9px] font-mono text-[#0062FF] bg-[#0062FF]/10 px-2 py-0.5 rounded-full ml-auto">
-                      {challenge.category}
-                    </span>
-                  </div>
-
-                  {/* Expand details button */}
-                  {challenge.details && (
-                    <button onClick={() => setExpandedId(isExpanded ? null : challenge.id)}
-                      className="flex items-center gap-1 text-xs text-[#A0AEC0] hover:text-white mb-4 transition-colors">
-                      <ChevronRight size={12} className={`transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
-                      {isExpanded ? 'Hide details' : 'View full brief'}
-                    </button>
-                  )}
-                  {isExpanded && challenge.details && (
-                    <div className="mb-4 p-4 bg-black/20 rounded-lg border border-white/5">
-                      <p className="text-xs text-[#A0AEC0] leading-relaxed whitespace-pre-line">{challenge.details}</p>
-                    </div>
-                  )}
-
-                  {/* Action button */}
-                  {user ? (
-                    <button
-                      onClick={() => handleJoin(challenge.id)}
-                      disabled={joiningId === challenge.id || daysLeft === 'Closed'}
-                      className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${
-                        challenge.userHasJoined
-                          ? 'border border-[#0062FF]/30 text-[#0062FF] hover:bg-[#0062FF]/5'
-                          : daysLeft === 'Closed'
-                          ? 'border border-white/10 text-[#A0AEC0] cursor-not-allowed opacity-50'
-                          : 'bg-[#0062FF] hover:bg-[#0056e0] text-white shadow-[0_4px_16px_rgba(0,98,255,0.4)]'
-                      }`}>
-                      {joiningId === challenge.id ? (
-                        <Loader2 size={14} className="animate-spin" />
-                      ) : challenge.userHasJoined ? (
-                        <><CheckCircle size={14} />Joined · Withdraw</>
-                      ) : daysLeft === 'Closed' ? (
-                        'Challenge Closed'
-                      ) : (
-                        <><Zap size={14} />Join Challenge</>
-                      )}
-                    </button>
-                  ) : (
-                    <a href="/login"
-                      className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold bg-[#0062FF] hover:bg-[#0056e0] text-white transition-all">
-                      <Zap size={14} />Sign In to Join
-                    </a>
-                  )}
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      )}
     </div>
   )
 }
+

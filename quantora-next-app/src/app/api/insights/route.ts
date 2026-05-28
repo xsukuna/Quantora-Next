@@ -16,12 +16,16 @@ export async function GET(request: NextRequest) {
   const limit = parseInt(searchParams.get('limit') || '10')
   const offset = (page - 1) * limit
   const category = searchParams.get('category')
+  const authorId = searchParams.get('authorId') || searchParams.get('author_id')
 
   if (!isSupabaseEnabled) {
     try {
       let whereClause: any = {}
       if (category && category !== 'all' && category !== 'All') {
         whereClause.category = category
+      }
+      if (authorId) {
+        whereClause.authorId = authorId
       }
 
       const total = await prisma.insight.count({ where: whereClause })
@@ -88,6 +92,10 @@ export async function GET(request: NextRequest) {
 
     if (category && category !== 'all') {
       query = query.eq('category', category)
+    }
+
+    if (authorId) {
+      query = query.eq('author_id', authorId)
     }
 
     const { data: insights, error, count } = await query

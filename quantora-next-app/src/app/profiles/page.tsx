@@ -4,7 +4,7 @@ import { useAuth } from '@/context/AuthContext'
 import { createClient } from '@/lib/supabase/client'
 import {
   User, Mail, Building2, Globe, Award, TrendingUp,
-  Edit3, Save, X, Loader2, Camera, FileText, Zap
+  Edit3, Save, X, Loader2, Camera, FileText, Zap, Download
 } from 'lucide-react'
 import type { Profile } from '@/types/database'
 
@@ -40,6 +40,7 @@ export default function ProfilesPage() {
   const [form, setForm] = useState({ name: '', bio: '', institution: '', country: '', website: '', linkedin: '', orcid: '' })
   const [paperCount, setPaperCount] = useState(0)
   const [insightCount, setInsightCount] = useState(0)
+  const [userPapers, setUserPapers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -54,18 +55,37 @@ export default function ProfilesPage() {
         linkedin: authProfile.linkedin || '',
         orcid: authProfile.orcid || '',
       })
-      // Load paper + insight counts
-      Promise.all([
-        supabase.from('Paper').select('*', { count: 'exact', head: true }).eq('author_id', authProfile.id).eq('status', 'APPROVED'),
-        supabase.from('insights').select('*', { count: 'exact', head: true }).eq('author_id', authProfile.id),
-      ]).then(([paperRes, insightRes]) => {
-        setPaperCount(paperRes.count || 0)
-        setInsightCount(insightRes.count || 0)
-      }).finally(() => setLoading(false))
+      
+      // Load paper + insight counts & user papers list via Fetch API
+      const loadProfileData = async () => {
+        try {
+          // Fetch authored papers list (all statuses)
+          const papersRes = await fetch(`/api/research?authorId=${authProfile.id}&status=ALL&limit=100`)
+          if (papersRes.ok) {
+            const papersData = await papersRes.json()
+            const list = papersData.papers || []
+            setUserPapers(list)
+            setPaperCount(list.filter((p: any) => p.status === 'APPROVED').length)
+          }
+
+          // Fetch insights count
+          const insightsRes = await fetch(`/api/insights?authorId=${authProfile.id}&limit=100`)
+          if (insightsRes.ok) {
+            const insightsData = await insightsRes.json()
+            setInsightCount(insightsData.total || insightsData.insights?.length || 0)
+          }
+        } catch (err) {
+          console.error('Error fetching profile dashboard details:', err)
+        } finally {
+          setLoading(false)
+        }
+      }
+
+      loadProfileData()
     } else {
       setLoading(false)
     }
-  }, [authProfile, supabase])
+  }, [authProfile])
 
   const handleSave = async () => {
     if (!user) return
@@ -262,6 +282,61 @@ export default function ProfilesPage() {
               {t}
             </span>
           ))}
+        </div>
+      </div>
+
+      {/* Authored Publications List */}
+      <div className="bg-[#0a0f1e]/60 border border-white/5 rounded-xl p-6 mt-6 space-y-4">
+        <div>
+          <h2 className="text-sm font-bold text-white flex items-center gap-2">
+            <FileText size={16} className="text-[#0062FF]" />
+            <span>My Submitted Research Portfolios</span>
+          </h2>
+          <p className="text-[10px] text-[#A0AEC0] mt-0.5">Track the status, citation statistics, and live files of your uploaded manuscripts.</p>
+        </div>
+
+        <div className="space-y-3">
+          {userPapers.length === 0 ? (
+            <p className="text-xs text-[#A0AEC0]/60 italic py-8 border border-dashed border-white/10 rounded-xl text-center">
+              You have not uploaded any research manuscripts yet.
+            </p>
+          ) : (
+            userPapers.map(paper => (
+              <div key={paper.id} className="bg-black/35 border border-white/5 p-4 rounded-lg flex justify-between items-center group hover:border-[#0062FF]/20 transition-all">
+                <div className="space-y-1 pr-4 min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[8px] font-mono font-bold text-[#0062FF] bg-[#0062FF]/10 px-1.5 py-0.5 rounded uppercase">
+                      {paper.category}
+                    </span>
+                    <span className={`text-[8px] font-mono font-bold px-1.5 py-0.5 rounded uppercase ${
+                      paper.status === 'APPROVED' 
+                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
+                        : paper.status === 'REJECTED'
+                        ? 'bg-red-500/10 text-red-400 border border-red-500/20'
+                        : 'bg-amber-500/10 text-amber-400 border border-amber-500/20 animate-pulse'
+                    }`}>
+                      {paper.status}
+                    </span>
+                  </div>
+                  <h4 className="text-xs font-bold text-white group-hover:text-[#00F0FF] transition-colors truncate">
+                    {paper.title}
+                  </h4>
+                  <p className="text-[9px] text-[#A0AEC0] font-mono truncate">File: {paper.file_name || paper.fileName || 'Attached manuscript file'}</p>
+                </div>
+
+                <div className="flex gap-3 items-center shrink-0">
+                  <a 
+                    href={paper.file_url || paper.fileUrl} 
+                    target="_blank" 
+                    rel="noreferrer"
+                    className="flex items-center gap-1 text-[10px] font-bold text-white bg-[#0062FF] hover:bg-[#0056e0] px-3 py-1.5 rounded transition-all cursor-pointer"
+                  >
+                    <Download size={10} />Open File
+                  </a>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

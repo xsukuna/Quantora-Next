@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   LineChart, Shield, Cpu, BarChart3, Globe, Activity, Zap, 
   AlertTriangle, ExternalLink, Download, Mail, Linkedin, Twitter, 
-  Terminal as TerminalIcon, ShieldAlert, CheckCircle, Award, Leaf, Users
+  Terminal as TerminalIcon, ShieldAlert, CheckCircle, Award, Leaf, Users, Trophy
 } from 'lucide-react';
 
 export const dynamic = 'force-dynamic'
@@ -354,8 +354,8 @@ export default function Home() {
             </div>
             <div className="w-20 h-20 rounded-full border-2 border-[#00F0FF] flex items-center justify-center bg-black font-extrabold text-2xl text-[#00F0FF] mb-4">AK</div>
             <h3 className="font-extrabold text-sm tracking-wider text-white">Aditya Kaushik</h3>
-            <p className="text-xs md:text-sm text-[#A0AEC0] leading-relaxed min-h-[48px] max-w-[280px] mt-2 mb-4">
-              Public policy analyst conducting forensic budgetary audits and agricultural credit leakages diagnostics in New Delhi.
+            <p className="text-xs md:text-sm text-[#A0AEC0] leading-relaxed min-h-[48px] max-w-[280px] mt-2 mb-4 font-medium">
+              Lead Public Policy Analyst conducting forensic budgetary audits and agricultural credit leakage diagnostics to drive macro-fiscal integrity and structural reforms in New Delhi.
             </p>
             <div className="w-full flex justify-between border-t border-white/5 pt-4 text-xs text-[#A0AEC0]">
               <span>Papers: <strong>14</strong></span>
@@ -420,51 +420,22 @@ export default function Home() {
       <section id="rdlab" className="relative z-10 max-w-[1400px] mx-auto px-6 py-24 border-t border-white/5">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white to-[#0062FF] bg-clip-text text-transparent">OPEN R&D CHALLENGES</h2>
-          <p className="text-sm md:text-base text-[#A0AEC0] mt-2">Solve active research requests from startups, industries, and NGOs to earn funding grants and platforms badges.</p>
+          <p className="text-sm md:text-base text-[#A0AEC0] mt-2">Solve active research requests from startups, industries, and NGOs to earn funding grants and platform badges.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          
-          <div className="bg-[#0a0f1e]/50 border border-white/5 border-l-4 border-l-[#00F0FF] p-6 rounded-xl flex flex-col justify-between hover:-translate-y-1 transition-all group">
-            <div>
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-[10px] font-mono tracking-widest text-[#00F0FF] uppercase">SPONSOR: NABARD</span>
-                <span className="text-[10px] font-mono tracking-widest text-[#0062FF] uppercase font-bold">Expert Difficulty</span>
-              </div>
-              <h4 className="font-extrabold text-sm md:text-base text-white group-hover:text-[#00F0FF] transition-colors mb-2">Agricultural Credit Leakage Analysis</h4>
-              <p className="text-xs md:text-sm text-[#A0AEC0] leading-relaxed mb-6">
-                Develop analytical spatial tracking metrics to analyze out-of-pocket health costs leaking from rural agricultural accounts in New Delhi.
-              </p>
+        <div className="flex justify-center">
+          <div className="bg-[#0a0f1e]/40 border border-dashed border-white/10 p-10 rounded-2xl max-w-xl w-full text-center flex flex-col items-center justify-center space-y-4 backdrop-blur-sm">
+            <div className="w-12 h-12 bg-blue-500/10 text-blue-400 rounded-full flex items-center justify-center animate-pulse mb-2">
+              <Trophy size={20} />
             </div>
-            <div className="flex justify-between items-center border-t border-white/5 pt-4 text-xs mt-auto">
-              <span className="text-[#A0AEC0]">Reward: <strong className="text-[#00F0FF]">Fellowship Position</strong></span>
-              <a href="/library" className="text-[#00F0FF] font-bold flex items-center gap-1.5 hover:underline">
-                <span>View Workspace</span>
-                <ExternalLink size={12} />
-              </a>
+            <h3 className="font-extrabold text-lg text-white tracking-wide uppercase">COMING SOON</h3>
+            <p className="text-xs md:text-sm text-[#A0AEC0] leading-relaxed max-w-md">
+              "Great research is not rushed. We are curating forensic, institutional, and macroeconomic challenges from sovereign groups and global agencies. Connect your identity, review the archives, and prepare to publish."
+            </p>
+            <div className="text-[10px] font-mono tracking-widest text-[#0062FF] font-bold uppercase pt-2">
+              Pipeline Initializing...
             </div>
           </div>
-
-          <div className="bg-[#0a0f1e]/50 border border-white/5 border-l-4 border-l-[#0062FF] p-6 rounded-xl flex flex-col justify-between hover:-translate-y-1 transition-all group">
-            <div>
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-[10px] font-mono tracking-widest text-[#0062FF] uppercase">SPONSOR: QUANTORA LABS</span>
-                <span className="text-[10px] font-mono tracking-widest text-[#0062FF] uppercase font-bold">Expert Difficulty</span>
-              </div>
-              <h4 className="font-extrabold text-sm md:text-base text-white group-hover:text-[#00F0FF] transition-colors mb-2">High-Frequency Order Book Graph Transformers</h4>
-              <p className="text-xs md:text-sm text-[#A0AEC0] leading-relaxed mb-6">
-                Build deep order book transformers parsing order flow imbalances under volatile regimes for sovereign multi-agent grids.
-              </p>
-            </div>
-            <div className="flex justify-between items-center border-t border-white/5 pt-4 text-xs mt-auto">
-              <span className="text-[#A0AEC0]">Reward: <strong className="text-[#00F0FF]">$10,000 Grant</strong></span>
-              <a href="/library" className="text-[#00F0FF] font-bold flex items-center gap-1.5 hover:underline">
-                <span>View Workspace</span>
-                <ExternalLink size={12} />
-              </a>
-            </div>
-          </div>
-
         </div>
       </section>
 

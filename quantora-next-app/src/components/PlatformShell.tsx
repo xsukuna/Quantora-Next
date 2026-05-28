@@ -112,7 +112,7 @@ export const PlatformShell: React.FC<{ children: React.ReactNode }> = ({ childre
                     isActive ? `${item.activeColor} scale-110` : `group-hover:${item.activeColor}`
                   }`} 
                 />
-                <span className="text-[7.5px] font-black uppercase tracking-wider opacity-70 group-hover:opacity-100">
+                <span className="text-[7.5px] font-black tracking-wider opacity-70 group-hover:opacity-100">
                   {item.name}
                 </span>
                 {isActive && <span className={`absolute left-0 top-1/4 w-0.5 h-3 ${item.accentBorder} rounded-r`} />}
@@ -271,7 +271,7 @@ export const PlatformShell: React.FC<{ children: React.ReactNode }> = ({ childre
             return (
               <Link key={item.name} href={item.path} className="flex flex-col items-center gap-1 w-1/5 py-2">
                 <Icon className={`w-5 h-5 transition-all ${isActive ? item.activeColor : 'text-[var(--foreground-muted)]'}`} />
-                <span className={`text-[8px] font-black uppercase tracking-wider ${isActive ? item.activeColor : 'text-[var(--foreground-muted)]'}`}>
+                <span className={`text-[8px] font-black tracking-wider ${isActive ? item.activeColor : 'text-[var(--foreground-muted)]'}`}>
                   {item.name}
                 </span>
               </Link>

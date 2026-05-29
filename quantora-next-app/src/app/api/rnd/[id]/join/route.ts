@@ -72,6 +72,32 @@ export async function POST(
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     const admin = createAdminClient()
+
+    // Proactively check and sync profile in "profiles" table to prevent foreign key violations
+    const { data: existingProfile } = await admin
+      .from('profiles')
+      .select('id')
+      .eq('id', user.id)
+      .single()
+
+    if (!existingProfile) {
+      console.log(`Auto-syncing profile for auth user ${user.id} in R&D join...`)
+      const email = user.email || 'scarfaceatwork@outlook.com'
+      const username = user.user_metadata?.username || `user_${Date.now()}`
+      const name = user.user_metadata?.name || email.split('@')[0]
+      await admin
+        .from('profiles')
+        .insert({
+          id: user.id,
+          username,
+          name,
+          email,
+          role: 'CONTRIBUTOR',
+          reputation: 10,
+          badge: 'Fellow Contributor'
+        })
+    }
+
     const { data: existing } = await admin
       .from('_ChallengeParticipation')
       .select('A')

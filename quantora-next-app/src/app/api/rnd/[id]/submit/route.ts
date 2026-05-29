@@ -70,6 +70,33 @@ export async function POST(
 
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+    const admin = createAdminClient()
+
+    // Proactively check and sync profile in "profiles" table to prevent foreign key violations
+    const { data: existingProfile } = await admin
+      .from('profiles')
+      .select('id')
+      .eq('id', user.id)
+      .single()
+
+    if (!existingProfile) {
+      console.log(`Auto-syncing profile for auth user ${user.id} in R&D submit...`)
+      const email = user.email || 'scarfaceatwork@outlook.com'
+      const username = user.user_metadata?.username || `user_${Date.now()}`
+      const name = user.user_metadata?.name || email.split('@')[0]
+      await admin
+        .from('profiles')
+        .insert({
+          id: user.id,
+          username,
+          name,
+          email,
+          role: 'CONTRIBUTOR',
+          reputation: 10,
+          badge: 'Fellow Contributor'
+        })
+    }
+
     const { title, description, file_url } = await request.json()
 
     if (!title || !description) {
@@ -77,7 +104,6 @@ export async function POST(
     }
 
     // Update solutionsCount in RndChallenge
-    const admin = createAdminClient()
     const { data: challenge } = await admin.from('RndChallenge').select('solutionsCount').eq('id', id).single()
     const newCount = (challenge?.solutionsCount || 0) + 1
     await admin.from('RndChallenge').update({ solutionsCount: newCount }).eq('id', id)

@@ -283,6 +283,33 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const admin = createAdminClient()
+    
+    // Proactively check and sync profile in "profiles" table to prevent foreign key violations
+    const { data: existingProfile } = await admin
+      .from('profiles')
+      .select('id')
+      .eq('id', user.id)
+      .single()
+
+    if (!existingProfile) {
+      console.log(`Auto-syncing profile for auth user ${user.id}...`)
+      const email = user.email || 'scarfaceatwork@outlook.com'
+      const username = user.user_metadata?.username || `user_${Date.now()}`
+      const name = user.user_metadata?.name || email.split('@')[0]
+      await admin
+        .from('profiles')
+        .insert({
+          id: user.id,
+          username,
+          name,
+          email,
+          role: 'CONTRIBUTOR',
+          reputation: 10,
+          badge: 'Fellow Contributor'
+        })
+    }
+
     const body = await request.json()
     const { title, abstract, category, institution, country, tags, file_url, file_name, file_size, references_text } = body
 
@@ -314,7 +341,6 @@ export async function POST(request: NextRequest) {
 
     const paperId = 'paper_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9)
 
-    const admin = createAdminClient()
     const { data, error } = await admin
       .from('Paper')
       .insert({

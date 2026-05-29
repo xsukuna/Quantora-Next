@@ -46,7 +46,7 @@ export async function GET() {
       supabase.from('Paper').select('*', { count: 'exact', head: true }),
       supabase.from('Paper').select('*', { count: 'exact', head: true }).eq('status', 'APPROVED'),
       supabase.from('profiles').select('*', { count: 'exact', head: true }),
-      supabase.from('insights').select('*', { count: 'exact', head: true }),
+      supabase.from('Insight').select('*', { count: 'exact', head: true }),
     ]);
     const { data: downloadData } = await supabase.from('Paper').select('downloads');
     const totalDownloads = (downloadData || []).reduce(

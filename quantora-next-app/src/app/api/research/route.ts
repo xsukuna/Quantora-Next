@@ -99,23 +99,23 @@ export async function GET(request: NextRequest) {
       .from('Paper')
       .select(`
         *,
-        profiles:author_id (id, name, username, avatar_url, institution)
+        author:authorId (id, name, username, avatarUrl, institution)
       `, { count: 'exact' })
-      .order('created_at', { ascending: false })
+      .order('date', { ascending: false })
       .range(offset, offset + limit - 1)
 
     if (status && status.toUpperCase() !== 'ALL') {
       query = query.eq('status', status)
     }
     if (authorId) {
-      query = query.eq('author_id', authorId)
+      query = query.eq('authorId', authorId)
     }
     if (category && category !== 'all') {
       query = query.eq('category', category)
     }
 
     if (search) {
-      query = query.textSearch('search_vector', search, { type: 'websearch' })
+      query = query.or(`title.ilike.%${search}%,abstract.ilike.%${search}%,tags.ilike.%${search}%`)
     }
 
     const { data, error, count } = await query
@@ -124,8 +124,27 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
+    // Map keys to match the snake_case expectations of the frontend
+    const mapped = (data || []).map(paper => ({
+      ...paper,
+      created_at: paper.date,
+      trust_label: paper.trustLabel,
+      peer_reviewed: paper.peerReviewed,
+      file_url: paper.fileUrl,
+      file_name: paper.fileName,
+      file_size: paper.fileSize,
+      ai_summary: paper.aiSummary,
+      profiles: paper.author ? {
+        id: paper.author.id,
+        name: paper.author.name,
+        username: paper.author.username,
+        avatar_url: paper.author.avatarUrl,
+        institution: paper.author.institution,
+      } : null
+    }))
+
     return NextResponse.json({
-      papers: data,
+      papers: mapped,
       total: count,
       page,
       totalPages: Math.ceil((count || 0) / limit),
@@ -292,33 +311,51 @@ export async function POST(request: NextRequest) {
       ? `${abstract}\n\n=== Gemini AI Summary ===\n${ai_summary}` 
       : abstract
 
+    const paperId = 'paper_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9)
+
     const { data, error } = await supabase
       .from('Paper')
       .insert({
+        id: paperId,
         title,
         abstract: finalAbstract,
         category,
-        author_id: user.id,
+        authorId: user.id,
         institution: institution || 'Independent',
         country: country || 'India',
         tags: mergedTags.join(', '),
-        file_url,
-        file_name,
-        file_size,
-        references_text,
+        fileUrl: file_url,
+        fileName: file_name || 'manuscript.pdf',
+        fileSize: file_size || '420 KB',
+        references: references_text || '',
         status: 'PENDING',
+        trustLabel: 'INDEPENDENT_SUBMISSION',
+        peerReviewed: false,
+        aiSummary: ai_summary,
       })
       .select()
       .single()
 
     if (error) {
+      console.error('Supabase Paper insert error:', error.message)
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    await supabase
-      .from('profiles')
-      .update({ reputation: supabase.rpc('increment_reputation', { user_id: user.id, amount: 25 }) } as Parameters<typeof supabase.from>[0])
-      .eq('id', user.id)
+    // Safely increment user reputation in User table
+    try {
+      const { data: userData } = await supabase
+        .from('User')
+        .select('reputation')
+        .eq('id', user.id)
+        .single()
+      const newRep = (userData?.reputation || 0) + 25
+      await supabase
+        .from('User')
+        .update({ reputation: newRep })
+        .eq('id', user.id)
+    } catch (e) {
+      console.error('Failed to increment user reputation:', e)
+    }
 
     return NextResponse.json({ paper: data }, { status: 201 })
   } catch (err: any) {

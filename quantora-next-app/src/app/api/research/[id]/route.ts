@@ -115,11 +115,11 @@ export async function GET(
       .from('Paper')
       .select(`
         *,
-        profiles:author_id (id, name, username, avatar_url, institution, badge),
-        paper_versions (id, version, summary, author, created_at),
-        comments (
-          id, text, reputation, created_at,
-          profiles:user_id (id, name, username, avatar_url)
+        author:authorId (id, name, username, avatarUrl, institution, badge),
+        paper_versions:PaperVersion (id, version, summary, author, date),
+        comments:Comment (
+          id, text, reputation, timestamp,
+          user:userId (id, name, username, avatarUrl)
         )
       `)
       .eq('id', id)
@@ -130,7 +130,47 @@ export async function GET(
     }
 
     await supabase.from('Paper').update({ downloads: (data.downloads || 0) + 1 }).eq('id', id)
-    return NextResponse.json(data)
+
+    // Map keys to match the snake_case expectations of the frontend
+    const mapped = {
+      ...data,
+      created_at: data.date,
+      trust_label: data.trustLabel,
+      peer_reviewed: data.peerReviewed,
+      file_url: data.fileUrl,
+      file_name: data.fileName,
+      file_size: data.fileSize,
+      ai_summary: data.aiSummary,
+      profiles: data.author ? {
+        id: data.author.id,
+        name: data.author.name,
+        username: data.author.username,
+        avatar_url: data.author.avatarUrl,
+        institution: data.author.institution,
+        badge: data.author.badge,
+      } : null,
+      paper_versions: (data.paper_versions || []).map((v: any) => ({
+        id: v.id,
+        version: v.version,
+        summary: v.summary,
+        author: v.author,
+        created_at: v.date
+      })),
+      comments: (data.comments || []).map((c: any) => ({
+        id: c.id,
+        text: c.text,
+        reputation: c.reputation,
+        created_at: c.timestamp,
+        profiles: c.user ? {
+          id: c.user.id,
+          name: c.user.name,
+          username: c.user.username,
+          avatar_url: c.user.avatarUrl
+        } : null
+      }))
+    }
+
+    return NextResponse.json(mapped)
   } catch (err: any) {
     console.error('Paper detail fetch error:', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
@@ -227,13 +267,38 @@ export async function PATCH(
 
     if (action === 'comment') {
       if (!text?.trim()) return NextResponse.json({ error: 'Comment text required' }, { status: 400 })
+      const commentId = 'comment_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9)
       const { data: comment, error } = await supabase
-        .from('comments')
-        .insert({ paper_id: id, user_id: user.id, text: text.trim() })
-        .select(`*, profiles:user_id (id, name, username, avatar_url)`)
+        .from('Comment')
+        .insert({ 
+          id: commentId,
+          paperId: id, 
+          userId: user.id, 
+          text: text.trim(),
+          reputation: 50
+        })
+        .select(`
+          id, text, reputation, timestamp,
+          user:userId (id, name, username, avatarUrl)
+        `)
         .single()
+
       if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-      return NextResponse.json(comment)
+
+      const mappedComment = {
+        id: comment.id,
+        text: comment.text,
+        reputation: comment.reputation,
+        created_at: comment.timestamp,
+        profiles: comment.user ? {
+          id: comment.user.id,
+          name: comment.user.name,
+          username: comment.user.username,
+          avatar_url: comment.user.avatarUrl
+        } : null
+      }
+
+      return NextResponse.json(mappedComment)
     }
 
     return NextResponse.json({ error: 'Unknown action' }, { status: 400 })
@@ -269,10 +334,10 @@ export async function DELETE(
 
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    const { data: paper } = await supabase.from('Paper').select('author_id').eq('id', id).single()
-    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+    const { data: paper } = await supabase.from('Paper').select('authorId').eq('id', id).single()
+    const { data: profile } = await supabase.from('User').select('role').eq('id', user.id).single()
 
-    if (paper?.author_id !== user.id && profile?.role !== 'ADMIN') {
+    if (paper?.authorId !== user.id && profile?.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 

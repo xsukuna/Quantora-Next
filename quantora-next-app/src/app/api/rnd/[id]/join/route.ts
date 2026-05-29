@@ -71,18 +71,28 @@ export async function POST(
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     const { data: existing } = await supabase
-      .from('rnd_participants')
-      .select('challenge_id')
-      .eq('challenge_id', id)
-      .eq('user_id', user.id)
+      .from('_ChallengeParticipation')
+      .select('A')
+      .eq('A', id)
+      .eq('B', user.id)
       .single()
 
     if (existing) {
-      await supabase.from('rnd_participants').delete().eq('challenge_id', id).eq('user_id', user.id)
+      await supabase.from('_ChallengeParticipation').delete().eq('A', id).eq('B', user.id)
+      
+      const { data: challenge } = await supabase.from('RndChallenge').select('teamsCount').eq('id', id).single()
+      const newCount = Math.max(0, (challenge?.teamsCount || 0) - 1)
+      await supabase.from('RndChallenge').update({ teamsCount: newCount }).eq('id', id)
+
       return NextResponse.json({ action: 'left' })
     } else {
-      const { error } = await supabase.from('rnd_participants').insert({ challenge_id: id, user_id: user.id })
+      const { error } = await supabase.from('_ChallengeParticipation').insert({ A: id, B: user.id })
       if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+      const { data: challenge } = await supabase.from('RndChallenge').select('teamsCount').eq('id', id).single()
+      const newCount = (challenge?.teamsCount || 0) + 1
+      await supabase.from('RndChallenge').update({ teamsCount: newCount }).eq('id', id)
+
       return NextResponse.json({ action: 'joined' })
     }
   } catch (err: any) {

@@ -53,10 +53,17 @@ export async function GET(request: NextRequest) {
     const { data, error, count } = await admin
       .from('profiles')
       .select('*', { count: 'exact' })
-      .order('created_at', { ascending: false })
+      .order('createdAt', { ascending: false })
       .range(offset, offset + limit - 1)
 
-    return NextResponse.json({ users: data, total: count, page })
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+    const mapped = (data || []).map((u: any) => ({
+      ...u,
+      created_at: u.createdAt,
+    }))
+
+    return NextResponse.json({ users: mapped, total: count, page })
   } catch (err: any) {
     console.error('Users fetch error:', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

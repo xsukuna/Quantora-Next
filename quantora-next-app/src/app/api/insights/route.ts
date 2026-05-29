@@ -82,12 +82,12 @@ export async function GET(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser()
 
     let query = supabase
-      .from('insights')
+      .from('Insight')
       .select(`
         *,
-        profiles:author_id (id, name, username, avatar_url, badge)
+        profiles:authorId (id, name, username, avatarUrl, badge)
       `, { count: 'exact' })
-      .order('created_at', { ascending: false })
+      .order('timestamp', { ascending: false })
       .range(offset, offset + limit - 1)
 
     if (category && category !== 'all') {
@@ -95,7 +95,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (authorId) {
-      query = query.eq('author_id', authorId)
+      query = query.eq('authorId', authorId)
     }
 
     const { data: insights, error, count } = await query
@@ -109,18 +109,31 @@ export async function GET(request: NextRequest) {
       const insightIds = insights.map((i: { id: string }) => i.id)
       if (insightIds.length > 0) {
         const { data: upvotes } = await supabase
-          .from('insight_upvotes')
-          .select('insight_id')
-          .eq('user_id', user.id)
-          .in('insight_id', insightIds)
+          .from('_InsightUpvotes')
+          .select('A')
+          .eq('B', user.id)
+          .in('A', insightIds)
 
-        upvotedIds = new Set((upvotes || []).map((u: { insight_id: string }) => u.insight_id))
+        upvotedIds = new Set((upvotes || []).map((u: any) => u.A))
       }
     }
 
-    const enriched = (insights || []).map((insight: Record<string, unknown>) => ({
-      ...insight,
-      userHasUpvoted: upvotedIds.has(insight.id as string),
+    const enriched = (insights || []).map((insight: any) => ({
+      id: insight.id,
+      content: insight.content,
+      category: insight.category,
+      tags: insight.tags,
+      created_at: insight.timestamp,
+      upvotes_count: insight.upvotesCount,
+      comments_count: insight.commentsCount,
+      userHasUpvoted: upvotedIds.has(insight.id),
+      profiles: insight.profiles ? {
+        id: insight.profiles.id,
+        name: insight.profiles.name,
+        username: insight.profiles.username,
+        avatar_url: insight.profiles.avatarUrl,
+        badge: insight.profiles.badge,
+      } : null
     }))
 
     return NextResponse.json({
@@ -230,21 +243,38 @@ export async function POST(request: NextRequest) {
     }
 
     const { data, error } = await supabase
-      .from('insights')
+      .from('Insight')
       .insert({
-        author_id: user.id,
+        authorId: user.id,
         content: content.trim(),
         category: category || 'General',
         tags,
       })
-      .select(`*, profiles:author_id (id, name, username, avatar_url, badge)`)
+      .select(`*, profiles:authorId (id, name, username, avatarUrl, badge)`)
       .single()
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    return NextResponse.json({ insight: data }, { status: 201 })
+    const mappedInsight = {
+      id: data.id,
+      content: data.content,
+      category: data.category,
+      tags: data.tags,
+      created_at: data.timestamp,
+      upvotes_count: data.upvotesCount,
+      comments_count: data.commentsCount,
+      profiles: data.profiles ? {
+        id: data.profiles.id,
+        name: data.profiles.name,
+        username: data.profiles.username,
+        avatar_url: data.profiles.avatarUrl,
+        badge: data.profiles.badge,
+      } : null
+    }
+
+    return NextResponse.json({ insight: mappedInsight }, { status: 201 })
   } catch (err) {
     console.error('Insight creation error:', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

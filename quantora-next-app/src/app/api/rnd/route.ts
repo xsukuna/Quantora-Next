@@ -49,10 +49,9 @@ export async function GET(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser()
 
     let query = supabase
-      .from('rnd_challenges')
+      .from('RndChallenge')
       .select('*')
-      .eq('is_active', true)
-      .order('created_at', { ascending: false })
+      .order('createdAt', { ascending: false })
 
     if (category && category !== 'all') {
       query = query.eq('category', category)
@@ -69,18 +68,30 @@ export async function GET(request: NextRequest) {
       const challengeIds = challenges.map((c: { id: string }) => c.id)
       if (challengeIds.length > 0) {
         const { data: joined } = await supabase
-          .from('rnd_participants')
-          .select('challenge_id')
-          .eq('user_id', user.id)
-          .in('challenge_id', challengeIds)
+          .from('_ChallengeParticipation')
+          .select('A')
+          .eq('B', user.id)
+          .in('A', challengeIds)
 
-        joinedIds = new Set((joined || []).map((p: { challenge_id: string }) => p.challenge_id))
+        joinedIds = new Set((joined || []).map((p: any) => p.A))
       }
     }
 
-    const enriched = (challenges || []).map((c: Record<string, unknown>) => ({
-      ...c,
-      userHasJoined: joinedIds.has(c.id as string),
+    const enriched = (challenges || []).map((c: any) => ({
+      id: c.id,
+      title: c.title,
+      sponsor: c.sponsor,
+      logo: c.logo,
+      description: c.description,
+      reward: c.reward,
+      category: c.category,
+      difficulty: c.difficulty,
+      details: c.details,
+      created_at: c.createdAt,
+      rep_award: c.repAward,
+      teams_count: c.teamsCount,
+      solutions_count: c.solutionsCount,
+      userHasJoined: joinedIds.has(c.id),
     }))
 
     return NextResponse.json({ challenges: enriched })
@@ -129,7 +140,23 @@ export async function POST(request: NextRequest) {
     if (profile?.role !== 'ADMIN') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
     const body = await request.json()
-    const { data, error } = await supabase.from('rnd_challenges').insert(body).select().single()
+    const { title, sponsor, logo, description, reward, repAward, category, difficulty, details } = body
+
+    const { data, error } = await supabase
+      .from('RndChallenge')
+      .insert({
+        title,
+        sponsor,
+        logo: logo || 'https://images.unsplash.com/photo-1557200134-90327ee9fafa?q=80&w=80&auto=format&fit=crop',
+        description,
+        reward,
+        repAward: parseInt(repAward as any) || 100,
+        category,
+        difficulty: difficulty || 'Expert',
+        details: details || ''
+      })
+      .select()
+      .single()
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     return NextResponse.json({ challenge: data }, { status: 201 })

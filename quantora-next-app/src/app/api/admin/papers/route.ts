@@ -20,12 +20,32 @@ export async function GET(request: NextRequest) {
     .from('Paper')
     .select(`
       *,
-      profiles:author_id (id, name, username, email, institution)
+      profiles:authorId (id, name, username, email, institution)
     `, { count: 'exact' })
     .eq('status', status)
-    .order('created_at', { ascending: false })
+    .order('date', { ascending: false })
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  return NextResponse.json({ papers: data, total: count })
+  const mappedPapers = (data || []).map((paper: any) => ({
+    ...paper,
+    created_at: paper.date,
+    trust_label: paper.trustLabel,
+    peer_reviewed: paper.peerReviewed,
+    file_url: paper.fileUrl,
+    file_name: paper.fileName,
+    file_size: paper.fileSize,
+    ai_summary: paper.aiSummary,
+    ai_keywords: paper.tags,
+    profiles: paper.profiles ? {
+      id: paper.profiles.id,
+      name: paper.profiles.name,
+      username: paper.profiles.username,
+      email: paper.profiles.email,
+      institution: paper.profiles.institution,
+    } : null
+  }))
+
+  return NextResponse.json({ papers: mappedPapers, total: count })
 }
+

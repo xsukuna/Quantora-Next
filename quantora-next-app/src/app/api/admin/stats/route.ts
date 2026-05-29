@@ -86,8 +86,8 @@ export async function GET(request: NextRequest) {
       admin.from('Paper').select('*', { count: 'exact', head: true }).eq('status', 'PENDING'),
       admin.from('Paper').select('*', { count: 'exact', head: true }).eq('status', 'APPROVED'),
       admin.from('profiles').select('*', { count: 'exact', head: true }),
-      admin.from('insights').select('*', { count: 'exact', head: true }),
-      admin.from('rnd_challenges').select('*', { count: 'exact', head: true }).eq('is_active', true),
+      admin.from('Insight').select('*', { count: 'exact', head: true }),
+      admin.from('RndChallenge').select('*', { count: 'exact', head: true }),
     ])
 
     const { data: downloadData } = await admin.from('Paper').select('downloads')

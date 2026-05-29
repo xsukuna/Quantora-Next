@@ -160,11 +160,7 @@ function validatePaperBody(body: Record<string, unknown>) {
   if (!category || !VALID_CATEGORIES.includes(category.trim()))
     errors.category = `Category is required and must be one of: ${VALID_CATEGORIES.join(', ')}`
 
-  if (!country || !country.trim())
-    errors.country = 'Country is required'
 
-  if (!institution || !institution.trim())
-    errors.institution = 'Institution is required'
 
   return Object.keys(errors).length > 0 ? errors : null
 }

@@ -124,6 +124,10 @@ export default function SubmitPage() {
 
       if (!res.ok) {
         const err = await res.json()
+        if (err.details) {
+          const detailMsgs = Object.entries(err.details).map(([_, msg]) => msg).join(', ')
+          throw new Error(`Validation failed: ${detailMsgs}`)
+        }
         throw new Error(err.error || 'Submission failed')
       }
 

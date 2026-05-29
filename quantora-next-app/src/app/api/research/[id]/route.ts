@@ -110,12 +110,12 @@ export async function GET(
 
   // Supabase Implementation
   try {
-    const supabase = await createClient()
-    const { data, error } = await supabase
+    const admin = createAdminClient()
+    const { data, error } = await admin
       .from('Paper')
       .select(`
         *,
-        author:authorId (id, name, username, avatarUrl, institution, badge),
+        author:authorId (id, name, username, avatarUrl, badge),
         paper_versions:PaperVersion (id, version, summary, author, date),
         comments:Comment (
           id, text, reputation, timestamp,
@@ -126,10 +126,10 @@ export async function GET(
       .single()
 
     if (error || !data) {
+      console.error('Paper detail query error:', error?.message)
       return NextResponse.json({ error: 'Paper not found' }, { status: 404 })
     }
 
-    const admin = createAdminClient()
     await admin.from('Paper').update({ downloads: (data.downloads || 0) + 1 }).eq('id', id)
 
     // Map keys to match the snake_case expectations of the frontend
@@ -147,7 +147,7 @@ export async function GET(
         name: data.author.name,
         username: data.author.username,
         avatar_url: data.author.avatarUrl,
-        institution: data.author.institution,
+        institution: data.institution,
         badge: data.author.badge,
       } : null,
       paper_versions: (data.paper_versions || []).map((v: any) => ({
@@ -363,14 +363,14 @@ export async function DELETE(
 
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    const { data: paper } = await supabase.from('Paper').select('authorId').eq('id', id).single()
-    const { data: profile } = await supabase.from('User').select('role').eq('id', user.id).single()
+    const admin = createAdminClient()
+    const { data: paper } = await admin.from('Paper').select('authorId').eq('id', id).single()
+    const { data: profile } = await admin.from('profiles').select('role').eq('id', user.id).single()
 
     if (paper?.authorId !== user.id && profile?.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    const admin = createAdminClient()
     const { error } = await admin.from('Paper').delete().eq('id', id)
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })

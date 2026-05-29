@@ -5,7 +5,7 @@ import { useAuth } from '@/context/AuthContext'
 import {
   Shield, FileText, Users, TrendingUp, Download,
   CheckCircle, XCircle, Clock, Eye, BarChart3,
-  AlertTriangle, Loader2, RefreshCw, Zap
+  AlertTriangle, Loader2, RefreshCw, Zap, ExternalLink
 } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
@@ -226,10 +226,18 @@ export default function AdminDashboard() {
                     </div>
 
                     <div className="flex flex-row lg:flex-col gap-2 shrink-0 items-start">
-                      <a href={paper.file_url} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-xs text-[#00F0FF] border border-[#00F0FF]/20 hover:bg-[#00F0FF]/10 px-3 py-2 rounded-lg transition-all">
-                        <Eye size={12} />View PDF
-                      </a>
+                      {(() => {
+                        const isHtml = paper.file_url?.toLowerCase().split('?')[0].endsWith('.html') || 
+                                       paper.file_url?.toLowerCase().split('?')[0].endsWith('.htm');
+                        const viewUrl = isHtml ? `/api/research/${paper.id}/content` : paper.file_url;
+                        return (
+                          <a href={viewUrl} target="_blank" rel="noopener noreferrer"
+                            className="flex items-center gap-1.5 text-xs text-[#00F0FF] border border-[#00F0FF]/20 hover:bg-[#00F0FF]/10 px-3 py-2 rounded-lg transition-all">
+                            {isHtml ? <ExternalLink size={12} /> : <Eye size={12} />}
+                            <span>{isHtml ? 'View HTML Output' : 'View PDF'}</span>
+                          </a>
+                        );
+                      })()}
                       <button onClick={() => handleReview(paper.id, 'APPROVE')}
                         disabled={reviewing === paper.id}
                         className="flex items-center gap-1.5 text-xs text-white bg-[#0062FF] hover:bg-[#0056e0] disabled:opacity-50 px-3 py-2 rounded-lg transition-all">

@@ -51,7 +51,7 @@ export default function PaperDetailPage({ params }: { params: Promise<{ id: stri
   // State
   const [paper, setPaper] = useState<ExtendedPaper | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'DISCUSSION' | 'CITATION_GRAPH' | 'VERSIONS'>('DISCUSSION');
+  const [activeTab, setActiveTab] = useState<'DISCUSSION' | 'CITATION_GRAPH' | 'VERSIONS' | 'PREVIEW'>('DISCUSSION');
   
   // Discussion States
   const [commentText, setCommentText] = useState('');
@@ -76,6 +76,14 @@ export default function PaperDetailPage({ params }: { params: Promise<{ id: stri
       const data = await res.json();
       setPaper(data);
       setLikesCount(data.likes || 0);
+      
+      const isHtml = data.file_name?.toLowerCase().endsWith('.html') || 
+                     data.file_name?.toLowerCase().endsWith('.htm') || 
+                     data.file_url?.toLowerCase().split('?')[0].endsWith('.html') || 
+                     data.file_url?.toLowerCase().split('?')[0].endsWith('.htm');
+      if (isHtml) {
+        setActiveTab('PREVIEW');
+      }
     } catch (err) {
       console.error('Failed to load paper details:', err);
     } finally {
@@ -416,39 +424,85 @@ export default function PaperDetailPage({ params }: { params: Promise<{ id: stri
 
       {/* Tabs Selector Bar */}
       <div className="flex gap-2 border-b border-white/5 pb-3 mb-8 shrink-0 select-none">
-        {[
-          { id: 'DISCUSSION', label: 'Peer Discussions', icon: MessageSquare, badge: paper.comments?.length || 0 },
-          { id: 'CITATION_GRAPH', label: 'Citation Graphs & Indexing', icon: Network },
-          { id: 'VERSIONS', label: 'Version Drafts Timeline', icon: History }
-        ].map(tab => {
-          const Icon = tab.icon;
-          const isSelected = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-4.5 py-2.5 rounded-xl text-xs font-bold transition-all border ${
-                isSelected 
-                  ? 'bg-[#0062FF]/10 border-[#0062FF]/30 text-[#0062FF]' 
-                  : 'text-gray-400 border-transparent hover:bg-white/5 hover:text-white'
-              }`}
-            >
-              <Icon size={13} />
-              <span>{tab.label}</span>
-              {tab.badge !== undefined && (
-                <span className="bg-[#0062FF]/15 text-[#0062FF] px-1.5 py-0.5 rounded text-[9px] font-mono font-bold">
-                  {tab.badge}
-                </span>
-              )}
-            </button>
-          );
-        })}
+        {(() => {
+          const isHtml = paper.file_name?.toLowerCase().endsWith('.html') || 
+                         paper.file_name?.toLowerCase().endsWith('.htm') || 
+                         paper.file_url?.toLowerCase().split('?')[0].endsWith('.html') || 
+                         paper.file_url?.toLowerCase().split('?')[0].endsWith('.htm');
+          
+          const tabs = [
+            ...(isHtml ? [{ id: 'PREVIEW', label: 'Read Web Article', icon: BookOpen, badge: undefined }] : []),
+            { id: 'DISCUSSION', label: 'Peer Discussions', icon: MessageSquare, badge: paper.comments?.length || 0 },
+            { id: 'CITATION_GRAPH', label: 'Citation Graphs & Indexing', icon: Network, badge: undefined },
+            { id: 'VERSIONS', label: 'Version Drafts Timeline', icon: History, badge: undefined }
+          ];
+
+          return tabs.map(tab => {
+            const Icon = tab.icon;
+            const isSelected = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`flex items-center gap-2 px-4.5 py-2.5 rounded-xl text-xs font-bold transition-all border ${
+                  isSelected 
+                    ? 'bg-[#0062FF]/10 border-[#0062FF]/30 text-[#0062FF]' 
+                    : 'text-gray-400 border-transparent hover:bg-white/5 hover:text-white'
+                }`}
+              >
+                <Icon size={13} />
+                <span>{tab.label}</span>
+                {tab.badge !== undefined && (
+                  <span className="bg-[#0062FF]/15 text-[#0062FF] px-1.5 py-0.5 rounded text-[9px] font-mono font-bold">
+                    {tab.badge}
+                  </span>
+                )}
+              </button>
+            );
+          });
+        })()}
       </div>
 
       {/* Tab Panels Display */}
       <div className="min-h-[400px]">
         <AnimatePresence mode="wait">
           
+          {/* TAB PREVIEW: SECURE INLINE WEBPAGE PREVIEW FOR HTML MANUSCRIPTS */}
+          {activeTab === 'PREVIEW' && paper && (
+            <motion.div
+              key="preview"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              className="w-full bg-[#0a0f1e]/40 border border-white/5 rounded-2xl p-2 relative overflow-hidden mb-8"
+            >
+              <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 select-none mb-3">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                  <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest font-mono">
+                    Quantora Live Reader v1.0 [SECURE INLINE RENDER]
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <a
+                    href={`/api/research/${paper.id}/content`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 text-[10px] font-mono text-[#00F0FF] border border-[#00F0FF]/25 hover:bg-[#00F0FF]/10 px-2.5 py-1 rounded transition-all"
+                  >
+                    <ExternalLink size={10} />Fullscreen
+                  </a>
+                </div>
+              </div>
+              <iframe
+                src={`/api/research/${paper.id}/content`}
+                className="w-full h-[80vh] border-0 rounded-b-xl bg-white"
+                sandbox="allow-scripts allow-same-origin"
+                title="HTML Manuscript Render View"
+              />
+            </motion.div>
+          )}
+
           {/* TAB A: THREADED PEER REVIEW DISCUSSIONS */}
           {activeTab === 'DISCUSSION' && (
             <motion.div

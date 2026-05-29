@@ -96,7 +96,10 @@ export async function GET(request: NextRequest) {
   // Supabase Implementation
   try {
     const supabase = await createClient()
-    let query = supabase
+    const { data: { user } } = await supabase.auth.getUser()
+
+    const admin = createAdminClient()
+    let query = admin
       .from('Paper')
       .select(`
         *,
@@ -105,8 +108,27 @@ export async function GET(request: NextRequest) {
       .order('date', { ascending: false })
       .range(offset, offset + limit - 1)
 
-    if (status && status.toUpperCase() !== 'ALL') {
-      query = query.eq('status', status)
+    // Secure code-level authorization filtering:
+    // Non-admins can only see APPROVED papers, unless they are requesting their own submissions.
+    let isAdminUser = false
+    if (user) {
+      const { data: profile } = await admin
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+      isAdminUser = profile?.role === 'ADMIN'
+    }
+
+    const isRequestingOwn = user && authorId === user.id
+
+    if (!isAdminUser && !isRequestingOwn) {
+      // Force status to APPROVED for ordinary users requesting general listings
+      query = query.eq('status', 'APPROVED')
+    } else {
+      if (status && status.toUpperCase() !== 'ALL') {
+        query = query.eq('status', status)
+      }
     }
     if (authorId) {
       query = query.eq('authorId', authorId)

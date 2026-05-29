@@ -1,5 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import { createServerClient } from '@supabase/ssr'
+import { createClient } from '@supabase/supabase-js'
 import { NextResponse, type NextRequest } from 'next/server'
 
 const isClerkEnabled = typeof process !== 'undefined' && !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
@@ -69,7 +70,12 @@ async function supabaseOrLocalMiddleware(request: NextRequest) {
       }
 
       if (isAdmin && user) {
-        const { data: profile } = await supabase
+        const adminSupabase = createClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.SUPABASE_SERVICE_ROLE_KEY!
+        )
+
+        const { data: profile } = await adminSupabase
           .from('profiles')
           .select('role')
           .eq('id', user.id)

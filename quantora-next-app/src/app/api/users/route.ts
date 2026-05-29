@@ -46,10 +46,10 @@ export async function GET(request: NextRequest) {
 
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+    const admin = createAdminClient()
+    const { data: profile } = await admin.from('profiles').select('role').eq('id', user.id).single()
     if (profile?.role !== 'ADMIN') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-    const admin = createAdminClient()
     const { data, error, count } = await admin
       .from('profiles')
       .select('*', { count: 'exact' })
@@ -110,7 +110,8 @@ export async function PATCH(request: NextRequest) {
 
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+    const admin = createAdminClient()
+    const { data: profile } = await admin.from('profiles').select('role').eq('id', user.id).single()
     if (profile?.role !== 'ADMIN') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
     const body = await request.json()
@@ -119,8 +120,6 @@ export async function PATCH(request: NextRequest) {
     if (!userId || !role) {
       return NextResponse.json({ error: 'Missing userId or role' }, { status: 400 })
     }
-
-    const admin = createAdminClient()
     const { data, error } = await admin
       .from('profiles')
       .update({ role })

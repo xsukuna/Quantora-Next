@@ -148,93 +148,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return
     }
 
-    if (!isSupabaseEnabled) {
-      // Local Auth Fallback Mode: fetch fresh profile from local DB
-      try {
-        const res = await fetch('/api/auth/me')
-        if (res.ok) {
-          const data = await res.json()
-          if (data.profile) setProfile(data.profile)
+    try {
+      const res = await fetch('/api/auth/profile')
+      if (res.ok) {
+        const data = await res.json()
+        if (data.profile) {
+          setProfile(data.profile)
         }
-      } catch (err) {
-        console.error('Failed to fetch local profile:', err)
+      } else {
+        console.error('Failed to fetch profile from API:', res.statusText)
       }
-      return
+    } catch (err) {
+      console.error('Failed to fetch profile:', err)
     }
-
-    // Supabase Mode
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single()
-      
-    if (data) {
-      try {
-        const { data: { user } } = await supabase.auth.getUser()
-        if (user) {
-          const mergedProfile = {
-            ...data,
-            bio: user.user_metadata?.bio || null,
-            institution: user.user_metadata?.institution || null,
-            country: user.user_metadata?.country || null,
-            website: user.user_metadata?.website || null,
-            linkedin: user.user_metadata?.linkedin || null,
-            orcid: user.user_metadata?.orcid || null,
-          }
-          setProfile(mergedProfile)
-          return
-        }
-      } catch (err) {
-        console.error('Error merging user metadata:', err)
-      }
-      setProfile(data)
-    } else if (error) {
-      // Profile does not exist in DB yet, create it on-the-fly to self-heal
-      try {
-        const { data: { user } } = await supabase.auth.getUser()
-        if (user) {
-          const email = user.email
-          const cleanEmail = email?.toLowerCase().trim() || ''
-          const username = user.user_metadata?.username || cleanEmail.split('@')[0] || `user_${userId.substring(0, 8)}`
-          const name = user.user_metadata?.name || username
-          const avatarUrl = user.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${username}`
-          
-          const { data: newProfile, error: insertError } = await supabase
-            .from('profiles')
-            .insert({
-              id: userId,
-              email: cleanEmail,
-              username: username.toLowerCase().replace(/[^a-z0-9_-]/g, '_'),
-              name,
-              avatarUrl,
-              role: 'CONTRIBUTOR',
-              reputation: 10,
-              badge: 'Fellow Contributor'
-            })
-            .select()
-            .single()
-            
-          if (!insertError && newProfile) {
-            const mergedProfile = {
-              ...newProfile,
-              bio: user.user_metadata?.bio || null,
-              institution: user.user_metadata?.institution || null,
-              country: user.user_metadata?.country || null,
-              website: user.user_metadata?.website || null,
-              linkedin: user.user_metadata?.linkedin || null,
-              orcid: user.user_metadata?.orcid || null,
-            }
-            setProfile(mergedProfile)
-          } else if (insertError) {
-            console.error('Failed to self-heal user profile in Supabase:', insertError.message)
-          }
-        }
-      } catch (err) {
-        console.error('Exception during profile self-healing:', err)
-      }
-    }
-  }, [supabase, isSupabaseEnabled])
+  }, [])
 
   const refreshProfile = useCallback(async () => {
     if (isClerkEnabled) {

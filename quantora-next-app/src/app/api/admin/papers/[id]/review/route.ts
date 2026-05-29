@@ -12,7 +12,8 @@ export async function PATCH(
 
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+  const admin = createAdminClient()
+  const { data: profile } = await admin.from('profiles').select('role').eq('id', user.id).single()
   if (profile?.role !== 'ADMIN') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const { id } = await params
@@ -21,8 +22,6 @@ export async function PATCH(
   if (!['APPROVE', 'REJECT'].includes(action)) {
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
   }
-
-  const admin = createAdminClient()
   const newStatus = action === 'APPROVE' ? 'APPROVED' : 'REJECTED'
 
   const { data, error } = await admin

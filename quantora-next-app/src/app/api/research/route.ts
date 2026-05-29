@@ -288,11 +288,15 @@ export async function POST(request: NextRequest) {
     const initialTags = Array.isArray(tags) ? tags : (tags ? tags.split(',').map((t: string) => t.trim()).filter(Boolean) : [])
     const mergedTags = [...initialTags, ...ai_keywords_list].filter((v, i, a) => v && a.indexOf(v) === i)
 
+    const finalAbstract = ai_summary 
+      ? `${abstract}\n\n=== Gemini AI Summary ===\n${ai_summary}` 
+      : abstract
+
     const { data, error } = await supabase
       .from('Paper')
       .insert({
         title,
-        abstract,
+        abstract: finalAbstract,
         category,
         author_id: user.id,
         institution: institution || 'Independent',
@@ -302,7 +306,6 @@ export async function POST(request: NextRequest) {
         file_name,
         file_size,
         references_text,
-        ai_summary,
         status: 'PENDING',
       })
       .select()

@@ -385,14 +385,22 @@ export default function PaperDetailPage({ params }: { params: Promise<{ id: stri
                 <span>{liked ? 'Upvoted' : `Upvote (${likesCount})`}</span>
               </button>
 
-              <a 
-                href={paper.file_url || '/report.pdf'} 
-                target="_blank"
-                className="flex-1 flex items-center justify-center gap-1.5 bg-[#0062FF] hover:bg-[#0056e0] py-3 px-5 rounded-xl text-xs font-black uppercase tracking-wider text-white transition-all shadow-lg shadow-[#0062FF]/20"
-              >
-                <Download size={12} />
-                <span>Download PDF</span>
-              </a>
+              {(() => {
+                const isHtml = paper.file_name?.toLowerCase().endsWith('.html') || 
+                               paper.file_name?.toLowerCase().endsWith('.htm') || 
+                               paper.file_url?.toLowerCase().split('?')[0].endsWith('.html') || 
+                               paper.file_url?.toLowerCase().split('?')[0].endsWith('.htm');
+                return (
+                  <a 
+                    href={paper.file_url || '/report.pdf'} 
+                    target="_blank"
+                    className="flex-1 flex items-center justify-center gap-1.5 bg-[#0062FF] hover:bg-[#0056e0] py-3 px-5 rounded-xl text-xs font-black uppercase tracking-wider text-white transition-all shadow-lg shadow-[#0062FF]/20"
+                  >
+                    {isHtml ? <ExternalLink size={12} /> : <Download size={12} />}
+                    <span>{isHtml ? 'View HTML Manuscript' : 'Download PDF'}</span>
+                  </a>
+                );
+              })()}
             </div>
           </div>
         </div>

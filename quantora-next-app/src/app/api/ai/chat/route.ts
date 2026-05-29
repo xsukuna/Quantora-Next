@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
         try {
           const genAI = new GoogleGenerativeAI(geminiKey)
           const model = genAI.getGenerativeModel({
-            model: 'gemini-2.0-flash-lite',
+            model: 'gemini-2.0-flash',
             systemInstruction: QBRAIN_SYSTEM,
           })
 
@@ -100,9 +100,10 @@ export async function POST(request: NextRequest) {
             }),
             { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-cache' } }
           )
-        } catch (err) {
+        } catch (err: any) {
           console.error('[Gemini] error:', err)
-          return NextResponse.json({ error: 'Gemini unavailable — quota may be exhausted' }, { status: 503 })
+          const message = err?.message || 'Gemini unavailable — quota may be exhausted'
+          return NextResponse.json({ error: `Gemini error: ${message}` }, { status: 503 })
         }
       }
     }

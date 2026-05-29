@@ -1,13 +1,37 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { 
   LineChart, Shield, Cpu, BarChart3, Globe, Activity, Zap, 
   AlertTriangle, ExternalLink, Download, Mail, Linkedin, Twitter, 
-  Terminal as TerminalIcon, ShieldAlert, CheckCircle, Award, Leaf, Users, Trophy
+  Terminal as TerminalIcon, ShieldAlert, CheckCircle, Award, Leaf, Users, Trophy,
+  RefreshCw
 } from 'lucide-react';
 
 export const dynamic = 'force-dynamic'
+
+// Smooth animated count-up hook
+function useAnimatedCount(target: number, duration = 1200) {
+  const [display, setDisplay] = useState(0);
+  const prev = useRef(0);
+  useEffect(() => {
+    const start = prev.current;
+    const diff = target - start;
+    if (diff === 0) return;
+    const startTime = performance.now();
+    const raf = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // ease-out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(Math.round(start + diff * eased));
+      if (progress < 1) requestAnimationFrame(raf);
+      else prev.current = target;
+    };
+    requestAnimationFrame(raf);
+  }, [target, duration]);
+  return display;
+}
 
 export default function Home() {
   // UI State
@@ -23,6 +47,43 @@ export default function Home() {
   ]);
   const [terminalInput, setTerminalInput] = useState('');
   const [carbonSavings, setCarbonSavings] = useState(0.0012);
+  const [paperCount, setPaperCount] = useState<number | null>(null);
+
+  // Live platform stats
+  const [liveStats, setLiveStats] = useState({ totalPapers: 0, approvedPapers: 0, totalUsers: 0, totalInsights: 0, totalDownloads: 0 });
+  const [statsLoaded, setStatsLoaded] = useState(false);
+  const [statsUpdating, setStatsUpdating] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+
+  const fetchStats = useCallback(async (isRefresh = false) => {
+    if (isRefresh) setStatsUpdating(true);
+    try {
+      const res = await fetch('/api/stats');
+      if (!res.ok) return;
+      const data = await res.json();
+      setLiveStats({
+        totalPapers: data.totalPapers ?? 0,
+        approvedPapers: data.approvedPapers ?? 0,
+        totalUsers: data.totalUsers ?? 0,
+        totalInsights: data.totalInsights ?? 0,
+        totalDownloads: data.totalDownloads ?? 0,
+      });
+      setLastUpdated(new Date());
+      setStatsLoaded(true);
+      // Also update contributor card count
+      if (typeof data.totalPapers === 'number') setPaperCount(data.totalPapers);
+    } catch { /* silent */ } finally {
+      setStatsUpdating(false);
+    }
+  }, []);
+
+  // Initial load + 30-second polling
+  useEffect(() => {
+    fetchStats();
+    const interval = setInterval(() => fetchStats(true), 30000);
+    return () => clearInterval(interval);
+  }, [fetchStats]);
+
   const [activeSignal, setActiveSignal] = useState(0);
 
   const logEndRef = useRef<HTMLDivElement>(null);
@@ -355,11 +416,10 @@ export default function Home() {
             <div className="w-20 h-20 rounded-full border-2 border-[#00F0FF] flex items-center justify-center bg-black font-extrabold text-2xl text-[#00F0FF] mb-4">AK</div>
             <h3 className="font-extrabold text-sm tracking-wider text-white">Aditya Kaushik</h3>
             <p className="text-xs md:text-sm text-[#A0AEC0] leading-relaxed min-h-[48px] max-w-[280px] mt-2 mb-4 font-medium">
-              Lead Public Policy Analyst conducting forensic budgetary audits and agricultural credit leakage diagnostics to drive macro-fiscal integrity and structural reforms in New Delhi.
+              Founder&nbsp;•&nbsp;Lead Architect&nbsp;•&nbsp;Developer&nbsp;•&nbsp;Independent Researcher&nbsp;•&nbsp;Publisher&nbsp;•&nbsp;Financial Analyst&nbsp;•&nbsp;Portfolio Strategist
             </p>
-            <div className="w-full flex justify-between border-t border-white/5 pt-4 text-xs text-[#A0AEC0]">
-              <span>Papers: <strong>14</strong></span>
-              <span>Reputation: <strong className="text-[#00FF00]">980</strong></span>
+            <div className="w-full flex justify-center border-t border-white/5 pt-4 text-xs text-[#A0AEC0]">
+              <span>Papers Published:&nbsp;<strong className="text-[#00F0FF]">{paperCount !== null ? paperCount : '—'}</strong></span>
             </div>
           </div>
 
@@ -439,30 +499,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Institutional Transparency Dashboard */}
-      <section className="relative z-10 max-w-[1400px] mx-auto px-6 py-16 border-y border-white/5 bg-[#0a0f1e]/20">
-        <div className="text-center mb-10">
-          <h2 className="text-sm font-mono tracking-widest text-[#0062FF] uppercase font-bold">Platform Autonomy Dashboard</h2>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          <div className="bg-[#020202]/60 border border-white/5 p-4 rounded-lg">
-            <h3 className="text-3xl md:text-4xl font-extrabold text-[#00F0FF] mb-1">4,812</h3>
-            <p className="text-[9px] md:text-[10px] font-mono tracking-wider text-[#A0AEC0] uppercase">Total Uploads</p>
-          </div>
-          <div className="bg-[#020202]/60 border border-white/5 p-4 rounded-lg">
-            <h3 className="text-3xl md:text-4xl font-extrabold text-[#0062FF] mb-1">2,450</h3>
-            <p className="text-[9px] md:text-[10px] font-mono tracking-wider text-[#A0AEC0] uppercase">Reviewed Papers</p>
-          </div>
-          <div className="bg-[#020202]/60 border border-white/5 p-4 rounded-lg">
-            <h3 className="text-3xl md:text-4xl font-extrabold text-[#00F0FF] mb-1">1,280</h3>
-            <p className="text-[9px] md:text-[10px] font-mono tracking-wider text-[#A0AEC0] uppercase">Active Analysts</p>
-          </div>
-          <div className="bg-[#020202]/60 border border-white/5 p-4 rounded-lg">
-            <h3 className="text-3xl md:text-4xl font-extrabold text-white mb-1">99.2%</h3>
-            <p className="text-[9px] md:text-[10px] font-mono tracking-wider text-[#A0AEC0] uppercase">Academic Autonomy</p>
-          </div>
-        </div>
-      </section>
+      {/* Institutional Transparency Dashboard — Real-Time */}
+      <LiveStatsDashboard stats={liveStats} loaded={statsLoaded} updating={statsUpdating} lastUpdated={lastUpdated} onRefresh={() => fetchStats(true)} />
 
       {/* Platform Genesis (Map Area) */}
       <section id="locations" className="relative z-10 max-w-[1400px] mx-auto px-6 py-24">
@@ -552,5 +590,122 @@ export default function Home() {
       </footer>
 
     </div>
+  );
+}
+
+// ─── Live Stats Dashboard Component ───────────────────────────────────────────
+interface LiveStats {
+  totalPapers: number;
+  approvedPapers: number;
+  totalUsers: number;
+  totalInsights: number;
+  totalDownloads: number;
+}
+
+function StatTile({
+  value,
+  label,
+  color,
+  loaded,
+}: {
+  value: number;
+  label: string;
+  color: string;
+  loaded: boolean;
+}) {
+  const animated = useAnimatedCount(value);
+  return (
+    <div
+      style={{ borderColor: `${color}22` }}
+      className="relative bg-[#020202]/70 border rounded-xl p-5 text-center overflow-hidden group transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(0,240,255,0.08)]"
+    >
+      {/* subtle glow sweep on hover */}
+      <div
+        style={{ background: `radial-gradient(circle at 50% 0%, ${color}18 0%, transparent 70%)` }}
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+      />
+      <h3
+        style={{ color }}
+        className="text-3xl md:text-4xl font-black tabular-nums mb-1 transition-all"
+      >
+        {loaded ? animated.toLocaleString() : (
+          <span className="inline-block w-16 h-8 rounded bg-white/5 animate-pulse" />
+        )}
+      </h3>
+      <p className="text-[9px] md:text-[10px] font-mono tracking-widest text-[#A0AEC0] uppercase">
+        {label}
+      </p>
+    </div>
+  );
+}
+
+function LiveStatsDashboard({
+  stats,
+  loaded,
+  updating,
+  lastUpdated,
+  onRefresh,
+}: {
+  stats: LiveStats;
+  loaded: boolean;
+  updating: boolean;
+  lastUpdated: Date | null;
+  onRefresh: () => void;
+}) {
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const t = setInterval(() => setNow(new Date()), 10000);
+    return () => clearInterval(t);
+  }, []);
+
+  const secondsAgo = lastUpdated ? Math.round((now.getTime() - lastUpdated.getTime()) / 1000) : null;
+  const agoLabel = secondsAgo === null
+    ? 'fetching…'
+    : secondsAgo < 5
+    ? 'just now'
+    : secondsAgo < 60
+    ? `${secondsAgo}s ago`
+    : `${Math.round(secondsAgo / 60)}m ago`;
+
+  return (
+    <section className="relative z-10 max-w-[1400px] mx-auto px-6 py-16 border-y border-white/5 bg-[#0a0f1e]/20">
+      {/* Header row */}
+      <div className="flex flex-col sm:flex-row items-center justify-between mb-10 gap-4">
+        <div className="flex items-center gap-3">
+          <h2 className="text-sm font-mono tracking-widest text-[#0062FF] uppercase font-bold">
+            Platform Autonomy Dashboard
+          </h2>
+          {/* Live pulse badge */}
+          <span className="flex items-center gap-1.5 bg-[#00FF00]/10 border border-[#00FF00]/30 px-2 py-0.5 rounded text-[9px] font-bold text-[#00FF00] tracking-widest uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#00FF00] animate-pulse" />
+            LIVE
+          </span>
+        </div>
+        <div className="flex items-center gap-3 text-[10px] font-mono text-[#A0AEC0]">
+          <span>Updated {agoLabel}</span>
+          <button
+            onClick={onRefresh}
+            disabled={updating}
+            title="Refresh stats"
+            className="p-1.5 rounded border border-white/10 hover:border-[#0062FF]/50 hover:text-[#0062FF] transition-all disabled:opacity-40"
+          >
+            <RefreshCw size={11} className={updating ? 'animate-spin' : ''} />
+          </button>
+        </div>
+      </div>
+
+      {/* Stat tiles */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+        <StatTile value={stats.totalPapers}    label="Total Uploads"    color="#00F0FF" loaded={loaded} />
+        <StatTile value={stats.approvedPapers} label="Reviewed Papers"  color="#0062FF" loaded={loaded} />
+        <StatTile value={stats.totalUsers}     label="Registered Users" color="#00F0FF" loaded={loaded} />
+        <StatTile value={stats.totalDownloads} label="Total Downloads"  color="#A78BFA" loaded={loaded} />
+      </div>
+
+      {/* Live update note */}
+      <p className="text-center text-[9px] font-mono text-[#A0AEC0]/40 tracking-widest uppercase mt-6">
+        Auto-refreshes every 30 seconds · live database
+      </p>
+    </section>
   );
 }

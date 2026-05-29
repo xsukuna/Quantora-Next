@@ -35,9 +35,9 @@ export async function GET(request: NextRequest) {
       }
       if (search) {
         whereClause.OR = [
-          { title: { contains: search } },
-          { abstract: { contains: search } },
-          { tags: { contains: search } }
+          { title: { contains: search, mode: 'insensitive' as const } },
+          { abstract: { contains: search, mode: 'insensitive' as const } },
+          { tags: { contains: search, mode: 'insensitive' as const } }
         ]
       }
 
@@ -136,6 +136,39 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// Validation constants
+const VALID_CATEGORIES = [
+  'Macroeconomics', 'Public Policy', 'Quant Strategy', 'Climate Finance',
+  'Political Economy', 'Development Economics', 'Geopolitics', 'Financial Markets',
+  'Technology Policy', 'Social Science', 'General'
+]
+
+function validatePaperBody(body: Record<string, unknown>) {
+  const errors: Record<string, string> = {}
+  const { title, abstract, category, country, institution } = body as Record<string, string>
+
+  if (!title || title.trim().length < 10)
+    errors.title = 'Title is required and must be at least 10 characters'
+  else if (title.trim().length > 300)
+    errors.title = 'Title must not exceed 300 characters'
+
+  if (!abstract || abstract.trim().length < 50)
+    errors.abstract = 'Abstract is required and must be at least 50 characters'
+  else if (abstract.trim().length > 5000)
+    errors.abstract = 'Abstract must not exceed 5000 characters'
+
+  if (!category || !VALID_CATEGORIES.includes(category.trim()))
+    errors.category = `Category is required and must be one of: ${VALID_CATEGORIES.join(', ')}`
+
+  if (!country || !country.trim())
+    errors.country = 'Country is required'
+
+  if (!institution || !institution.trim())
+    errors.institution = 'Institution is required'
+
+  return Object.keys(errors).length > 0 ? errors : null
+}
+
 // POST /api/research — submit new paper
 export async function POST(request: NextRequest) {
   if (!isSupabaseEnabled) {
@@ -143,8 +176,13 @@ export async function POST(request: NextRequest) {
       const body = await request.json()
       const { title, abstract, category, institution, country, tags, file_url, file_name, file_size, references_text, authorEmail, trustLabel } = body
 
-      if (!title || !abstract || !category || !file_url) {
-        return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+      const validationErrors = validatePaperBody(body)
+      if (validationErrors) {
+        return NextResponse.json({ error: 'Validation failed', details: validationErrors }, { status: 400 })
+      }
+
+      if (!file_url) {
+        return NextResponse.json({ error: 'Missing required fields', details: { file_url: 'File URL is required' } }, { status: 400 })
       }
 
       let user = await prisma.user.findUnique({
@@ -227,8 +265,13 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { title, abstract, category, institution, country, tags, file_url, file_name, file_size, references_text } = body
 
-    if (!title || !abstract || !category || !file_url) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+    const validationErrors = validatePaperBody(body)
+    if (validationErrors) {
+      return NextResponse.json({ error: 'Validation failed', details: validationErrors }, { status: 400 })
+    }
+
+    if (!file_url) {
+      return NextResponse.json({ error: 'Missing required fields', details: { file_url: 'File URL is required' } }, { status: 400 })
     }
 
     let ai_summary = null

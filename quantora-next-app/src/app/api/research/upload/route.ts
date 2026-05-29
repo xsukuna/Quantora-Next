@@ -20,9 +20,18 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate file size (50MB max)
-    if (file.size > 52428800) {
-      return NextResponse.json({ error: 'File exceeds 50MB limit' }, { status: 400 })
-    }
+  if (file.size > 52428800) {
+    return NextResponse.json({ error: 'File exceeds 50MB limit' }, { status: 400 })
+  }
+
+  // Validate allowed MIME types (PDF or HTML) or extensions
+  const allowedMimeTypes = ['application/pdf', 'text/html']
+  const ext = file.name.split('.').pop()?.toLowerCase() || ''
+  const isValidType = allowedMimeTypes.includes(file.type) || ext === 'pdf' || ext === 'html' || ext === 'htm'
+  if (!isValidType) {
+    return NextResponse.json({ error: 'Unsupported file type. Only PDF and HTML are allowed.' }, { status: 400 })
+  }
+
 
 
     const adminClient = createAdminClient()
@@ -30,11 +39,19 @@ export async function POST(request: NextRequest) {
     const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_')
     const path = `${user.id}/${timestamp}_${sanitizedName}`
 
+    // Determine the most accurate content type
+    let contentType = file.type
+    if (ext === 'html' || ext === 'htm') {
+      contentType = 'text/html'
+    } else if (ext === 'pdf') {
+      contentType = 'application/pdf'
+    }
+
     const arrayBuffer = await file.arrayBuffer()
     const { error: uploadError } = await adminClient.storage
       .from('research-papers')
       .upload(path, arrayBuffer, {
-        contentType: file.type,
+        contentType,
         upsert: false,
       })
 

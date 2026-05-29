@@ -52,7 +52,7 @@ export function getProviderInfo() {
   const provider = getActiveProvider()
   return {
     provider,
-    model: provider === 'groq' ? 'llama-3.3-70b-versatile' : provider === 'gemini' ? 'gemini-2.0-flash-lite' : 'none',
+    model: provider === 'groq' ? 'llama-3.3-70b-versatile' : provider === 'gemini' ? 'gemini-2.0-flash' : 'none',
     label: provider === 'groq' ? 'Groq · Llama 3.3 70B' : provider === 'gemini' ? 'Google Gemini 2.0' : 'Unavailable',
   }
 }
@@ -108,7 +108,7 @@ export async function streamChatResponse(
   const gemini = getGemini()
   if (gemini) {
     const model = gemini.getGenerativeModel({
-      model: 'gemini-2.0-flash-lite',
+      model: 'gemini-2.0-flash',
       systemInstruction: QBRAIN_SYSTEM,
     })
     const chat = model.startChat({
@@ -164,7 +164,7 @@ export async function generateText(prompt: string): Promise<string> {
   // ── Fallback: Gemini ──
   const gemini = getGemini()
   if (gemini) {
-    const model = gemini.getGenerativeModel({ model: 'gemini-2.0-flash-lite' })
+    const model = gemini.getGenerativeModel({ model: 'gemini-2.0-flash' })
     const result = await model.generateContent(prompt)
     return result.response.text()
   }

@@ -10,8 +10,22 @@ const isSupabaseEnabled = !!(
 );
 
 // GET /api/admin/stats — platform-wide statistics
-export async function GET(_request: NextRequest) {
+export async function GET(request: NextRequest) {
   if (!isSupabaseEnabled) {
+    // ── Local/Prisma auth check ──────────────────────────────────────
+    const cookieHeader = request.headers.get('cookie') || ''
+    const emailMatch = cookieHeader.match(/(?:^|;\s*)quantora_local_email=([^;]+)/)
+    const localEmail = emailMatch ? decodeURIComponent(emailMatch[1]) : null
+
+    if (!localEmail) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const adminUser = await prisma.user.findUnique({ where: { email: localEmail }, select: { role: true } })
+    if (!adminUser || adminUser.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 401 })
+    }
+    // ── End auth check ───────────────────────────────────────────────
     try {
       const [
         totalPapers,

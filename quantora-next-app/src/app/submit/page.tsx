@@ -45,10 +45,15 @@ export default function SubmitPage() {
 
   const handleFileUpload = async (file: File) => {
     if (!file) return
-    if (file.type !== 'application/pdf') {
-      setError('Only PDF files are accepted')
-      return
-    }
+      // Allow PDF and HTML files (by MIME type or file extension)
+      const allowedMimeTypes = ['application/pdf', 'text/html']
+      const ext = file.name.split('.').pop()?.toLowerCase() || ''
+      const isAllowedType = allowedMimeTypes.includes(file.type) || ext === 'pdf' || ext === 'html' || ext === 'htm'
+      
+      if (!isAllowedType) {
+        setError('Only PDF and HTML files are accepted')
+        return
+      }
     if (file.size > 52428800) {
       setError('File must be under 50MB')
       return
@@ -188,10 +193,10 @@ export default function SubmitPage() {
                 <div className="flex flex-col items-center gap-3">
                   <Upload size={32} className="text-[#A0AEC0]" />
                   <p className="text-white font-medium text-sm">Drop PDF here or click to browse</p>
-                  <p className="text-[#A0AEC0] text-xs">Supports PDF, DOC, DOCX · Max 50MB</p>
+                  <p className="text-[#A0AEC0] text-xs">Supports PDF, DOC, DOCX, HTML · Max 50MB</p>
                 </div>
               )}
-              <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx" className="hidden"
+              <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx,.html" className="hidden"
                 onChange={e => e.target.files?.[0] && handleFileUpload(e.target.files[0])} />
             </div>
           ) : (

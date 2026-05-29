@@ -100,7 +100,7 @@ export async function GET(request: NextRequest) {
       .from('Paper')
       .select(`
         *,
-        author:authorId (id, name, username, avatarUrl, institution)
+        author:authorId (id, name, username, avatarUrl)
       `, { count: 'exact' })
       .order('date', { ascending: false })
       .range(offset, offset + limit - 1)
@@ -140,7 +140,7 @@ export async function GET(request: NextRequest) {
         name: paper.author.name,
         username: paper.author.username,
         avatar_url: paper.author.avatarUrl,
-        institution: paper.author.institution,
+        institution: paper.institution,
       } : null
     }))
 

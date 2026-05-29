@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     .from('Paper')
     .select(`
       *,
-      profiles:authorId (id, name, username, email, institution)
+      profiles:authorId (id, name, username, email)
     `, { count: 'exact' })
     .eq('status', status)
     .order('date', { ascending: false })
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
       name: paper.profiles.name,
       username: paper.profiles.username,
       email: paper.profiles.email,
-      institution: paper.profiles.institution,
+      institution: paper.institution,
     } : null
   }))
 

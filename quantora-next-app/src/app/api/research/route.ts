@@ -276,14 +276,17 @@ export async function POST(request: NextRequest) {
     }
 
     let ai_summary = null
-    let ai_keywords = null
+    let ai_keywords_list: string[] = []
     try {
       const aiResult = await generatePaperSummary(title, abstract, category)
       ai_summary = aiResult.summary
-      ai_keywords = aiResult.keywords.join(', ')
+      ai_keywords_list = aiResult.keywords || []
     } catch (e) {
       console.error('Gemini summary failed:', e)
     }
+
+    const initialTags = Array.isArray(tags) ? tags : (tags ? tags.split(',').map((t: string) => t.trim()).filter(Boolean) : [])
+    const mergedTags = [...initialTags, ...ai_keywords_list].filter((v, i, a) => v && a.indexOf(v) === i)
 
     const { data, error } = await supabase
       .from('Paper')
@@ -294,13 +297,12 @@ export async function POST(request: NextRequest) {
         author_id: user.id,
         institution: institution || 'Independent',
         country: country || 'India',
-        tags: Array.isArray(tags) ? tags.join(', ') : (tags || ''),
+        tags: mergedTags.join(', '),
         file_url,
         file_name,
         file_size,
         references_text,
         ai_summary,
-        ai_keywords,
         status: 'PENDING',
       })
       .select()

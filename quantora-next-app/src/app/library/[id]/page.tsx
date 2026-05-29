@@ -8,7 +8,7 @@ import {
   ArrowLeft, Download, ExternalLink, Sparkles, BookOpen, User, 
   MessageSquare, History, Network, Globe, Heart, ShieldCheck, 
   CheckCircle, Loader2, Award, AwardIcon, ThumbsUp, ThumbsDown, 
-  Send, Database, Cpu, HelpCircle, Code, Copy, Check, FileCode
+  Send, Database, Cpu, HelpCircle, Code, Copy, Check, FileCode, Trash2
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { PaperWithAuthor } from '@/types/database';
@@ -109,6 +109,27 @@ export default function PaperDetailPage({ params }: { params: Promise<{ id: stri
       });
     } catch (e) {
       console.error('Failed to register upvote:', e);
+    }
+  };
+
+  // Handle Permanent Paper Deletion (Author or Admin Only)
+  const handleDeletePaper = async () => {
+    if (!window.confirm("Are you sure you want to permanently delete this publication? This action is completely irreversible.")) {
+      return;
+    }
+    try {
+      const res = await fetch(`/api/research/${id}`, {
+        method: 'DELETE'
+      });
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || 'Failed to delete publication');
+      }
+      alert('Publication successfully deleted.');
+      router.push('/library');
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || 'An error occurred while deleting.');
     }
   };
 
@@ -411,6 +432,15 @@ export default function PaperDetailPage({ params }: { params: Promise<{ id: stri
                 );
               })()}
             </div>
+            {user && (paper.authorId === user.id || authProfile?.role === 'ADMIN') && (
+              <button
+                onClick={handleDeletePaper}
+                className="w-full mt-3 flex items-center justify-center gap-1.5 border border-red-500/20 hover:border-red-500 bg-red-500/5 hover:bg-red-500/10 py-3 px-4 rounded-xl text-xs font-bold text-red-400 hover:text-red-300 transition-all select-none cursor-pointer"
+              >
+                <Trash2 size={12} />
+                <span>Delete Publication</span>
+              </button>
+            )}
           </div>
         </div>
 

@@ -398,9 +398,10 @@ export default function PaperDetailPage({ params }: { params: Promise<{ id: stri
                                paper.file_name?.toLowerCase().endsWith('.htm') || 
                                paper.file_url?.toLowerCase().split('?')[0].endsWith('.html') || 
                                paper.file_url?.toLowerCase().split('?')[0].endsWith('.htm');
+                const viewUrl = isHtml ? `/api/research/${paper.id}/content` : (paper.file_url || '/report.pdf');
                 return (
                   <a 
-                    href={paper.file_url || '/report.pdf'} 
+                    href={viewUrl} 
                     target="_blank"
                     className="flex-1 flex items-center justify-center gap-1.5 bg-[#0062FF] hover:bg-[#0056e0] py-3 px-5 rounded-xl text-xs font-black uppercase tracking-wider text-white transition-all shadow-lg shadow-[#0062FF]/20"
                   >

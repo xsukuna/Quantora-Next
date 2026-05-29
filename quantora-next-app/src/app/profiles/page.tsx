@@ -4,7 +4,7 @@ import { useAuth } from '@/context/AuthContext'
 import { createClient } from '@/lib/supabase/client'
 import {
   User, Mail, Building2, Globe, Award, TrendingUp,
-  Edit3, Save, X, Loader2, Camera, FileText, Zap, Download
+  Edit3, Save, X, Loader2, Camera, FileText, Zap, Download, ExternalLink
 } from 'lucide-react'
 import type { Profile } from '@/types/database'
 
@@ -325,14 +325,28 @@ export default function ProfilesPage() {
                 </div>
 
                 <div className="flex gap-3 items-center shrink-0">
-                  <a 
-                    href={paper.file_url || paper.fileUrl} 
-                    target="_blank" 
-                    rel="noreferrer"
-                    className="flex items-center gap-1 text-[10px] font-bold text-white bg-[#0062FF] hover:bg-[#0056e0] px-3 py-1.5 rounded transition-all cursor-pointer"
-                  >
-                    <Download size={10} />Open File
-                  </a>
+                  {(() => {
+                    const isHtml = paper.file_name?.toLowerCase().endsWith('.html') || 
+                                   paper.file_name?.toLowerCase().endsWith('.htm') || 
+                                   paper.fileName?.toLowerCase().endsWith('.html') || 
+                                   paper.fileName?.toLowerCase().endsWith('.htm') || 
+                                   paper.file_url?.toLowerCase().split('?')[0].endsWith('.html') || 
+                                   paper.file_url?.toLowerCase().split('?')[0].endsWith('.htm') ||
+                                   paper.fileUrl?.toLowerCase().split('?')[0].endsWith('.html') || 
+                                   paper.fileUrl?.toLowerCase().split('?')[0].endsWith('.htm');
+                    const viewUrl = isHtml ? `/api/research/${paper.id}/content` : (paper.file_url || paper.fileUrl);
+                    return (
+                      <a 
+                        href={viewUrl} 
+                        target="_blank" 
+                        rel="noreferrer"
+                        className="flex items-center gap-1 text-[10px] font-bold text-white bg-[#0062FF] hover:bg-[#0056e0] px-3 py-1.5 rounded transition-all cursor-pointer"
+                      >
+                        {isHtml ? <ExternalLink size={10} /> : <Download size={10} />}
+                        <span>{isHtml ? 'Open Article' : 'Open File'}</span>
+                      </a>
+                    );
+                  })()}
                 </div>
               </div>
             ))

@@ -88,7 +88,12 @@ export default function LibraryPage() {
   }
 
   const handleDownload = (paper: PaperWithAuthor) => {
-    window.open(paper.file_url, '_blank')
+    const isHtml = paper.file_name?.toLowerCase().endsWith('.html') || 
+                   paper.file_name?.toLowerCase().endsWith('.htm') || 
+                   paper.file_url?.toLowerCase().split('?')[0].endsWith('.html') || 
+                   paper.file_url?.toLowerCase().split('?')[0].endsWith('.htm');
+    const url = isHtml ? `/api/research/${paper.id}/content` : paper.file_url;
+    window.open(url, '_blank')
   }
 
   // Sort papers client-side

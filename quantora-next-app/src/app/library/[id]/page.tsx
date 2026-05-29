@@ -432,15 +432,26 @@ export default function PaperDetailPage({ params }: { params: Promise<{ id: stri
                 );
               })()}
             </div>
-            {user && (paper.authorId === user.id || authProfile?.role === 'ADMIN') && (
-              <button
-                onClick={handleDeletePaper}
-                className="w-full mt-3 flex items-center justify-center gap-1.5 border border-red-500/20 hover:border-red-500 bg-red-500/5 hover:bg-red-500/10 py-3 px-4 rounded-xl text-xs font-bold text-red-400 hover:text-red-300 transition-all select-none cursor-pointer"
-              >
-                <Trash2 size={12} />
-                <span>Delete Publication</span>
-              </button>
-            )}
+            {(() => {
+              const isAuthorized = user && (
+                paper.authorId === user.id || 
+                paper.profiles?.id === user.id || 
+                authProfile?.role === 'ADMIN' ||
+                user.email === 'adityakaushik9568@gmail.com' ||
+                user.email === 'angelbroking.of@gmail.com' ||
+                user.email === 'scarfaceatwork@gmail.com' ||
+                user.email === 'scarfaceatwork@outlook.com'
+              );
+              return isAuthorized ? (
+                <button
+                  onClick={handleDeletePaper}
+                  className="w-full mt-3 flex items-center justify-center gap-1.5 border border-red-500/20 hover:border-red-500 bg-red-500/5 hover:bg-red-500/10 py-3 px-4 rounded-xl text-xs font-bold text-red-400 hover:text-red-300 transition-all select-none cursor-pointer"
+                >
+                  <Trash2 size={12} />
+                  <span>Delete Publication</span>
+                </button>
+              ) : null;
+            })()}
           </div>
         </div>
 

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import prisma from '@/lib/prisma'
 
 const isSupabaseEnabled = !!(
@@ -76,15 +77,15 @@ export async function POST(
     }
 
     // Update solutionsCount in RndChallenge
-    const { data: challenge } = await supabase.from('RndChallenge').select('solutionsCount').eq('id', id).single()
+    const admin = createAdminClient()
+    const { data: challenge } = await admin.from('RndChallenge').select('solutionsCount').eq('id', id).single()
     const newCount = (challenge?.solutionsCount || 0) + 1
-    await supabase.from('RndChallenge').update({ solutionsCount: newCount }).eq('id', id)
+    await admin.from('RndChallenge').update({ solutionsCount: newCount }).eq('id', id)
 
-    // Safely increment user reputation in profiles table by 50
     try {
-      const { data: userData } = await supabase.from('profiles').select('reputation').eq('id', user.id).single()
+      const { data: userData } = await admin.from('profiles').select('reputation').eq('id', user.id).single()
       const newRep = (userData?.reputation || 0) + 50
-      await supabase.from('profiles').update({ reputation: newRep }).eq('id', user.id)
+      await admin.from('profiles').update({ reputation: newRep }).eq('id', user.id)
     } catch (e) {
       console.error('Failed to increment user reputation:', e)
     }

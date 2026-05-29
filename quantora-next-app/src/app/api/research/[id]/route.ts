@@ -129,7 +129,8 @@ export async function GET(
       return NextResponse.json({ error: 'Paper not found' }, { status: 404 })
     }
 
-    await supabase.from('Paper').update({ downloads: (data.downloads || 0) + 1 }).eq('id', id)
+    const admin = createAdminClient()
+    await admin.from('Paper').update({ downloads: (data.downloads || 0) + 1 }).eq('id', id)
 
     // Map keys to match the snake_case expectations of the frontend
     const mapped = {
@@ -260,15 +261,17 @@ export async function PATCH(
     const { action, text } = await request.json()
 
     if (action === 'like') {
-      const { data } = await supabase.from('Paper').select('likes').eq('id', id).single()
-      await supabase.from('Paper').update({ likes: (data?.likes || 0) + 1 }).eq('id', id)
+      const admin = createAdminClient()
+      const { data } = await admin.from('Paper').select('likes').eq('id', id).single()
+      await admin.from('Paper').update({ likes: (data?.likes || 0) + 1 }).eq('id', id)
       return NextResponse.json({ likes: (data?.likes || 0) + 1 })
     }
 
     if (action === 'comment') {
       if (!text?.trim()) return NextResponse.json({ error: 'Comment text required' }, { status: 400 })
       const commentId = 'comment_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9)
-      const { data: comment, error } = await supabase
+      const admin = createAdminClient()
+      const { data: comment, error } = await admin
         .from('Comment')
         .insert({ 
           id: commentId,

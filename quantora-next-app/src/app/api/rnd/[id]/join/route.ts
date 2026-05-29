@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import prisma from '@/lib/prisma'
 
 const isSupabaseEnabled = !!(
@@ -70,7 +71,8 @@ export async function POST(
 
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    const { data: existing } = await supabase
+    const admin = createAdminClient()
+    const { data: existing } = await admin
       .from('_ChallengeParticipation')
       .select('A')
       .eq('A', id)
@@ -78,20 +80,20 @@ export async function POST(
       .single()
 
     if (existing) {
-      await supabase.from('_ChallengeParticipation').delete().eq('A', id).eq('B', user.id)
+      await admin.from('_ChallengeParticipation').delete().eq('A', id).eq('B', user.id)
       
-      const { data: challenge } = await supabase.from('RndChallenge').select('teamsCount').eq('id', id).single()
+      const { data: challenge } = await admin.from('RndChallenge').select('teamsCount').eq('id', id).single()
       const newCount = Math.max(0, (challenge?.teamsCount || 0) - 1)
-      await supabase.from('RndChallenge').update({ teamsCount: newCount }).eq('id', id)
+      await admin.from('RndChallenge').update({ teamsCount: newCount }).eq('id', id)
 
       return NextResponse.json({ action: 'left' })
     } else {
-      const { error } = await supabase.from('_ChallengeParticipation').insert({ A: id, B: user.id })
+      const { error } = await admin.from('_ChallengeParticipation').insert({ A: id, B: user.id })
       if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-      const { data: challenge } = await supabase.from('RndChallenge').select('teamsCount').eq('id', id).single()
+      const { data: challenge } = await admin.from('RndChallenge').select('teamsCount').eq('id', id).single()
       const newCount = (challenge?.teamsCount || 0) + 1
-      await supabase.from('RndChallenge').update({ teamsCount: newCount }).eq('id', id)
+      await admin.from('RndChallenge').update({ teamsCount: newCount }).eq('id', id)
 
       return NextResponse.json({ action: 'joined' })
     }

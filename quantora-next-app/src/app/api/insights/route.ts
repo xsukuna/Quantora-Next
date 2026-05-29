@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { generateInsightTags } from '@/lib/gemini'
 import prisma from '@/lib/prisma'
 
@@ -242,7 +243,8 @@ export async function POST(request: NextRequest) {
       tags = category || 'General'
     }
 
-    const { data, error } = await supabase
+    const admin = createAdminClient()
+    const { data, error } = await admin
       .from('Insight')
       .insert({
         authorId: user.id,

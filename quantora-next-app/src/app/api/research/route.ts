@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { generatePaperSummary } from '@/lib/gemini'
 import prisma from '@/lib/prisma'
 
@@ -313,7 +314,8 @@ export async function POST(request: NextRequest) {
 
     const paperId = 'paper_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9)
 
-    const { data, error } = await supabase
+    const admin = createAdminClient()
+    const { data, error } = await admin
       .from('Paper')
       .insert({
         id: paperId,
@@ -341,16 +343,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    // Safely increment user reputation in User table
+    // Safely increment user reputation in profiles table
     try {
-      const { data: userData } = await supabase
-        .from('User')
+      const { data: userData } = await admin
+        .from('profiles')
         .select('reputation')
         .eq('id', user.id)
         .single()
       const newRep = (userData?.reputation || 0) + 25
-      await supabase
-        .from('User')
+      await admin
+        .from('profiles')
         .update({ reputation: newRep })
         .eq('id', user.id)
     } catch (e) {

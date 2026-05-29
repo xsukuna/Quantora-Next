@@ -155,8 +155,8 @@ function validatePaperBody(body: Record<string, unknown>) {
 
   if (!abstract || abstract.trim().length < 50)
     errors.abstract = 'Abstract is required and must be at least 50 characters'
-  else if (abstract.trim().length > 5000)
-    errors.abstract = 'Abstract must not exceed 5000 characters'
+  else if (abstract.trim().length > 30000)
+    errors.abstract = 'Abstract must not exceed 30000 characters'
 
   if (!category || !VALID_CATEGORIES.includes(category.trim()))
     errors.category = `Category is required and must be one of: ${VALID_CATEGORIES.join(', ')}`

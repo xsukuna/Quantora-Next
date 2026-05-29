@@ -144,6 +144,7 @@ const VALID_CATEGORIES = [
 ]
 
 function validatePaperBody(body: Record<string, unknown>) {
+  console.log('[validatePaperBody] Input body:', JSON.stringify(body, null, 2))
   const errors: Record<string, string> = {}
   const { title, abstract, category, country, institution } = body as Record<string, string>
 
@@ -160,7 +161,11 @@ function validatePaperBody(body: Record<string, unknown>) {
   if (!category || !VALID_CATEGORIES.includes(category.trim()))
     errors.category = `Category is required and must be one of: ${VALID_CATEGORIES.join(', ')}`
 
-
+  if (Object.keys(errors).length > 0) {
+    console.log('[validatePaperBody] Validation failed:', JSON.stringify(errors, null, 2))
+  } else {
+    console.log('[validatePaperBody] Validation passed successfully!')
+  }
 
   return Object.keys(errors).length > 0 ? errors : null
 }
